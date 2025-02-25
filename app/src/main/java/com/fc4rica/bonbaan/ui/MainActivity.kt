@@ -1,4 +1,4 @@
-package com.fc4rica.bonbaan
+package com.fc4rica.bonbaan.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
