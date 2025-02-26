@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">BonBaan</string>
+    <string name="home_feed">หน้าหลัก</string>
+    <string name="home_search">ค้นหา</string>
+    <string name="home_chat">พูดคุย</string>
+    <string name="home_notification">แจ้งเตือน</string>
+    <string name="home_profile">โปรไฟล์</string>
 </resources>
