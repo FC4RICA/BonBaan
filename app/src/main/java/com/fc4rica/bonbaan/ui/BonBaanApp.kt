@@ -16,7 +16,7 @@ fun BonBaanApp() {
     BonBaanTheme {
         val navController = rememberNavController()
 
-        BonBaanNavHost(navController = navController)
+        BonBaanNavHost(navController)
     }
 }
 

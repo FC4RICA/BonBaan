@@ -16,25 +16,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.ui.MockScreen
+import com.fc4rica.bonbaan.ui.navigation.Screen
 
 @Composable
-fun HomeScreen(
-    navController: NavHostController
-) {
-    val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
+fun HomeScreen() {
+    val nestedNavController = rememberNavController()
+    val currentDestination = nestedNavController.currentBackStackEntryAsState().value?.destination?.route
+    val currentSection = HomeSection.fromRoute(currentDestination) ?: HomeSection.Feed
 
     Scaffold(
         bottomBar = {
             BottomNavBar(
-                currentRoute = currentDestination ?: HomeSection.Feed.route,
-                navigateToRoute = { route ->
-                    navController.navigate(route) {
+                currentRoute = currentSection.screen.route,
+                navigateToRoute = { sectionRoute  ->
+                    nestedNavController.navigate(sectionRoute) {
                         launchSingleTop = true
                         restoreState = true
                     }
@@ -43,20 +44,20 @@ fun HomeScreen(
         }
     ) { innerPadding ->
         NavHost(
-            navController = navController,
-            startDestination = HomeSection.Feed.route,
+            navController = nestedNavController,
+            startDestination = Screen.Feed.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(HomeSection.Feed.route) {
+            composable(Screen.Feed.route) {
                 MockScreen("FEED")
             }
-            composable(HomeSection.Chat.route) {
+            composable(Screen.Chat.route) {
                 MockScreen("CHAT")
             }
-            composable(HomeSection.Notification.route) {
+            composable(Screen.Notification.route) {
                 MockScreen("NOTIFICATION")
             }
-            composable(HomeSection.Profile.route) {
+            composable(Screen.Profile.route) {
                 MockScreen("PROFILE")
             }
         }
@@ -66,18 +67,17 @@ fun HomeScreen(
 sealed class HomeSection(
     @StringRes val title: Int,
     val icon: ImageVector,
-    val route: String
+    val screen: Screen
 ) {
-    object Feed : HomeSection(R.string.home_feed, Icons.Outlined.Home, "home/feed")
-    object Chat : HomeSection(R.string.home_chat, Icons.Outlined.MailOutline, "home/chat")
-    object Notification : HomeSection(R.string.home_notification, Icons.Outlined.Notifications, "home/notification")
-    object Profile : HomeSection(R.string.home_profile, Icons.Outlined.Person, "home/profile")
+    data object Feed : HomeSection(R.string.home_feed, Icons.Outlined.Home, Screen.Feed)
+    data object Chat : HomeSection(R.string.home_chat, Icons.Outlined.MailOutline, Screen.Chat)
+    data object Notification : HomeSection(R.string.home_notification, Icons.Outlined.Notifications, Screen.Notification)
+    data object Profile : HomeSection(R.string.home_profile, Icons.Outlined.Person, Screen.Profile)
 
     companion object {
+        fun fromRoute(route: String?): HomeSection? = sections.find { it.screen.route == route }
+
         val sections = listOf(Feed, Chat, Notification, Profile)
-        fun fromRoute(route: String?): HomeSection? {
-            return sections.find { it.route == route }
-        }
     }
 }
 
@@ -86,11 +86,9 @@ fun BottomNavBar(
     currentRoute: String,
     navigateToRoute: (String) -> Unit
 ) {
-    val currentSection = HomeSection.fromRoute(currentRoute)
-
     NavigationBar {
         HomeSection.sections.forEach { section ->
-            val selected = section == currentSection
+            val selected = currentRoute == section.screen.route
 
             NavigationBarItem(
                 icon = {
@@ -101,7 +99,7 @@ fun BottomNavBar(
                 },
                 label = { Text(stringResource(section.title)) },
                 selected = selected,
-                onClick = { navigateToRoute(section.route) }
+                onClick = { navigateToRoute(section.screen.route) }
             )
         }
     }
