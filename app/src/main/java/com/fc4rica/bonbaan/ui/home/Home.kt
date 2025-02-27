@@ -21,7 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.R
-import com.fc4rica.bonbaan.ui.MockScreen
+import com.fc4rica.bonbaan.ui.home.profile.ProfileScreen
 import com.fc4rica.bonbaan.ui.navigation.Screen
 
 @Composable
@@ -49,16 +49,16 @@ fun HomeScreen() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Feed.route) {
-                MockScreen("FEED")
+                FeedScreen()
             }
             composable(Screen.Chat.route) {
-                MockScreen("CHAT")
+                ChatScreen()
             }
             composable(Screen.Notification.route) {
-                MockScreen("NOTIFICATION")
+                NotificationScreen()
             }
             composable(Screen.Profile.route) {
-                MockScreen("PROFILE")
+                ProfileScreen()
             }
         }
     }
