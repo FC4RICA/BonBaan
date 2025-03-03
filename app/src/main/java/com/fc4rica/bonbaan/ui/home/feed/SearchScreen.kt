@@ -1,9 +1,9 @@
-package com.fc4rica.bonbaan.ui.home
+package com.fc4rica.bonbaan.ui.home.feed
 
 import androidx.compose.runtime.Composable
 import com.fc4rica.bonbaan.ui.MockScreen
 
 @Composable
-fun FeedScreen() {
-    MockScreen("FEED")
+fun SearchScreen() {
+    MockScreen("SEARCH")
 }
