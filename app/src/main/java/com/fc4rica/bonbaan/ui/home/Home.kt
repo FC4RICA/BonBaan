@@ -28,7 +28,12 @@ import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.ui.home.feed.FeedScreen
 import com.fc4rica.bonbaan.ui.home.feed.SearchScreen
 import com.fc4rica.bonbaan.ui.home.feed.ServiceDetailScreen
+import com.fc4rica.bonbaan.ui.home.profile.OrderStatusDetailScreen
+import com.fc4rica.bonbaan.ui.home.profile.OrdersStatusScreen
+import com.fc4rica.bonbaan.ui.home.profile.PreviousVowDetailScreen
+import com.fc4rica.bonbaan.ui.home.profile.PreviousVowsScreen
 import com.fc4rica.bonbaan.ui.home.profile.ProfileScreen
+import com.fc4rica.bonbaan.ui.home.profile.ProfileSettingScreen
 import com.fc4rica.bonbaan.ui.navigation.Screen
 
 @Composable
@@ -81,7 +86,9 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     }
 
     //  Nested Feed Screens
-    composable(Screen.Search.route) { SearchScreen() }
+    composable(Screen.Search.route) {
+        SearchScreen()
+    }
     composable(
         route = Screen.ServiceDetail("{serviceId}").route,
         arguments = listOf(navArgument("serviceId") { type = NavType.StringType })
@@ -90,17 +97,28 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         ServiceDetailScreen(serviceId)
     }
 
-//    // Nested Screens inside Profile
-//    composable(Screen.ServicesStatus.route) { ServicesStatusScreen(navController) }
-//    composable(Screen.PreviousServices.route) { PreviousServicesScreen(navController) }
-//    composable(
-//        route = Screen.PreviousServiceDetail("{previousServiceId}").route,
-//        arguments = listOf(navArgument("previousServiceId") { type = NavType.StringType })
-//    ) { backStackEntry ->
-//        val previousServiceId = backStackEntry.arguments?.getString("previousServiceId") ?: ""
-//        PreviousServiceDetailScreen(previousServiceId, navController)
-//    }
-//    composable(Screen.ProfileSetting.route) { ProfileSettingScreen(navController) }
+    // Nested Profile Screens
+    composable(Screen.OrdersStatus.route) {
+        OrdersStatusScreen()
+    }
+    composable(
+        route = Screen.OrderStatusDetail("{orderId}").route,
+        arguments = listOf(navArgument("orderId") { type = NavType.StringType })
+    ) { backStackEntry ->
+        val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
+        OrderStatusDetailScreen(orderId)
+    }
+    composable(Screen.PreviousVows.route) {
+        PreviousVowsScreen()
+    }
+    composable(
+        route = Screen.PreviousVowDetail("{vowId}").route,
+        arguments = listOf(navArgument("vowId") { type = NavType.StringType })
+    ) { backStackEntry ->
+        val vowId = backStackEntry.arguments?.getString("vowId") ?: ""
+        PreviousVowDetailScreen(vowId)
+    }
+    composable(Screen.ProfileSetting.route) { ProfileSettingScreen() }
 }
 
 sealed class HomeSection(
