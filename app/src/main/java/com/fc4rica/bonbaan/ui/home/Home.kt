@@ -28,6 +28,7 @@ import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.ui.home.feed.FeedScreen
 import com.fc4rica.bonbaan.ui.home.feed.SearchScreen
 import com.fc4rica.bonbaan.ui.home.feed.ServiceDetailScreen
+import com.fc4rica.bonbaan.ui.home.profile.MyReviewsScreen
 import com.fc4rica.bonbaan.ui.home.profile.OrderStatusDetailScreen
 import com.fc4rica.bonbaan.ui.home.profile.OrdersStatusScreen
 import com.fc4rica.bonbaan.ui.home.profile.PreviousVowDetailScreen
@@ -118,6 +119,7 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         val vowId = backStackEntry.arguments?.getString("vowId") ?: ""
         PreviousVowDetailScreen(vowId)
     }
+    composable(Screen.MyReviews.route) { MyReviewsScreen() }
     composable(Screen.ProfileSetting.route) { ProfileSettingScreen() }
 }
 
