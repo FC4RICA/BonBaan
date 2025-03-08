@@ -23,7 +23,7 @@ private val LightColorScheme = lightColorScheme(
 fun BonBaanTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = LightColorScheme,
-        typography = Typography,
+        typography = BonBaanTypography,
         content = content
     )
 }
