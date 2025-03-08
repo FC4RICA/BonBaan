@@ -1,9 +1,13 @@
 package com.fc4rica.bonbaan.ui.home
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -18,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,7 +62,7 @@ fun HomeScreen() {
             val shouldShowBottomBar =
                 HomeSection.sections.any { it.screen.route == currentDestination }
             if (shouldShowBottomBar) {
-                BottomNavBar(
+                BonBaanBottomNavBar(
                     currentRoute = currentSection.screen.route,
                     navigateToRoute = { sectionRoute ->
                         nestedNavController.navigate(sectionRoute) {
@@ -151,40 +156,53 @@ sealed class HomeSection(
 }
 
 @Composable
-fun BottomNavBar(
+fun BonBaanBottomNavBar(
     currentRoute: String,
     navigateToRoute: (String) -> Unit
 ) {
-    NavigationBar(
-        containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(shape = RoundedCornerShape(8.dp, 8.dp, 0.dp, 0.dp), color = MaterialTheme.colorScheme.primary)
-            .padding(4.dp)
+            .windowInsetsPadding(WindowInsets.navigationBars)
     ) {
-        HomeSection.sections.forEach { section ->
-            val selected = currentRoute == section.screen.route
+        // Background with rounded top corners
+        Surface(
+            color = MaterialTheme.colorScheme.primary,
+            shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+            shadowElevation = 4.dp,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(76.dp)
+                .align(androidx.compose.ui.Alignment.BottomCenter)
+        ) {}
 
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        imageVector = section.icon,
-                        contentDescription = stringResource(section.title)
+        NavigationBar(
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            HomeSection.sections.forEach { section ->
+                val selected = currentRoute == section.screen.route
+
+                NavigationBarItem(
+                    icon = {
+                        Icon(
+                            imageVector = section.icon,
+                            contentDescription = stringResource(section.title)
+                        )
+                    },
+                    label = { Text(stringResource(section.title)) },
+                    selected = selected,
+                    onClick = { navigateToRoute(section.screen.route) },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.secondary,
+                        unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                        selectedTextColor = MaterialTheme.colorScheme.secondary,
+                        unselectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                        indicatorColor = Color.Transparent
                     )
-                },
-//                alwaysShowLabel = selected,
-                label = { Text(stringResource(section.title)) },
-                selected = selected,
-                onClick = { navigateToRoute(section.screen.route) },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.secondary,
-                    unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                    selectedTextColor = MaterialTheme.colorScheme.secondary,
-                    unselectedTextColor = MaterialTheme.colorScheme.onPrimary,
-                    indicatorColor = Color.Transparent
                 )
-            )
+            }
         }
     }
 }
