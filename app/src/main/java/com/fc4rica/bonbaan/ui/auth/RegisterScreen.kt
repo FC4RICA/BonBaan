@@ -1,14 +1,14 @@
 package com.fc4rica.bonbaan.ui.auth
 
 import androidx.compose.runtime.Composable
-import com.fc4rica.bonbaan.ui.MockScreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.bonbaan.ui.components.ButtonComponent
-import com.example.bonbaan.ui.components.TextFieldComponent
+import com.fc4rica.bonbaan.ui.components.BonBaanButton
+import com.fc4rica.bonbaan.ui.components.TextFieldComponent
 
 @Composable
 fun RegisterScreen() {
@@ -27,6 +27,12 @@ fun RegisterScreen() {
         Spacer(modifier = Modifier.height(10.dp))
         TextFieldComponent(label = "ยืนยันรหัสผ่าน", value = confirmPassword, onValueChange = { confirmPassword = it })
         Spacer(modifier = Modifier.height(20.dp))
-        ButtonComponent(text = "สมัครสมาชิก", onClick = { /* TODO: Handle Register */ })
+        BonBaanButton(text = "สมัครสมาชิก", onClick = { /* TODO: Handle Register */ })
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewRegisterScreen() {
+    RegisterScreen()
 }
