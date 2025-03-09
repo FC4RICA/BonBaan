@@ -1,6 +1,7 @@
 package com.fc4rica.bonbaan.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -20,7 +21,8 @@ fun BonBaanButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     variant: ButtonVariant = ButtonVariant.PRIMARY,
-    isEnabled: Boolean = true
+    isEnabled: Boolean = true,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
 ) {
     val colors = when (variant) {
         ButtonVariant.PRIMARY -> ButtonDefaults.buttonColors(
@@ -60,7 +62,8 @@ fun BonBaanButton(
         shape = RoundedCornerShape(8.dp),
         modifier = modifier,
         enabled = isEnabled,
-        border = border
+        border = border,
+        contentPadding = contentPadding
     ) {
         Text(text)
     }
