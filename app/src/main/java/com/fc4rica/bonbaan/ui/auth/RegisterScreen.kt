@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.ui.auth
 
+import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -7,10 +8,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
@@ -21,25 +24,35 @@ fun RegisterScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(30.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(30.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo1),
+                contentDescription = "App Logo",
+                modifier = Modifier
+                    .size(156.dp)
+                    .padding(8.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             Text(text = "สร้างบัญชีใหม่", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "เราจะส่งรหัสยืนยันผ่านอีเมล์ของคุณ",
+                text = "เราจะส่งรหัสยืนยันผ่านอีเมลของคุณ",
                 style = MaterialTheme.typography.bodyMedium
             )
             Spacer(modifier = Modifier.height(16.dp))
-            BonBaanTextField(label = "อีเมล์", value = email, onValueChange = { email = it })
+            BonBaanTextField(label = "อีเมล", value = email, onValueChange = { email = it })
             Spacer(modifier = Modifier.height(16.dp))
             BonBaanButton(
                 text = "ถัดไป",
-                onClick = {navController.navigate(Screen.Login.route)},
+                onClick = { navController.navigate(Screen.Login.route) },
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -56,7 +69,7 @@ fun RegisterScreen(navController: NavHostController) {
                 variant = ButtonVariant.TEXT
             )
         }
-        
+
     }
 }
 
