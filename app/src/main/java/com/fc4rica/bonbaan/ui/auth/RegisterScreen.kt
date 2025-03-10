@@ -52,7 +52,7 @@ fun RegisterScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
             BonBaanButton(
                 text = "ถัดไป",
-                onClick = { navController.navigate(Screen.Login.route) },
+                onClick = { },
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -65,7 +65,7 @@ fun RegisterScreen(navController: NavHostController) {
             Text(text = "มีบัญชีอยู่แล้ว?", style = MaterialTheme.typography.bodyMedium)
             BonBaanButton(
                 text = "เข้าสู่ระบบ",
-                onClick = {},
+                onClick = { navController.navigate(Screen.Login.route) },
                 variant = ButtonVariant.TEXT
             )
         }
