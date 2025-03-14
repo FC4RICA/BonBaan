@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.ui.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,8 +27,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
 import androidx.compose.foundation.layout.width
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.fc4rica.bonbaan.R
 
 @Composable
 fun SearchScreen(){
@@ -105,8 +108,8 @@ fun HistoryItem(Name: String){
 @Composable
 fun Recommend(){
     Column(modifier = Modifier
-        .padding(top = 12.dp, bottom = 12.dp)
         .fillMaxWidth()
+        .padding(top = 12.dp, bottom = 12.dp)
         .background(color = Color.White)) {
         Text(text = "แนะนำ", modifier = Modifier.padding(16.dp), fontSize = 17.sp,color = Color(0xFF5E17EB),fontWeight = FontWeight.Bold)
         RecommendItem("วัดฟ้าประทาน")
@@ -117,13 +120,37 @@ fun Recommend(){
 
 @Composable
 fun RecommendItem(Name: String){
-    Column (modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp).fillMaxWidth().background(Color(0xFFEBEBEB))){
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            , horizontalArrangement = Arrangement.SpaceBetween){
-            Column {
-                Text(text = "$Name")
-                Text(text = "Location")
+    Column (modifier = Modifier
+        .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+        .fillMaxWidth()
+        .clip(RoundedCornerShape(7.dp))
+        .background(Color(0xFFEBEBEB))
+
+    ){
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically){
+            Image(
+                painter = painterResource(id = R.drawable.logo1),
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .clip(
+                        RoundedCornerShape(7.dp))
+                    .height(100.dp)
+                    .width(100.dp)
+                    .padding(12.dp)
+
+            )
+            Column (){
+                Text(text = "$Name", fontSize = 17.sp,fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(8.dp))
+                Row {
+                    Text(text = "icon")
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(text = "Location") }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Text(
                     text = "หมวดหมู่",
                     modifier = Modifier.background(Color(0xFF5E17EB)),
