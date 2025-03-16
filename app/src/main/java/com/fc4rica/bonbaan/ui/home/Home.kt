@@ -12,7 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.automirrored.filled.StickyNote2
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
@@ -44,8 +44,6 @@ import com.fc4rica.bonbaan.ui.home.feed.ServiceDetailScreen
 import com.fc4rica.bonbaan.ui.home.profile.MyReviewsScreen
 import com.fc4rica.bonbaan.ui.home.profile.OrderStatusDetailScreen
 import com.fc4rica.bonbaan.ui.home.profile.OrdersStatusScreen
-import com.fc4rica.bonbaan.ui.home.profile.PreviousVowDetailScreen
-import com.fc4rica.bonbaan.ui.home.profile.PreviousVowsScreen
 import com.fc4rica.bonbaan.ui.home.profile.ProfileScreen
 import com.fc4rica.bonbaan.ui.home.profile.ProfileSettingScreen
 import com.fc4rica.bonbaan.ui.navigation.Screen
@@ -89,8 +87,8 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     composable(Screen.Feed.route) {
         FeedScreen(navController)
     }
-    composable(Screen.Chat.route) {
-        ChatScreen()
+    composable(Screen.VowRecord.route) {
+        VowRecordScreen()
     }
     composable(Screen.Notification.route) {
         NotificationScreen()
@@ -122,16 +120,6 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
         OrderStatusDetailScreen(orderId)
     }
-    composable(Screen.PreviousVows.route) {
-        PreviousVowsScreen()
-    }
-    composable(
-        route = Screen.PreviousVowDetail("{vowId}").route,
-        arguments = listOf(navArgument("vowId") { type = NavType.StringType })
-    ) { backStackEntry ->
-        val vowId = backStackEntry.arguments?.getString("vowId") ?: ""
-        PreviousVowDetailScreen(vowId)
-    }
     composable(Screen.MyReviews.route) { MyReviewsScreen() }
     composable(Screen.ProfileSetting.route) { ProfileSettingScreen() }
 }
@@ -142,7 +130,8 @@ sealed class HomeSection(
     val screen: Screen
 ) {
     data object Feed : HomeSection(R.string.home_feed, Icons.Filled.Home, Screen.Feed)
-    data object Chat : HomeSection(R.string.home_chat, Icons.Filled.Email, Screen.Chat)
+    data object VowRecord : HomeSection(R.string.home_vow_record,
+        Icons.AutoMirrored.Filled.StickyNote2, Screen.VowRecord)
     data object Notification :
         HomeSection(R.string.home_notification, Icons.Filled.Notifications, Screen.Notification)
 
@@ -151,7 +140,7 @@ sealed class HomeSection(
     companion object {
         fun fromRoute(route: String?): HomeSection? = sections.find { it.screen.route == route }
 
-        val sections = listOf(Feed, Chat, Notification, Profile)
+        val sections = listOf(Feed, VowRecord, Notification, Profile)
     }
 }
 
