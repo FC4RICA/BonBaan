@@ -16,11 +16,9 @@ import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
-import com.fc4rica.bonbaan.ui.components.ButtonVariant
-import com.fc4rica.bonbaan.ui.navigation.Screen
 
 @Composable
-fun RegisterScreen(navController: NavHostController) {
+fun PasswordSetupScreen(navController: NavHostController) {
     var email by remember { mutableStateOf("") }
 
     Column(
@@ -56,26 +54,12 @@ fun RegisterScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = "มีบัญชีอยู่แล้ว?", style = MaterialTheme.typography.bodyMedium)
-            BonBaanButton(
-                text = "เข้าสู่ระบบ",
-                onClick = { navController.navigate(Screen.Login.route) },
-                variant = ButtonVariant.TEXT
-            )
-        }
-
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewRegisterScreen() {
+fun PreviewPasswordSetupScreen() {
     val navController = rememberNavController()
-    RegisterScreen(navController)
+    PasswordSetupScreen(navController)
 }

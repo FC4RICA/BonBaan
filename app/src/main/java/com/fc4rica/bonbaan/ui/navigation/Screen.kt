@@ -3,7 +3,12 @@ package com.fc4rica.bonbaan.ui.navigation
 sealed class Screen(val route: String) {
     data object Auth : Screen("auth")
     data object Login : Screen("login")
+
     data object Register : Screen("register")
+    data object InputEmail : Screen("inputEmail")
+    data object EmailVerification : Screen("emailVerification")
+    data object PersonalInfo : Screen("personalInfo")
+    data object PasswordSetup : Screen("passwordSetup")
 
     data object Onboarding : Screen("onboarding")
     data object Welcome : Screen("welcome")

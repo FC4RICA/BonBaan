@@ -20,9 +20,6 @@ fun NavGraphBuilder.authenticationGraph(navController: NavHostController) {
                 }
             )
         }
-        composable(Screen.Register.route) {
-            RegisterScreen(navController)
-        }
-
+        registerGraph(navController)
     }
 }
