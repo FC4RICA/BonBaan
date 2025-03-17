@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -19,7 +20,9 @@ import com.fc4rica.bonbaan.ui.components.BonBaanTextField
 
 @Composable
 fun PersonalInfoScreen(navController: NavHostController) {
-    var email by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var phoneNumber by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -31,23 +34,20 @@ fun PersonalInfoScreen(navController: NavHostController) {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo1),
-                contentDescription = "App Logo",
-                modifier = Modifier
-                    .size(156.dp)
-                    .padding(8.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "สร้างบัญชีใหม่", style = MaterialTheme.typography.headlineSmall)
+            Text(text = "ข้อมูลส่วนตัว", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "เราจะส่งรหัสยืนยันผ่านอีเมลของคุณ",
-                style = MaterialTheme.typography.bodyMedium
+                text = "ใส่ชื่อ และเบอร์โทรศัพท์ของคุณ",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
-            BonBaanTextField(label = "อีเมล", value = email, onValueChange = { email = it })
-            Spacer(modifier = Modifier.height(16.dp))
+            BonBaanTextField(label = "ชื่อจริง นามสกุล", value = name, onValueChange = { name = it })
+            Spacer(modifier = Modifier.height(8.dp))
+            BonBaanTextField(label = "เบอร์โทรศัพท์", value = phoneNumber, onValueChange = { phoneNumber = it })
+            Spacer(modifier = Modifier.height(8.dp))
+            BonBaanTextField(label = "ชื่อบัญชี", value = username, onValueChange = { username = it })
+            Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
                 onClick = { },

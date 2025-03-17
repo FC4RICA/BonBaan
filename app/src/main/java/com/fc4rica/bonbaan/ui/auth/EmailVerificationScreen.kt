@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -16,10 +17,11 @@ import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
+import com.fc4rica.bonbaan.ui.components.ButtonVariant
 
 @Composable
 fun EmailVerificationScreen(navController: NavHostController) {
-    var email by remember { mutableStateOf("") }
+    var otp by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -31,28 +33,25 @@ fun EmailVerificationScreen(navController: NavHostController) {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo1),
-                contentDescription = "App Logo",
-                modifier = Modifier
-                    .size(156.dp)
-                    .padding(8.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "สร้างบัญชีใหม่", style = MaterialTheme.typography.headlineSmall)
+            Text(text = "ใส่รหัสยืนยัน", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "เราจะส่งรหัสยืนยันผ่านอีเมลของคุณ",
-                style = MaterialTheme.typography.bodyMedium
+                text = "เราได้ส่งรหัสยืนยันไปที่อีเมลของคุณ นำรหัสมาใส่เพื่อยืนยันอีเมลของคณ",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
-            BonBaanTextField(label = "อีเมล", value = email, onValueChange = { email = it })
-            Spacer(modifier = Modifier.height(16.dp))
+            BonBaanTextField(label = "รหัส", value = otp, onValueChange = { otp = it })
+            Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
                 onClick = { },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                isEnabled = otp.length == 5
             )
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(text = "ไม่ได้รับรหัสผ่าน?", style = MaterialTheme.typography.bodyMedium)
+            BonBaanButton(text = "ส่งรหัสยืนยันอีกรอบ", onClick = { }, variant = ButtonVariant.TEXT)
         }
     }
 }
