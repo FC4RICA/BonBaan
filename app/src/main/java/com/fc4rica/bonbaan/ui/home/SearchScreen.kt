@@ -21,19 +21,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.ArrowBack
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Divider
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.fc4rica.bonbaan.R
 
 @Composable
 fun SearchScreen(){
+    var searchValue by remember { mutableStateOf("") }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -41,7 +49,7 @@ fun SearchScreen(){
             ,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Searchbar()
+        SearchBar(searchValue = searchValue, onValueChange = { searchValue = it })
         SearchHistory()
         Recommend()
     }
@@ -49,7 +57,7 @@ fun SearchScreen(){
 }
 
 @Composable
-fun Searchbar(){
+fun SearchBar(searchValue: String, onValueChange: (String) -> Unit){
     Box(
     modifier = Modifier
         .fillMaxWidth()
@@ -57,9 +65,21 @@ fun Searchbar(){
         .background(Color(0xFF5E17EB)),
     contentAlignment = Alignment.Center
 ) {
-        Row( modifier = Modifier.padding(horizontal = 16.dp),verticalAlignment = Alignment.CenterVertically){
-            Text(text = "Back")
+        Row( modifier = Modifier.padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically){
+            Icon(
+                imageVector = Icons.Filled.ArrowBack,
+                contentDescription = "Back",
+                tint = Color.White
+            )
             Spacer(modifier = Modifier.width(16.dp))
+
+            BonBaanTextField(
+                label = "ค้นหา",
+                value = searchValue,
+                onValueChange = onValueChange
+            )
+
             TextField(
                 value = "",
                 onValueChange = {},
@@ -71,11 +91,8 @@ fun Searchbar(){
                     .fillMaxWidth(0.9f)
                     .clip(
                         RoundedCornerShape(7.dp),
-
-
                         ))
         }
-
 }
 }
 
@@ -85,7 +102,10 @@ fun SearchHistory(){
         .padding(top = 12.dp)
         .fillMaxWidth()
         .background(color = Color.White)) {
-        Text(text = "ประวัติการค้นหา", modifier = Modifier.padding(16.dp), fontSize = 17.sp,color = Color(0xFF5E17EB),fontWeight = FontWeight.Bold)
+        Text(text = "ประวัติการค้นหา",
+            modifier = Modifier.padding(16.dp),
+            fontSize = 17.sp,color = Color(0xFF5E17EB),
+            fontWeight = FontWeight.Bold)
         HistoryItem("วัดฟ้าประทาน")
         HistoryItem("วัดดอยคำ ยำอาฟเตอร์ยู")
         HistoryItem("วัดดูยูมีน ไอดอนโน บัดไอเลิฟยู")
@@ -98,10 +118,18 @@ fun HistoryItem(Name: String){
     Column (modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)){
         Row(modifier = Modifier
             .fillMaxWidth()
-            , horizontalArrangement = Arrangement.SpaceBetween){Text(text = "$Name")
-            Text(text = "Delete")}
+            , horizontalArrangement = Arrangement.SpaceBetween){
+            Text(text = "$Name")
+            Icon(
+                imageVector = Icons.Filled.Close,
+                contentDescription = "Close",
+                modifier = Modifier.size(14.dp),
 
-
+                tint = Color.Black
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Divider(color = Color.Gray, thickness = 1.dp)
     }
 }
 
@@ -145,19 +173,30 @@ fun RecommendItem(Name: String){
                 Text(text = "$Name", fontSize = 17.sp,fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
                 Row {
-                    Text(text = "icon")
+                    Icon(
+                        imageVector = Icons.Filled.LocationOn,
+                        contentDescription = "Location",
+                        modifier = Modifier.size(14.dp),
+                    )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(text = "Location") }
 
                 Spacer(modifier = Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFF5E17EB))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = "หมวดหมู่",
+                        color = Color.White,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
-                Text(
-                    text = "หมวดหมู่",
-                    modifier = Modifier.background(Color(0xFF5E17EB)),
-                    color = Color.White,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold
-                )
+
             }
 
             }
