@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
+import com.fc4rica.bonbaan.ui.navigation.Screen
 
 @Composable
 fun PersonalInfoScreen(navController: NavHostController) {
@@ -34,6 +35,12 @@ fun PersonalInfoScreen(navController: NavHostController) {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo2),
+                contentDescription = "App Logo",
+                modifier = Modifier.height(72.dp).width(216.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             Text(text = "ข้อมูลส่วนตัว", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -50,7 +57,7 @@ fun PersonalInfoScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
-                onClick = { },
+                onClick = { navController.navigate(Screen.PasswordSetup.route) },
                 modifier = Modifier.fillMaxWidth()
             )
         }

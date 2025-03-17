@@ -16,8 +16,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
-import com.fc4rica.bonbaan.ui.components.BonBaanTextField
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
+import com.fc4rica.bonbaan.ui.components.OtpInputField
+import com.fc4rica.bonbaan.ui.navigation.Screen
 
 @Composable
 fun EmailVerificationScreen(navController: NavHostController) {
@@ -33,6 +34,12 @@ fun EmailVerificationScreen(navController: NavHostController) {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo2),
+                contentDescription = "App Logo",
+                modifier = Modifier.height(72.dp).width(216.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             Text(text = "ใส่รหัสยืนยัน", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -41,13 +48,13 @@ fun EmailVerificationScreen(navController: NavHostController) {
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
-            BonBaanTextField(label = "รหัส", value = otp, onValueChange = { otp = it })
+            OtpInputField( value = otp, onValueChange = { otp = it}, length = 6 )
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
-                onClick = { },
+                onClick = { navController.navigate(Screen.PersonalInfo.route) },
                 modifier = Modifier.fillMaxWidth(),
-                isEnabled = otp.length == 5
+                isEnabled = otp.length == 6
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(text = "ไม่ได้รับรหัสผ่าน?", style = MaterialTheme.typography.bodyMedium)

@@ -62,7 +62,7 @@ fun InputEmailScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
-                onClick = { },
+                onClick = { navController.navigate(Screen.EmailVerification.route) },
                 modifier = Modifier.fillMaxWidth()
             )
         }
