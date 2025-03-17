@@ -13,8 +13,9 @@ fun NavGraphBuilder.onboardingGraph(navController: NavHostController) {
             MockScreen("WELCOME")
         }
         composable(Screen.Interest.route) {
-            MockScreen("INTEREST")
+            InterestScreen(navController)
         }
 
     }
 }
+
