@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Theme.BonBaanSplashScreen" parent="Theme.BonBaan">
+        <item name="android:windowSplashScreenBackground">@color/purple</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
+    </style>
+    
     <style name="Theme.BonBaan" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>
