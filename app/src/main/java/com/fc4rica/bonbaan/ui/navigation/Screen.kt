@@ -12,7 +12,7 @@ sealed class Screen(val route: String) {
     data object Home : Screen("home")
     // Bottom Navigation Screens
     data object Feed : Screen("feed")
-    data object Chat : Screen("chat")
+    data object VowRecord : Screen("vowRecord")
     data object Notification : Screen("notification")
     data object Profile : Screen("profile")
 
@@ -24,19 +24,20 @@ sealed class Screen(val route: String) {
         }
     }
 
+    // Nested Screen (Inside VowRecord)
+    data class VowRecordDetail(val vowId: String) :
+        Screen("vowRecordDetail/{vowId}") {
+        companion object {
+            fun createRoute(vowId: String) = "previousVowsDetail/$vowId"
+        }
+    }
+
     // Nested Screens (Inside Profile)
     data object OrdersStatus : Screen("ordersStatus")
     data class OrderStatusDetail(val orderId: String) :
         Screen("orderStatusDetail/{orderId}") {
         companion object {
             fun createRoute(orderId: String) = "orderStatusDetail/$orderId"
-        }
-    }
-    data object PreviousVows : Screen("previousVows")
-    data class PreviousVowDetail(val vowId: String) :
-        Screen("previousVowsDetail/{vowId}") {
-        companion object {
-            fun createRoute(vowId: String) = "previousVowsDetail/$vowId"
         }
     }
     data object MyReviews : Screen("myReviews")
