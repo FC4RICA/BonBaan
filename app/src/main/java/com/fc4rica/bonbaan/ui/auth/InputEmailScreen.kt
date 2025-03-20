@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.ui.auth
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
@@ -9,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -18,9 +20,11 @@ import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
 import com.fc4rica.bonbaan.ui.navigation.Screen
+import com.fc4rica.bonbaan.ui.utils.rememberImeState
 
 @Composable
-fun RegisterScreen(navController: NavHostController) {
+fun InputEmailScreen(navController: NavHostController) {
+    val isImeVisable = rememberImeState()
     var email by remember { mutableStateOf("") }
 
     Column(
@@ -33,26 +37,32 @@ fun RegisterScreen(navController: NavHostController) {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo1),
-                contentDescription = "App Logo",
+            val animatedUpperSectionRatio by animateFloatAsState(targetValue = if (isImeVisable) 0f else 0.3f)
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(156.dp)
-                    .padding(8.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+                    .fillMaxWidth()
+                    .fillMaxSize(animatedUpperSectionRatio)
+            ){
+                Image(
+                    painter = painterResource(id = R.drawable.logo1),
+                    contentDescription = "App Logo",
+                    modifier = Modifier.fillMaxSize().padding(bottom = 16.dp)
+                )
+            }
             Text(text = "สร้างบัญชีใหม่", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "เราจะส่งรหัสยืนยันผ่านอีเมลของคุณ",
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
             BonBaanTextField(label = "อีเมล", value = email, onValueChange = { email = it })
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
-                onClick = { },
+                onClick = { navController.navigate(Screen.EmailVerification.route) },
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -75,7 +85,7 @@ fun RegisterScreen(navController: NavHostController) {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewRegisterScreen() {
+fun PreviewInputEmailScreen() {
     val navController = rememberNavController()
-    RegisterScreen(navController)
+    InputEmailScreen(navController)
 }
