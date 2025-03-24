@@ -22,7 +22,10 @@ import com.fc4rica.bonbaan.ui.utils.rememberImeState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun InputEmailScreen(navController: NavHostController, viewModel: RegisterViewModel = koinViewModel()) {
+fun InputEmailScreen(
+    navController: NavHostController,
+    viewModel: RegisterViewModel = koinViewModel()
+) {
     val state by viewModel.state.collectAsState()
     val isImeVisable = rememberImeState()
 
@@ -59,11 +62,11 @@ fun InputEmailScreen(navController: NavHostController, viewModel: RegisterViewMo
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
-            BonBaanTextField(label = "อีเมล", value = state.email, onValueChange = { viewModel.updateEmail(it)})
+            BonBaanTextField(label = "อีเมล", value = state.email, onValueChange = { viewModel.updateField("email", it)})
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
-                onClick = { navController.navigate(Screen.EmailVerification.route) },
+                onClick = { navController.navigate(Screen.PersonalInfo.route) },
                 modifier = Modifier.fillMaxWidth()
             )
         }

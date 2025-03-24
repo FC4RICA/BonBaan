@@ -19,10 +19,14 @@ import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
 import com.fc4rica.bonbaan.ui.components.OtpInputField
 import com.fc4rica.bonbaan.ui.navigation.Screen
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun EmailVerificationScreen(navController: NavHostController) {
-    var otp by remember { mutableStateOf("") }
+fun EmailVerificationScreen(
+    navController: NavHostController,
+    viewModel: RegisterViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsState()
 
     Column(
         modifier = Modifier
@@ -37,7 +41,9 @@ fun EmailVerificationScreen(navController: NavHostController) {
             Image(
                 painter = painterResource(id = R.drawable.logo2),
                 contentDescription = "App Logo",
-                modifier = Modifier.height(72.dp).width(216.dp)
+                modifier = Modifier
+                    .height(72.dp)
+                    .width(216.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = "ใส่รหัสยืนยัน", style = MaterialTheme.typography.headlineSmall)
@@ -48,17 +54,21 @@ fun EmailVerificationScreen(navController: NavHostController) {
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
-            OtpInputField( value = otp, onValueChange = { otp = it}, length = 6 )
+            OtpInputField(value = state.code, onValueChange = { viewModel.updateField("code", it) }, length = 6)
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
                 onClick = { navController.navigate(Screen.PersonalInfo.route) },
                 modifier = Modifier.fillMaxWidth(),
-                isEnabled = otp.length == 6
+                isEnabled = state.isCodeValid
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(text = "ไม่ได้รับรหัสผ่าน?", style = MaterialTheme.typography.bodyMedium)
-            BonBaanButton(text = "ส่งรหัสยืนยันอีกรอบ", onClick = { }, variant = ButtonVariant.TEXT)
+            BonBaanButton(
+                text = "ส่งรหัสยืนยันอีกรอบ",
+                onClick = { navController.navigate(Screen.Onboarding.route) },
+                variant = ButtonVariant.TEXT
+            )
         }
     }
 }

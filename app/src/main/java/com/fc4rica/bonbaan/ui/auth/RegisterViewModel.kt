@@ -27,6 +27,7 @@ data class RegisterUiState(
     var isPhoneValid: Boolean = false,
     var isPasswordValid: Boolean = false,
     var isConfirmPasswordValid: Boolean = false,
+    var isCodeValid: Boolean = false,
 
     var emailError: String? = null,
     var phoneError: String? = null,
@@ -63,11 +64,26 @@ class RegisterViewModel(
             state.distinctUntilChangedBy { it.confirmPassword }
                 .map { it.password == it.confirmPassword }
                 .onEach { isConfirmPasswordValid -> _state.update { it.copy(isConfirmPasswordValid = isConfirmPasswordValid) } }
+
+            state.distinctUntilChangedBy { it.code }.map { it.code.length == 8 }
+                .onEach { isCodeValid -> _state.update { it.copy(isCodeValid = isCodeValid) } }
         }
     }
 
-    fun updateEmail(email: String) {
-        _state.update { it.copy(email = email) }
+    fun updateField(field: String, value: String) {
+        if (state.value.isLoading) return
+        _state.update {
+            when (field) {
+                "name" -> it.copy(name = value)
+                "username" -> it.copy(username = value)
+                "email" -> it.copy(email = value)
+                "phone" -> it.copy(phone = value)
+                "password" -> it.copy(password = value)
+                "confirmPassword" -> it.copy(confirmPassword = value)
+                "code" -> it.copy(code = value)
+                else -> it
+            }
+        }
     }
 
     fun sendOTP() {

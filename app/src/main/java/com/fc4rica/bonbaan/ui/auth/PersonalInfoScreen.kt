@@ -18,12 +18,14 @@ import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
 import com.fc4rica.bonbaan.ui.navigation.Screen
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun PersonalInfoScreen(navController: NavHostController) {
-    var name by remember { mutableStateOf("") }
-    var phoneNumber by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf("") }
+fun PersonalInfoScreen(
+    navController: NavHostController,
+    viewModel: RegisterViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsState()
 
     Column(
         modifier = Modifier
@@ -38,7 +40,9 @@ fun PersonalInfoScreen(navController: NavHostController) {
             Image(
                 painter = painterResource(id = R.drawable.logo2),
                 contentDescription = "App Logo",
-                modifier = Modifier.height(72.dp).width(216.dp)
+                modifier = Modifier
+                    .height(72.dp)
+                    .width(216.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = "ข้อมูลส่วนตัว", style = MaterialTheme.typography.headlineSmall)
@@ -49,11 +53,20 @@ fun PersonalInfoScreen(navController: NavHostController) {
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
-            BonBaanTextField(label = "ชื่อจริง นามสกุล", value = name, onValueChange = { name = it })
+            BonBaanTextField(
+                label = "ชื่อจริง นามสกุล",
+                value = state.name,
+                onValueChange = { viewModel.updateField("name", it) })
             Spacer(modifier = Modifier.height(8.dp))
-            BonBaanTextField(label = "เบอร์โทรศัพท์", value = phoneNumber, onValueChange = { phoneNumber = it })
+            BonBaanTextField(
+                label = "เบอร์โทรศัพท์",
+                value = state.phone,
+                onValueChange = { viewModel.updateField("phone", it) })
             Spacer(modifier = Modifier.height(8.dp))
-            BonBaanTextField(label = "ชื่อบัญชี", value = username, onValueChange = { username = it })
+            BonBaanTextField(
+                label = "ชื่อบัญชี",
+                value = state.username,
+                onValueChange = { viewModel.updateField("username", it) })
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",

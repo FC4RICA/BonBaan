@@ -18,11 +18,14 @@ import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
 import com.fc4rica.bonbaan.ui.navigation.Screen
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun PasswordSetupScreen(navController: NavHostController) {
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
+fun PasswordSetupScreen(
+    navController: NavHostController,
+    viewModel: RegisterViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsState()
 
     Column(
         modifier = Modifier
@@ -37,7 +40,9 @@ fun PasswordSetupScreen(navController: NavHostController) {
             Image(
                 painter = painterResource(id = R.drawable.logo2),
                 contentDescription = "App Logo",
-                modifier = Modifier.height(72.dp).width(216.dp)
+                modifier = Modifier
+                    .height(72.dp)
+                    .width(216.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = "สร้างรหัสผ่าน", style = MaterialTheme.typography.headlineSmall)
@@ -50,21 +55,21 @@ fun PasswordSetupScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
             BonBaanTextField(
                 label = "รหัสผ่าน",
-                value = password,
-                onValueChange = { password = it },
+                value = state.password,
+                onValueChange = { viewModel.updateField("password", it) },
                 isPassword = true
             )
             Spacer(modifier = Modifier.height(8.dp))
             BonBaanTextField(
                 label = "ยืนยันรหัสผ่าน",
-                value = confirmPassword,
-                onValueChange = { confirmPassword = it },
+                value = state.confirmPassword,
+                onValueChange = { viewModel.updateField("confirmPassword", it) },
                 isPassword = true
             )
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ยืนยัน",
-                onClick = { navController.navigate(Screen.Onboarding.route) },
+                onClick = { navController.navigate(Screen.EmailVerification.route) },
                 modifier = Modifier.fillMaxWidth()
             )
         }
