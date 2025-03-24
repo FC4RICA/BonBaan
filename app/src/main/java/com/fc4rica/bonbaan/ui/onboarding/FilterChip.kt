@@ -8,20 +8,19 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
 fun FilterChip(label: String, iconRes: Int, isSelected: Boolean, onClick: () -> Unit) {
+    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
+    val contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary
+
     Row(
         modifier = Modifier
             .padding(4.dp)
-            .background(
-                if (isSelected) Color(0xFF6A1B9A) else Color.Transparent,
-                shape = RoundedCornerShape(50)
-            )
+            .background(backgroundColor, shape = RoundedCornerShape(50))
             .clickable { onClick() }
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -29,13 +28,13 @@ fun FilterChip(label: String, iconRes: Int, isSelected: Boolean, onClick: () -> 
         Icon(
             painter = painterResource(id = iconRes),
             contentDescription = label,
-            tint = if (isSelected) Color.White else Color(0xFF6A1B9A),
+            tint = contentColor,
             modifier = Modifier.size(18.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = label,
-            color = if (isSelected) Color.White else Color(0xFF6A1B9A),
+            color = contentColor,
             fontSize = 14.sp
         )
     }

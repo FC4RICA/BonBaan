@@ -22,8 +22,15 @@ fun OnboardingHeader(title: String, subtitle: String) {
             modifier = Modifier.size(80.dp)
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text(title, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-        Text(subtitle, fontSize = 16.sp, color = Color.Gray)
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleSmall
+        )
+        Text(
+            text = subtitle,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
         Spacer(modifier = Modifier.height(24.dp))
     }
 }

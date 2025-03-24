@@ -50,7 +50,8 @@ fun InterestScreen(navController: NavController) {
             text = "ตกลง",
             onClick = { navController.navigate("nextScreen") },
             variant = ButtonVariant.PRIMARY,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            isEnabled = selectedInterests.isNotEmpty() // Disable button if no interest is selected
         )
     }
 }
