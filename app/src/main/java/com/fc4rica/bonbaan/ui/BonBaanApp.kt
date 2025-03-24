@@ -9,20 +9,18 @@ import com.fc4rica.bonbaan.ui.theme.BonBaanTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.fc4rica.bonbaan.data.repository.UserRepositoryImpl
-import com.fc4rica.bonbaan.domain.repository.UserRepository
-import com.fc4rica.bonbaan.domain.usecase.user.UserUseCase
 import com.fc4rica.bonbaan.ui.navigation.BonBaanNavHost
+import org.koin.compose.KoinContext
 
 @Composable
 fun BonBaanApp() {
     BonBaanTheme {
-        val userRepository: UserRepository = UserRepositoryImpl()
-        val userUseCase = UserUseCase(userRepository)
+        KoinContext {
 
-        val navController = rememberNavController()
+            val navController = rememberNavController()
 
-        BonBaanNavHost(navController, userUseCase)
+            BonBaanNavHost(navController)
+        }
     }
 }
 

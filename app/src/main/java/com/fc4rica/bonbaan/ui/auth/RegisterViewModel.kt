@@ -1,7 +1,6 @@
 package com.fc4rica.bonbaan.ui.auth
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.fc4rica.bonbaan.domain.model.User
 import com.fc4rica.bonbaan.domain.usecase.user.UserUseCase
@@ -99,21 +98,6 @@ class RegisterViewModel(
                     _state.update { it.copy(isLoading = false, errorMessage = error.message) }
                 }
             )
-        }
-    }
-
-    // Factory inside ViewModel
-    companion object {
-        @Suppress("UNCHECKED_CAST")
-        fun provideFactory(userUseCase: UserUseCase): ViewModelProvider.Factory {
-            return object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    if (modelClass.isAssignableFrom(RegisterViewModel::class.java)) {
-                        return RegisterViewModel(userUseCase) as T
-                    }
-                    throw IllegalArgumentException("Unknown ViewModel class")
-                }
-            }
         }
     }
 }
