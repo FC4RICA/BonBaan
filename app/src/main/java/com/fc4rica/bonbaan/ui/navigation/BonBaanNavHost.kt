@@ -5,8 +5,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.fc4rica.bonbaan.data.repository.UserRepositoryImpl
-import com.fc4rica.bonbaan.domain.repository.UserRepository
 import com.fc4rica.bonbaan.domain.usecase.user.UserUseCase
 import com.fc4rica.bonbaan.ui.auth.RegisterViewModel
 import com.fc4rica.bonbaan.ui.auth.authenticationGraph
@@ -14,10 +12,8 @@ import com.fc4rica.bonbaan.ui.home.HomeScreen
 import com.fc4rica.bonbaan.ui.onboarding.onboardingGraph
 
 @Composable
-fun BonBaanNavHost(navController: NavHostController) {
+fun BonBaanNavHost(navController: NavHostController, userUseCase: UserUseCase) {
 
-    val userRepository: UserRepository = UserRepositoryImpl()
-    val userUseCase = UserUseCase(userRepository)
     val registerViewModel: RegisterViewModel = viewModel(
         factory = RegisterViewModel.provideFactory(userUseCase)
     )
