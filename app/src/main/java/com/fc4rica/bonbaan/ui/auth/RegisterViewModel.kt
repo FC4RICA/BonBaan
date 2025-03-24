@@ -3,7 +3,8 @@ package com.fc4rica.bonbaan.ui.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fc4rica.bonbaan.domain.model.User
-import com.fc4rica.bonbaan.domain.usecase.user.UserUseCase
+import com.fc4rica.bonbaan.domain.model.request.RegisterRequest
+import com.fc4rica.bonbaan.domain.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -38,7 +39,7 @@ data class RegisterUiState(
 )
 
 class RegisterViewModel(
-    private val userUseCase: UserUseCase
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(RegisterUiState())
     val state = _state.asStateFlow()
@@ -73,7 +74,7 @@ class RegisterViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
 
-            val result = userUseCase.sendOtp.execute(state.value.email)
+            val result = userRepository.sendOtp(state.value.email)
             result.fold(
                 onSuccess = {
                     _state.update { it.copy(isLoading = false) }
@@ -89,7 +90,16 @@ class RegisterViewModel(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
 
-            val result = userUseCase.register.execute(state.value)
+            val request = RegisterRequest(
+                username = state.value.username,
+                firstname = state.value.name.split(" ")[0],
+                lastname = state.value.name.split(" ")[1],
+                email = state.value.email,
+                phone = state.value.phone,
+                password = state.value.password,
+                code = state.value.code
+            )
+            val result = userRepository.register(request)
             result.fold(
                 onSuccess = { user ->
                     _state.update { it.copy(isLoading = false, user = user) }

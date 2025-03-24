@@ -12,7 +12,8 @@ class UserRepositoryImpl(
         return Result.success(User(
             id = "",
             email = "",
-            name = "",
+            firstname = "",
+            lastname = "",
             username = "",
             phoneNumber = "",
             token = ""
@@ -29,7 +30,8 @@ class UserRepositoryImpl(
         return Result.success(User(
             id = "",
             email = "",
-            name = "",
+            firstname = "",
+            lastname = "",
             username = "",
             phoneNumber = "",
             token = ""
@@ -42,7 +44,7 @@ class UserRepositoryImpl(
 //        }
     }
 
-    override suspend fun otp(email: String): Result<Unit> {
+    override suspend fun sendOtp(email: String): Result<Unit> {
         return  Result.success(Unit)
 //        return try {
 //            apiService.sendOtp(email)
