@@ -14,7 +14,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
@@ -23,9 +22,9 @@ import com.fc4rica.bonbaan.ui.navigation.Screen
 import com.fc4rica.bonbaan.ui.utils.rememberImeState
 
 @Composable
-fun InputEmailScreen(navController: NavHostController) {
+fun InputEmailScreen(navController: NavHostController, viewModel: RegisterViewModel) {
+    val state by viewModel.state.collectAsState()
     val isImeVisable = rememberImeState()
-    var email by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -43,11 +42,13 @@ fun InputEmailScreen(navController: NavHostController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxSize(animatedUpperSectionRatio)
-            ){
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.logo1),
                     contentDescription = "App Logo",
-                    modifier = Modifier.fillMaxSize().padding(bottom = 16.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 16.dp)
                 )
             }
             Text(text = "สร้างบัญชีใหม่", style = MaterialTheme.typography.headlineSmall)
@@ -58,7 +59,7 @@ fun InputEmailScreen(navController: NavHostController) {
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
-            BonBaanTextField(label = "อีเมล", value = email, onValueChange = { email = it })
+            BonBaanTextField(label = "อีเมล", value = state.email, onValueChange = { viewModel.updateEmail(it)})
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
@@ -83,9 +84,9 @@ fun InputEmailScreen(navController: NavHostController) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewInputEmailScreen() {
-    val navController = rememberNavController()
-    InputEmailScreen(navController)
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewInputEmailScreen() {
+//    val navController = rememberNavController()
+//    InputEmailScreen(navController)
+//}

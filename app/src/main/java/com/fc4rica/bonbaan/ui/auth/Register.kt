@@ -6,19 +6,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.fc4rica.bonbaan.ui.navigation.Screen
 
-fun NavGraphBuilder.registerGraph(navController: NavHostController) {
+fun NavGraphBuilder.registerGraph(navController: NavHostController, registerViewModel: RegisterViewModel) {
     navigation(startDestination = Screen.InputEmail.route, route = Screen.Register.route) {
         composable(Screen.InputEmail.route) {
-            InputEmailScreen(navController)
-        }
-        composable(Screen.EmailVerification.route) {
-            EmailVerificationScreen(navController)
+            InputEmailScreen(navController, registerViewModel)
         }
         composable(Screen.PersonalInfo.route) {
             PersonalInfoScreen(navController)
         }
         composable(Screen.PasswordSetup.route) {
             PasswordSetupScreen((navController))
+        }
+        composable(Screen.EmailVerification.route) {
+            EmailVerificationScreen(navController)
         }
     }
 }

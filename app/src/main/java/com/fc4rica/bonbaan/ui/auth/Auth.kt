@@ -6,8 +6,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.fc4rica.bonbaan.ui.navigation.Screen
 
-fun NavGraphBuilder.authenticationGraph(navController: NavHostController) {
+fun NavGraphBuilder.authenticationGraph(navController: NavHostController, registerViewModel: RegisterViewModel) {
     navigation(startDestination = Screen.Register.route, route = Screen.Auth.route) {
+
         composable(Screen.Login.route) {
             LoginScreen(
                 onLoginSuccess = {
@@ -20,6 +21,6 @@ fun NavGraphBuilder.authenticationGraph(navController: NavHostController) {
                 }
             )
         }
-        registerGraph(navController)
+        registerGraph(navController, registerViewModel)
     }
 }
