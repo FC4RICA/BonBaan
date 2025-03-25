@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.ui.auth
 
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fc4rica.bonbaan.domain.model.User
@@ -9,6 +10,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import com.fc4rica.bonbaan.utils.isValidEmail
+import com.fc4rica.bonbaan.utils.isValidName
+import com.fc4rica.bonbaan.utils.isValidPhone
+import com.fc4rica.bonbaan.utils.isValidUsername
 import kotlinx.coroutines.launch
 
 data class RegisterUiState(
@@ -21,10 +25,19 @@ data class RegisterUiState(
     var code: String = "",
 
     var isEmailValid: Boolean = false,
+    var isNameValid: Boolean = false,
     var isPhoneValid: Boolean = false,
+    var isUsernameValid: Boolean = false,
     var isPasswordValid: Boolean = false,
     var isConfirmPasswordValid: Boolean = false,
     var isCodeValid: Boolean = false,
+
+    var emailError: String? = null,
+    var nameError: String? = null,
+    var phoneError: String? = null,
+    var usernameError: String? = null,
+    var passwordError: String? = null,
+    var confirmPasswordError: String? = null,
 
     var isLoading: Boolean = false,
     var errorMessage: String? = null,
@@ -44,7 +57,7 @@ class RegisterViewModel(
                 "name" -> it.copy(name = value)
                 "username" -> it.copy(username = value)
                 "email" -> it.copy(email = value)
-                "phone" -> it.copy(phone = value)
+                "phone" -> if (value.isDigitsOnly() && value.length < 10) it.copy(phone = value) else it
                 "password" -> it.copy(password = value)
                 "confirmPassword" -> it.copy(confirmPassword = value)
                 "code" -> it.copy(code = value)
@@ -56,9 +69,27 @@ class RegisterViewModel(
     fun submitEmail(): Boolean {
         val isValid = state.value.email.isValidEmail()
         _state.update {
-            it.copy(isEmailValid = isValid,)
+            it.copy(isEmailValid = isValid, emailError = if (isValid) null else "อีเมลไม่ถูกต้อง")
         }
         return isValid
+    }
+
+    fun submitPersonalInfo(): Boolean {
+        val (isNameValid, nameError) = state.value.name.isValidName()
+        val (isPhoneValid, phoneError) = state.value.phone.isValidPhone()
+        val (isUsernameValid, usernameError) = state.value.username.isValidUsername()
+
+        _state.update {
+            it.copy(
+                isNameValid = isNameValid,
+                nameError = if (isNameValid) null else nameError,
+                isPhoneValid = isPhoneValid,
+                phoneError = if (isPhoneValid) null else phoneError,
+                isUsernameValid = isUsernameValid,
+                usernameError = if (isUsernameValid) null else usernameError
+            )
+        }
+        return isNameValid && isPhoneValid && isUsernameValid
     }
 
     fun sendOTP() {

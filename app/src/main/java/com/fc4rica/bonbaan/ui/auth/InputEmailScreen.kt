@@ -70,14 +70,16 @@ fun InputEmailScreen(
                 label = "อีเมล",
                 value = state.email,
                 onValueChange = { viewModel.updateField("email", it) })
-            Text(
-                text = if (state.isEmailValid) "อีเมลไม่ถูกต้อง" else "",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.error,
-                textAlign = TextAlign.Right,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+            if (!state.emailError.isNullOrEmpty()) {
+                Text(
+                    text = state.emailError ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Right,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
                 onClick = { if (viewModel.submitEmail()) navController.navigate(Screen.PersonalInfo.route) },
