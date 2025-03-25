@@ -19,3 +19,8 @@ fun initKoin() {
         modules(appModule)
     }
 }
+
+val previewModule = module {
+    singleOf(::UserRepositoryImpl) bind UserRepository::class
+    viewModelOf(::RegisterViewModel)
+}

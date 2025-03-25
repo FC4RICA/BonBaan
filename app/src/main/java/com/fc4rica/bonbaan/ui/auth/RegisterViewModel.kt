@@ -7,9 +7,6 @@ import com.fc4rica.bonbaan.domain.model.request.RegisterRequest
 import com.fc4rica.bonbaan.domain.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import com.fc4rica.bonbaan.utils.isValidEmail
 import kotlinx.coroutines.launch
@@ -29,11 +26,6 @@ data class RegisterUiState(
     var isConfirmPasswordValid: Boolean = false,
     var isCodeValid: Boolean = false,
 
-    var emailError: String? = null,
-    var phoneError: String? = null,
-    var passwordError: String? = null,
-    var confirmPasswordError: String? = null,
-
     var isLoading: Boolean = false,
     var errorMessage: String? = null,
     var user: User? = null
@@ -44,31 +36,6 @@ class RegisterViewModel(
 ) : ViewModel() {
     private val _state = MutableStateFlow(RegisterUiState())
     val state = _state.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            state.distinctUntilChangedBy { it.email }
-                .map {
-                    val isValid = it.email.isValidEmail()
-                    isValid to if (isValid) null else "Invalid email"
-                }.onEach { (isValid, errorMessage) ->
-                    _state.update { it.copy(isEmailValid = isValid, emailError = errorMessage) }
-                }
-
-            state.distinctUntilChangedBy { it.phone }.map { it.phone.length == 10 }
-                .onEach { isPhoneValid -> _state.update { it.copy(isPhoneValid = isPhoneValid) } }
-
-            state.distinctUntilChangedBy { it.password }.map { it.password.length >= 8 }
-                .onEach { isPasswordValid -> _state.update { it.copy(isPasswordValid = isPasswordValid) } }
-
-            state.distinctUntilChangedBy { it.confirmPassword }
-                .map { it.password == it.confirmPassword }
-                .onEach { isConfirmPasswordValid -> _state.update { it.copy(isConfirmPasswordValid = isConfirmPasswordValid) } }
-
-            state.distinctUntilChangedBy { it.code }.map { it.code.length == 8 }
-                .onEach { isCodeValid -> _state.update { it.copy(isCodeValid = isCodeValid) } }
-        }
-    }
 
     fun updateField(field: String, value: String) {
         if (state.value.isLoading) return
@@ -84,6 +51,14 @@ class RegisterViewModel(
                 else -> it
             }
         }
+    }
+
+    fun submitEmail(): Boolean {
+        val isValid = state.value.email.isValidEmail()
+        _state.update {
+            it.copy(isEmailValid = isValid,)
+        }
+        return isValid
     }
 
     fun sendOTP() {
