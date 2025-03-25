@@ -15,11 +15,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.R
+import com.fc4rica.bonbaan.di.previewModule
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
 import com.fc4rica.bonbaan.ui.components.OtpInputField
-import com.fc4rica.bonbaan.ui.navigation.Screen
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.KoinApplication
 
 @Composable
 fun EmailVerificationScreen(
@@ -27,6 +28,11 @@ fun EmailVerificationScreen(
     viewModel: RegisterViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val otpCooldown by viewModel.otpCooldown.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.onEnterEmailVerificationScreen()
+    }
 
     Column(
         modifier = Modifier
@@ -58,15 +64,15 @@ fun EmailVerificationScreen(
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
-                onClick = { navController.navigate(Screen.PersonalInfo.route) },
+                onClick = { viewModel.registerUser() },
                 modifier = Modifier.fillMaxWidth(),
                 isEnabled = state.isCodeValid
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(text = "ไม่ได้รับรหัสผ่าน?", style = MaterialTheme.typography.bodyMedium)
             BonBaanButton(
-                text = "ส่งรหัสยืนยันอีกรอบ",
-                onClick = { navController.navigate(Screen.Onboarding.route) },
+                text = if (otpCooldown > 0) "ส่งอีกครั้งใน $otpCooldown วินาที" else "ส่งรหัสยืนยันอีกรอบ",
+                onClick = { if (otpCooldown <= 0) viewModel.sendOTP() },
                 variant = ButtonVariant.TEXT
             )
         }
@@ -76,6 +82,10 @@ fun EmailVerificationScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewEmailVerificationScreen() {
-    val navController = rememberNavController()
-    EmailVerificationScreen(navController)
+    KoinApplication(application = {
+        modules(previewModule)
+    }) {
+        val navController = rememberNavController()
+        EmailVerificationScreen(navController)
+    }
 }

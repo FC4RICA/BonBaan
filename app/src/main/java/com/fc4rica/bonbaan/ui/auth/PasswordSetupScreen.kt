@@ -15,10 +15,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.R
+import com.fc4rica.bonbaan.di.previewModule
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
 import com.fc4rica.bonbaan.ui.navigation.Screen
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.KoinApplication
 
 @Composable
 fun PasswordSetupScreen(
@@ -59,6 +61,15 @@ fun PasswordSetupScreen(
                 onValueChange = { viewModel.updateField("password", it) },
                 isPassword = true
             )
+            if (!state.passwordError.isNullOrEmpty()) {
+                Text(
+                    text = state.passwordError ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Right,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
             BonBaanTextField(
                 label = "ยืนยันรหัสผ่าน",
@@ -66,10 +77,19 @@ fun PasswordSetupScreen(
                 onValueChange = { viewModel.updateField("confirmPassword", it) },
                 isPassword = true
             )
+            if (!state.confirmPasswordError.isNullOrEmpty()) {
+                Text(
+                    text = state.confirmPasswordError ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Right,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ยืนยัน",
-                onClick = { navController.navigate(Screen.EmailVerification.route) },
+                onClick = { if (viewModel.submitPassword()) navController.navigate(Screen.EmailVerification.route) },
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -79,6 +99,10 @@ fun PasswordSetupScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewPasswordSetupScreen() {
-    val navController = rememberNavController()
-    PasswordSetupScreen(navController)
+    KoinApplication(application = {
+        modules(previewModule)
+    }) {
+        val navController = rememberNavController()
+        PasswordSetupScreen(navController)
+    }
 }

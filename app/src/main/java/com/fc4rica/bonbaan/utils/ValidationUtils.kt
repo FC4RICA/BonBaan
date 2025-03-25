@@ -25,9 +25,26 @@ fun String.isValidPhone(): Pair<Boolean, String?> {
 }
 
 fun String.isValidUsername(): Pair<Boolean, String?> {
-    return when{
+    return when {
         this.isBlank() -> false to "กรุณากรอกชื่อผู้ใช้"
         this.length > 32 -> false to "ชื่อผู้ใช้ของคุณยาวเกินไป"
+        else -> true to null
+    }
+}
+
+fun String.isValidPassword(): Pair<Boolean, String?> {
+    return when {
+        this.isBlank() -> false to "กรุณากรอกรหัสผ่าน"
+        this.length < 8 -> false to "รหัสผ่านของต้องมีความยาวมากกว่า 8"
+        this.contains(" ") -> false to "รหัสผ่านไม่สามารถมีเว้นวรรค"
+        else -> true to null
+    }
+}
+
+fun String.isValidConfirmPassword(password: String?): Pair<Boolean, String?> {
+    return when {
+        this.isBlank() -> false to "กรุณากรอกยืนยันรหัสผ่าน"
+        this != password -> false to "รหัสผ่านของคุณไม่ตรงกัน"
         else -> true to null
     }
 }

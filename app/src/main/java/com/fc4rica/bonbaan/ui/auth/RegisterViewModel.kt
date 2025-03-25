@@ -6,13 +6,17 @@ import androidx.lifecycle.viewModelScope
 import com.fc4rica.bonbaan.domain.model.User
 import com.fc4rica.bonbaan.domain.model.request.RegisterRequest
 import com.fc4rica.bonbaan.domain.repository.UserRepository
+import com.fc4rica.bonbaan.utils.isValidConfirmPassword
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import com.fc4rica.bonbaan.utils.isValidEmail
 import com.fc4rica.bonbaan.utils.isValidName
+import com.fc4rica.bonbaan.utils.isValidPassword
 import com.fc4rica.bonbaan.utils.isValidPhone
 import com.fc4rica.bonbaan.utils.isValidUsername
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 data class RegisterUiState(
@@ -39,6 +43,7 @@ data class RegisterUiState(
     var passwordError: String? = null,
     var confirmPasswordError: String? = null,
 
+    var isOtpSent: Boolean = false,
     var isLoading: Boolean = false,
     var errorMessage: String? = null,
     var user: User? = null
@@ -57,7 +62,7 @@ class RegisterViewModel(
                 "name" -> it.copy(name = value)
                 "username" -> it.copy(username = value)
                 "email" -> it.copy(email = value)
-                "phone" -> if (value.isDigitsOnly() && value.length < 10) it.copy(phone = value) else it
+                "phone" -> if (value.isDigitsOnly() && value.length <= 10) it.copy(phone = value) else it
                 "password" -> it.copy(password = value)
                 "confirmPassword" -> it.copy(confirmPassword = value)
                 "code" -> it.copy(code = value)
@@ -92,7 +97,36 @@ class RegisterViewModel(
         return isNameValid && isPhoneValid && isUsernameValid
     }
 
+    fun submitPassword(): Boolean {
+        val (isPasswordValid, passwordError) = state.value.password.isValidPassword()
+        val (isConfirmPasswordValid, confirmPasswordError) = state.value.confirmPassword.isValidConfirmPassword(state.value.password)
+
+        _state.update {
+            it.copy(
+                isPasswordValid = isPasswordValid,
+                passwordError = if (isPasswordValid) null else passwordError,
+                isConfirmPasswordValid = isConfirmPasswordValid,
+                confirmPasswordError = if (isConfirmPasswordValid) null else confirmPasswordError
+            )
+        }
+        return isPasswordValid && isConfirmPasswordValid
+    }
+
+    private val _otpCooldown = MutableStateFlow(0) // Time left before resending OTP
+    val otpCooldown = _otpCooldown.asStateFlow()
+
+    private var countdownJob: Job? = null
+
+    fun onEnterEmailVerificationScreen() {
+        if (!_state.value.isOtpSent) { // Prevent duplicate OTP requests
+            sendOTP()
+            _state.update { it.copy(isOtpSent = true) }
+        }
+    }
+
     fun sendOTP() {
+        if (_otpCooldown.value > 0) return
+
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
 
@@ -100,11 +134,22 @@ class RegisterViewModel(
             result.fold(
                 onSuccess = {
                     _state.update { it.copy(isLoading = false) }
+                    startOtpCooldown()
                 },
                 onFailure = { error ->
                     _state.update { it.copy(isLoading = false, errorMessage = error.message) }
                 }
             )
+        }
+    }
+
+    private fun startOtpCooldown(seconds : Int = 30) {
+        countdownJob?.cancel()
+        countdownJob = viewModelScope.launch {
+            for (time in seconds downTo 0) {
+                _otpCooldown.value = time
+                delay(1000L)
+            }
         }
     }
 
