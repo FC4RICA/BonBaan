@@ -12,17 +12,26 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.R
+import com.fc4rica.bonbaan.di.previewModule
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
 import com.fc4rica.bonbaan.ui.components.OtpInputField
-import com.fc4rica.bonbaan.ui.navigation.Screen
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.KoinApplication
 
 @Composable
-fun EmailVerificationScreen(navController: NavHostController) {
-    var otp by remember { mutableStateOf("") }
+fun EmailVerificationScreen(
+    navigateToOnbarding: () -> Unit,
+    viewModel: EmailVerificationViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsState()
+    val otpCooldown by viewModel.otpCooldown.collectAsState()
+    val registerRequest by viewModel.registerRequest.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.onEnterEmailVerificationScreen()
+    }
 
     Column(
         modifier = Modifier
@@ -37,7 +46,9 @@ fun EmailVerificationScreen(navController: NavHostController) {
             Image(
                 painter = painterResource(id = R.drawable.logo2),
                 contentDescription = "App Logo",
-                modifier = Modifier.height(72.dp).width(216.dp)
+                modifier = Modifier
+                    .height(72.dp)
+                    .width(216.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = "ใส่รหัสยืนยัน", style = MaterialTheme.typography.headlineSmall)
@@ -48,17 +59,21 @@ fun EmailVerificationScreen(navController: NavHostController) {
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
-            OtpInputField( value = otp, onValueChange = { otp = it}, length = 6 )
+            OtpInputField(value = registerRequest.code, onValueChange = { viewModel.updateOtp(it) }, length = 6)
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
-                onClick = { navController.navigate(Screen.PersonalInfo.route) },
+                onClick = { viewModel.registerUser() },
                 modifier = Modifier.fillMaxWidth(),
-                isEnabled = otp.length == 6
+                isEnabled = registerRequest.code.length == 6
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(text = "ไม่ได้รับรหัสผ่าน?", style = MaterialTheme.typography.bodyMedium)
-            BonBaanButton(text = "ส่งรหัสยืนยันอีกรอบ", onClick = { }, variant = ButtonVariant.TEXT)
+            BonBaanButton(
+                text = if (otpCooldown > 0) "ส่งอีกครั้งใน $otpCooldown วินาที" else "ส่งรหัสยืนยันอีกรอบ",
+                onClick = { if (otpCooldown <= 0) viewModel.sendOTP() },
+                variant = ButtonVariant.TEXT
+            )
         }
     }
 }
@@ -66,6 +81,11 @@ fun EmailVerificationScreen(navController: NavHostController) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewEmailVerificationScreen() {
-    val navController = rememberNavController()
-    EmailVerificationScreen(navController)
+    KoinApplication(application = {
+        modules(previewModule)
+    }) {
+        EmailVerificationScreen(
+            navigateToOnbarding = {}
+        )
+    }
 }

@@ -10,6 +10,7 @@ import com.fc4rica.bonbaan.ui.onboarding.onboardingGraph
 
 @Composable
 fun BonBaanNavHost(navController: NavHostController) {
+
     NavHost(navController = navController, startDestination = Screen.Auth.route) {
         authenticationGraph(navController)
         onboardingGraph(navController)

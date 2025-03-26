@@ -63,4 +63,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.compose.material3)
     implementation(libs.compose.icons.extended)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.koin.compose)
+    implementation(libs.koin.compose.navigation)
 }

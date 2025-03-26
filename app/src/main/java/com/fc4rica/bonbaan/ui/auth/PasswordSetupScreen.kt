@@ -12,17 +12,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.R
+import com.fc4rica.bonbaan.di.previewModule
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
-import com.fc4rica.bonbaan.ui.navigation.Screen
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.KoinApplication
 
 @Composable
-fun PasswordSetupScreen(navController: NavHostController) {
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
+fun PasswordSetupScreen(
+    navigateToEmailVerification: () -> Unit,
+    viewModel: PasswordSetupViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsState()
+    val registerRequest by viewModel.registerRequest.collectAsState()
 
     Column(
         modifier = Modifier
@@ -37,7 +40,9 @@ fun PasswordSetupScreen(navController: NavHostController) {
             Image(
                 painter = painterResource(id = R.drawable.logo2),
                 contentDescription = "App Logo",
-                modifier = Modifier.height(72.dp).width(216.dp)
+                modifier = Modifier
+                    .height(72.dp)
+                    .width(216.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = "สร้างรหัสผ่าน", style = MaterialTheme.typography.headlineSmall)
@@ -50,21 +55,39 @@ fun PasswordSetupScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
             BonBaanTextField(
                 label = "รหัสผ่าน",
-                value = password,
-                onValueChange = { password = it },
+                value = registerRequest.password,
+                onValueChange = { viewModel.updatePassword(it) },
                 isPassword = true
             )
+            if (!state.passwordError.isNullOrEmpty()) {
+                Text(
+                    text = state.passwordError ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Right,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
             BonBaanTextField(
                 label = "ยืนยันรหัสผ่าน",
-                value = confirmPassword,
-                onValueChange = { confirmPassword = it },
+                value = state.confirmPassword,
+                onValueChange = { viewModel.updateConfirmPassword(it) },
                 isPassword = true
             )
+            if (!state.confirmPasswordError.isNullOrEmpty()) {
+                Text(
+                    text = state.confirmPasswordError ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Right,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ยืนยัน",
-                onClick = { navController.navigate(Screen.Onboarding.route) },
+                onClick = { if (viewModel.submitPassword()) navigateToEmailVerification() },
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -74,6 +97,11 @@ fun PasswordSetupScreen(navController: NavHostController) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewPasswordSetupScreen() {
-    val navController = rememberNavController()
-    PasswordSetupScreen(navController)
+    KoinApplication(application = {
+        modules(previewModule)
+    }) {
+        PasswordSetupScreen(
+            navigateToEmailVerification = {}
+        )
+    }
 }

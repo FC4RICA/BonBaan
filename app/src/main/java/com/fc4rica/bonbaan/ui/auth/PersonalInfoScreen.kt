@@ -12,18 +12,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.R
+import com.fc4rica.bonbaan.di.previewModule
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
-import com.fc4rica.bonbaan.ui.navigation.Screen
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.KoinApplication
 
 @Composable
-fun PersonalInfoScreen(navController: NavHostController) {
-    var name by remember { mutableStateOf("") }
-    var phoneNumber by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf("") }
+fun PersonalInfoScreen(
+    navigateToSetupPassword: () -> Unit,
+    viewModel: PersonalInfoViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsState()
+    val registerRequest by viewModel.registerRequest.collectAsState()
 
     Column(
         modifier = Modifier
@@ -38,7 +40,9 @@ fun PersonalInfoScreen(navController: NavHostController) {
             Image(
                 painter = painterResource(id = R.drawable.logo2),
                 contentDescription = "App Logo",
-                modifier = Modifier.height(72.dp).width(216.dp)
+                modifier = Modifier
+                    .height(72.dp)
+                    .width(216.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = "ข้อมูลส่วนตัว", style = MaterialTheme.typography.headlineSmall)
@@ -49,15 +53,51 @@ fun PersonalInfoScreen(navController: NavHostController) {
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
-            BonBaanTextField(label = "ชื่อจริง นามสกุล", value = name, onValueChange = { name = it })
+            BonBaanTextField(
+                label = "ชื่อจริง นามสกุล",
+                value = state.name,
+                onValueChange = { viewModel.updateName(it) })
+            if (!state.nameError.isNullOrEmpty()) {
+                Text(
+                    text = state.nameError ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Right,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
-            BonBaanTextField(label = "เบอร์โทรศัพท์", value = phoneNumber, onValueChange = { phoneNumber = it })
+            BonBaanTextField(
+                label = "เบอร์โทรศัพท์",
+                value = registerRequest.phone,
+                onValueChange = { viewModel.updatePhone(it) })
+            if (!state.phoneError.isNullOrEmpty()) {
+                Text(
+                    text = state.phoneError ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Right,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
-            BonBaanTextField(label = "ชื่อบัญชี", value = username, onValueChange = { username = it })
+            BonBaanTextField(
+                label = "ชื่อบัญชี",
+                value = registerRequest.username,
+                onValueChange = { viewModel.updateUsername(it) })
+            if (!state.usernameError.isNullOrEmpty()) {
+                Text(
+                    text = state.usernameError ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Right,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
-                onClick = { navController.navigate(Screen.PasswordSetup.route) },
+                onClick = { if (viewModel.submitPersonalInfo()) navigateToSetupPassword() },
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -67,6 +107,11 @@ fun PersonalInfoScreen(navController: NavHostController) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewPersonalInfoScreen() {
-    val navController = rememberNavController()
-    PersonalInfoScreen(navController)
+    KoinApplication(application = {
+        modules(previewModule)
+    }) {
+        PersonalInfoScreen(
+            navigateToSetupPassword = {}
+        )
+    }
 }

@@ -10,13 +10,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.ui.navigation.BonBaanNavHost
+import org.koin.compose.KoinContext
 
 @Composable
 fun BonBaanApp() {
     BonBaanTheme {
-        val navController = rememberNavController()
+        KoinContext {
 
-        BonBaanNavHost(navController)
+            val navController = rememberNavController()
+
+            BonBaanNavHost(navController)
+        }
     }
 }
 

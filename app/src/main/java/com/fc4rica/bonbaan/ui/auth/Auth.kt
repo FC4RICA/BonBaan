@@ -8,6 +8,7 @@ import com.fc4rica.bonbaan.ui.navigation.Screen
 
 fun NavGraphBuilder.authenticationGraph(navController: NavHostController) {
     navigation(startDestination = Screen.Register.route, route = Screen.Auth.route) {
+
         composable(Screen.Login.route) {
             LoginScreen(
                 onLoginSuccess = {
