@@ -1,10 +1,14 @@
 package com.fc4rica.bonbaan.ui.onboarding
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -53,6 +57,47 @@ fun InterestScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth(),
             isEnabled = selectedInterests.isNotEmpty() // Disable button if no interest is selected
         )
+    }
+}
+
+@Composable
+fun OnboardingHeader(title: String, subtitle: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Icon(
+            painter = painterResource(id = R.drawable.logo1),
+            contentDescription = "Bonbaan Logo",
+            tint = Color.Unspecified,
+            modifier = Modifier.size(80.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleSmall
+        )
+        Text(
+            text = subtitle,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+    }
+}
+
+@Composable
+fun InterestSelection(
+    interests: List<Pair<String, Int>>,
+    selectedInterests: Set<String>,
+    onSelect: (String) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        interests.forEach { (label, iconRes) ->
+            FilterChip(label, iconRes, selectedInterests.contains(label)) {
+                onSelect(label)
+            }
+        }
     }
 }
 

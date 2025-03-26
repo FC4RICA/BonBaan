@@ -1,4 +1,4 @@
-package com.fc4rica.bonbaan.ui.onboarding
+package com.fc4rica.bonbaan.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
