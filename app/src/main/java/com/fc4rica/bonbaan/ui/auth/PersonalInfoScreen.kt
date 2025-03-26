@@ -25,9 +25,10 @@ import org.koin.compose.KoinApplication
 @Composable
 fun PersonalInfoScreen(
     navController: NavHostController,
-    viewModel: RegisterViewModel = koinViewModel()
+    viewModel: PersonalInfoViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val registerRequest by viewModel.registerRequest.collectAsState()
 
     Column(
         modifier = Modifier
@@ -58,7 +59,7 @@ fun PersonalInfoScreen(
             BonBaanTextField(
                 label = "ชื่อจริง นามสกุล",
                 value = state.name,
-                onValueChange = { viewModel.updateField("name", it) })
+                onValueChange = { viewModel.updateName(it) })
             if (!state.nameError.isNullOrEmpty()) {
                 Text(
                     text = state.nameError ?: "",
@@ -71,8 +72,8 @@ fun PersonalInfoScreen(
             Spacer(modifier = Modifier.height(8.dp))
             BonBaanTextField(
                 label = "เบอร์โทรศัพท์",
-                value = state.phone,
-                onValueChange = { viewModel.updateField("phone", it) })
+                value = registerRequest.phone,
+                onValueChange = { viewModel.updatePhone(it) })
             if (!state.phoneError.isNullOrEmpty()) {
                 Text(
                     text = state.phoneError ?: "",
@@ -85,8 +86,8 @@ fun PersonalInfoScreen(
             Spacer(modifier = Modifier.height(8.dp))
             BonBaanTextField(
                 label = "ชื่อบัญชี",
-                value = state.username,
-                onValueChange = { viewModel.updateField("username", it) })
+                value = registerRequest.username,
+                onValueChange = { viewModel.updateUsername(it) })
             if (!state.usernameError.isNullOrEmpty()) {
                 Text(
                     text = state.usernameError ?: "",

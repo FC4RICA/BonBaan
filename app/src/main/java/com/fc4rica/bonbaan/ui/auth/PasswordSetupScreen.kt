@@ -25,9 +25,10 @@ import org.koin.compose.KoinApplication
 @Composable
 fun PasswordSetupScreen(
     navController: NavHostController,
-    viewModel: RegisterViewModel = koinViewModel()
+    viewModel: PasswordSetupViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val registerRequest by viewModel.registerRequest.collectAsState()
 
     Column(
         modifier = Modifier
@@ -57,8 +58,8 @@ fun PasswordSetupScreen(
             Spacer(modifier = Modifier.height(16.dp))
             BonBaanTextField(
                 label = "รหัสผ่าน",
-                value = state.password,
-                onValueChange = { viewModel.updateField("password", it) },
+                value = registerRequest.password,
+                onValueChange = { viewModel.updatePassword(it) },
                 isPassword = true
             )
             if (!state.passwordError.isNullOrEmpty()) {
@@ -74,7 +75,7 @@ fun PasswordSetupScreen(
             BonBaanTextField(
                 label = "ยืนยันรหัสผ่าน",
                 value = state.confirmPassword,
-                onValueChange = { viewModel.updateField("confirmPassword", it) },
+                onValueChange = { viewModel.updateConfirmPassword(it) },
                 isPassword = true
             )
             if (!state.confirmPasswordError.isNullOrEmpty()) {

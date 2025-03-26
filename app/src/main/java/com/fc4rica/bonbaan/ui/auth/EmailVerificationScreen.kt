@@ -25,10 +25,11 @@ import org.koin.compose.KoinApplication
 @Composable
 fun EmailVerificationScreen(
     navController: NavHostController,
-    viewModel: RegisterViewModel = koinViewModel()
+    viewModel: EmailVerificationViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val otpCooldown by viewModel.otpCooldown.collectAsState()
+    val registerRequest by viewModel.registerRequest.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.onEnterEmailVerificationScreen()
@@ -60,13 +61,13 @@ fun EmailVerificationScreen(
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
-            OtpInputField(value = state.code, onValueChange = { viewModel.updateField("code", it) }, length = 6)
+            OtpInputField(value = registerRequest.code, onValueChange = { viewModel.updateOtp(it) }, length = 6)
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
                 onClick = { viewModel.registerUser() },
                 modifier = Modifier.fillMaxWidth(),
-                isEnabled = state.isCodeValid
+                isEnabled = registerRequest.code.length == 6
             )
             Spacer(modifier = Modifier.height(32.dp))
             Text(text = "ไม่ได้รับรหัสผ่าน?", style = MaterialTheme.typography.bodyMedium)

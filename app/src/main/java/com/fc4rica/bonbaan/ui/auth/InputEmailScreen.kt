@@ -28,9 +28,10 @@ import org.koin.compose.KoinApplication
 @Composable
 fun InputEmailScreen(
     navController: NavHostController,
-    viewModel: RegisterViewModel = koinViewModel()
+    viewModel: InputEmailViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val registerRequest by viewModel.registerRequest.collectAsState()
     val isImeVisable = rememberImeState()
 
     Column(
@@ -68,8 +69,8 @@ fun InputEmailScreen(
             Spacer(modifier = Modifier.height(16.dp))
             BonBaanTextField(
                 label = "อีเมล",
-                value = state.email,
-                onValueChange = { viewModel.updateField("email", it) })
+                value = registerRequest.email,
+                onValueChange = { viewModel.updateEmail(it) })
             if (!state.emailError.isNullOrEmpty()) {
                 Text(
                     text = state.emailError ?: "",
