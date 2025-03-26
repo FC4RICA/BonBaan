@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.data.repository
 
+import com.fc4rica.bonbaan.data.remote.UserApiService
 import com.fc4rica.bonbaan.domain.model.User
 import com.fc4rica.bonbaan.domain.model.request.RegisterRequest
 import com.fc4rica.bonbaan.domain.repository.RegisterRepository
@@ -9,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class RegisterRepositoryImpl(
-//    private val apiService: ApiService
+    private val userApiService: UserApiService
 ) : RegisterRepository {
     private val _registerRequest = MutableStateFlow(RegisterRequest())
     override val registerRequest: StateFlow<RegisterRequest> = _registerRequest.asStateFlow()
@@ -31,7 +32,7 @@ class RegisterRepositoryImpl(
             )
         )
 //        return try {
-//            val response = apiService.register(request)
+//            val response = userApiService.register(request)
 //            Result.success(response)
 //        } catch (e: Exception) {
 //            Result.failure(e)
@@ -41,7 +42,7 @@ class RegisterRepositoryImpl(
     override suspend fun sendOtp(): Result<Unit> {
         return Result.success(Unit)
 //        return try {
-//            apiService.sendOtp(email)
+//            userApiService.sendOtp(email)
 //            Result.success(Unit)
 //        } catch (e: Exception) {
 //            Result.failure(e)

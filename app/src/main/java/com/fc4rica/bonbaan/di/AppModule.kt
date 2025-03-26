@@ -22,7 +22,7 @@ val appModule = module {
 
 fun initKoin() {
     startKoin{
-        modules(appModule)
+        modules(appModule, networkModule)
     }
 }
 
