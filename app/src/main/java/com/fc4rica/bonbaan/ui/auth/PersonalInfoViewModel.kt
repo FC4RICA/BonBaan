@@ -30,6 +30,16 @@ class PersonalInfoViewModel(
 
     val registerRequest = registerRepository.registerRequest
 
+    init {
+        if (registerRequest.value.firstname.isNotEmpty() && registerRequest.value.lastname.isNotEmpty()) {
+            _state.update {
+                it.copy(
+                    name = "${registerRequest.value.firstname} ${registerRequest.value.lastname}"
+                )
+            }
+        }
+    }
+
     fun updateName(name: String) {
         _state.update { it.copy(name = name) }
     }

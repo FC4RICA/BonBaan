@@ -12,19 +12,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.di.previewModule
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
-import com.fc4rica.bonbaan.ui.navigation.Screen
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplication
 
 @Composable
 fun PasswordSetupScreen(
-    navController: NavHostController,
+    navigateToEmailVerification: () -> Unit,
     viewModel: PasswordSetupViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -90,7 +87,7 @@ fun PasswordSetupScreen(
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ยืนยัน",
-                onClick = { if (viewModel.submitPassword()) navController.navigate(Screen.EmailVerification.route) },
+                onClick = { if (viewModel.submitPassword()) navigateToEmailVerification() },
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -103,7 +100,8 @@ fun PreviewPasswordSetupScreen() {
     KoinApplication(application = {
         modules(previewModule)
     }) {
-        val navController = rememberNavController()
-        PasswordSetupScreen(navController)
+        PasswordSetupScreen(
+            navigateToEmailVerification = {}
+        )
     }
 }

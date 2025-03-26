@@ -12,8 +12,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.di.previewModule
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
@@ -24,7 +22,7 @@ import org.koin.compose.KoinApplication
 
 @Composable
 fun EmailVerificationScreen(
-    navController: NavHostController,
+    navigateToOnbarding: () -> Unit,
     viewModel: EmailVerificationViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -86,7 +84,8 @@ fun PreviewEmailVerificationScreen() {
     KoinApplication(application = {
         modules(previewModule)
     }) {
-        val navController = rememberNavController()
-        EmailVerificationScreen(navController)
+        EmailVerificationScreen(
+            navigateToOnbarding = {}
+        )
     }
 }
