@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.di
 
+import android.util.Log
 import com.fc4rica.bonbaan.BuildConfig
 import com.fc4rica.bonbaan.data.remote.UserApiService
 import okhttp3.OkHttpClient
@@ -10,6 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 fun provideHttpClient(): OkHttpClient {
+    Log.d("provideHttpClient", "provideHttpClient: Init")
     return OkHttpClient
         .Builder()
         .readTimeout(60, TimeUnit.SECONDS)
@@ -20,8 +22,10 @@ fun provideHttpClient(): OkHttpClient {
 fun provideRetrofit(
     okHttpClient: OkHttpClient
 ): Retrofit {
+    val baseUrl = BuildConfig.BASE_URL
+    Log.d("provideRetrofit", "provideRetrofit: $baseUrl")
     return Retrofit.Builder()
-        .baseUrl(BuildConfig.BASE_URL)
+        .baseUrl(baseUrl)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
@@ -33,6 +37,5 @@ fun provideUserService(retrofit: Retrofit): UserApiService =
 val networkModule = module {
     singleOf(::provideHttpClient)
     singleOf(::provideRetrofit)
-
     singleOf(::provideUserService)
 }

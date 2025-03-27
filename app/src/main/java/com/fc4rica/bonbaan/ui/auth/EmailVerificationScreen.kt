@@ -22,7 +22,7 @@ import org.koin.compose.KoinApplication
 
 @Composable
 fun EmailVerificationScreen(
-    navigateToOnbarding: () -> Unit,
+    navigateToLogin: () -> Unit,
     viewModel: EmailVerificationViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -31,6 +31,12 @@ fun EmailVerificationScreen(
 
     LaunchedEffect(Unit) {
         viewModel.onEnterEmailVerificationScreen()
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.navigateToLogin.collect {
+            navigateToLogin()
+        }
     }
 
     Column(
@@ -60,6 +66,14 @@ fun EmailVerificationScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
             OtpInputField(value = registerRequest.code, onValueChange = { viewModel.updateOtp(it) }, length = 6)
+            if (state.isCodeValid == false) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "รหัสไม่ถูกต้องกรุณาลองใหม่อีกครั้ง",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
@@ -85,7 +99,7 @@ fun PreviewEmailVerificationScreen() {
         modules(previewModule)
     }) {
         EmailVerificationScreen(
-            navigateToOnbarding = {}
+            navigateToLogin = {}
         )
     }
 }

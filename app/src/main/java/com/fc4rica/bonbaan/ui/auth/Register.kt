@@ -26,7 +26,7 @@ fun NavGraphBuilder.registerGraph(navController: NavHostController) {
             }
         ) {
             InputEmailScreen(
-                navigateToLogin = { navController.navigate(Screen.PersonalInfo.route) },
+                navigateToLogin = { navController.navigate(Screen.Login.route) },
                 navigateToPersonalInfo = { navController.navigate(Screen.PersonalInfo.route) }
             )
         }
