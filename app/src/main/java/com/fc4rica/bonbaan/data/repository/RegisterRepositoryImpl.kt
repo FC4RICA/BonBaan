@@ -1,7 +1,8 @@
 package com.fc4rica.bonbaan.data.repository
 
+import android.util.Log
 import com.fc4rica.bonbaan.data.remote.UserApiService
-import com.fc4rica.bonbaan.domain.model.User
+import com.fc4rica.bonbaan.domain.model.request.OtpRequest
 import com.fc4rica.bonbaan.domain.model.request.RegisterRequest
 import com.fc4rica.bonbaan.domain.repository.RegisterRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,33 +20,40 @@ class RegisterRepositoryImpl(
         _registerRequest.update { it.update() }
     }
 
-    override suspend fun register(): Result<User> {
-        return Result.success(
-            User(
-                id = "",
-                email = "",
-                firstname = "",
-                lastname = "",
-                username = "",
-                phoneNumber = "",
-                token = ""
-            )
-        )
-//        return try {
-//            val response = userApiService.register(request)
-//            Result.success(response)
-//        } catch (e: Exception) {
-//            Result.failure(e)
-//        }
+    override suspend fun register(): Result<Unit> {
+        Log.d("RegisterRepositoryImpl", "register: ${registerRequest.value}")
+        return try {
+            val request = registerRequest.value
+            val response = userApiService.register(request)
+            Log.d("RegisterRepositoryImpl", "registerResponse: $response")
+
+            if (response.error != null) {
+
+                return Result.failure(Exception(response.error))
+            }
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.d("RegisterRepositoryImpl", "registerException: $e")
+            Result.failure(e)
+        }
     }
 
     override suspend fun sendOtp(): Result<Unit> {
-        return Result.success(Unit)
-//        return try {
-//            userApiService.sendOtp(email)
-//            Result.success(Unit)
-//        } catch (e: Exception) {
-//            Result.failure(e)
-//        }
+        Log.d("RegisterRepositoryImpl", "sendOtp: ${registerRequest.value.email}")
+        return try {
+            val request = OtpRequest(registerRequest.value.email)
+            val response = userApiService.sendOtp(request)
+            Log.d("RegisterRepositoryImpl", "sendOtpResponse: $response")
+
+            if (response.error != null) {
+                return Result.failure(Exception(response.error))
+            }
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.d("RegisterRepositoryImpl", "sendOtpException: $e")
+            Result.failure(e)
+        }
     }
 }
