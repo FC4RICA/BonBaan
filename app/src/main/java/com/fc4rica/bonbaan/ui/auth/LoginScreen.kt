@@ -44,7 +44,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onRegisterClick: () -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         BonBaanTextField(
-            label = "อีเมล",
+            label = "รหัสผ่าน",
             value = password,
             onValueChange = { password = it },
 
@@ -52,7 +52,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onRegisterClick: () -> Unit) {
 
         Spacer(modifier = Modifier.height(24.dp))
         BonBaanButton(
-            text = "Login",
+            text = "เข้าสู่ระบบ",
             onClick = { },
             modifier = Modifier.fillMaxWidth(),
             variant = ButtonVariant.TEXT
