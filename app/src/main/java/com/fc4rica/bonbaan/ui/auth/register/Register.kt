@@ -1,4 +1,4 @@
-package com.fc4rica.bonbaan.ui.auth
+package com.fc4rica.bonbaan.ui.auth.register
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween

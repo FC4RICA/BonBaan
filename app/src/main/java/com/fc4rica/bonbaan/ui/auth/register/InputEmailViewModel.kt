@@ -1,4 +1,4 @@
-package com.fc4rica.bonbaan.ui.auth
+package com.fc4rica.bonbaan.ui.auth.register
 
 import androidx.lifecycle.ViewModel
 import com.fc4rica.bonbaan.domain.repository.RegisterRepository

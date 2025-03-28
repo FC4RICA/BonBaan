@@ -1,4 +1,4 @@
-package com.fc4rica.bonbaan.ui.auth
+package com.fc4rica.bonbaan.ui.auth.register
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
@@ -20,9 +20,9 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplication
 
 @Composable
-fun PasswordSetupScreen(
-    navigateToEmailVerification: () -> Unit,
-    viewModel: PasswordSetupViewModel = koinViewModel()
+fun PersonalInfoScreen(
+    navigateToSetupPassword: () -> Unit,
+    viewModel: PersonalInfoViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val registerRequest by viewModel.registerRequest.collectAsState()
@@ -45,23 +45,21 @@ fun PasswordSetupScreen(
                     .width(216.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "สร้างรหัสผ่าน", style = MaterialTheme.typography.headlineSmall)
+            Text(text = "ข้อมูลส่วนตัว", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "สร้างรหัสผ่านที่แข็งแรงเพื่อความปลอดภัยของบัญชีคุณ",
+                text = "ใส่ชื่อ และเบอร์โทรศัพท์ของคุณ",
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(16.dp))
             BonBaanTextField(
-                label = "รหัสผ่าน",
-                value = registerRequest.password,
-                onValueChange = { viewModel.updatePassword(it) },
-                isPassword = true
-            )
-            if (!state.passwordError.isNullOrEmpty()) {
+                label = "ชื่อจริง นามสกุล",
+                value = state.name,
+                onValueChange = { viewModel.updateName(it) })
+            if (!state.nameError.isNullOrEmpty()) {
                 Text(
-                    text = state.passwordError ?: "",
+                    text = state.nameError ?: "",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Right,
@@ -70,14 +68,26 @@ fun PasswordSetupScreen(
             }
             Spacer(modifier = Modifier.height(8.dp))
             BonBaanTextField(
-                label = "ยืนยันรหัสผ่าน",
-                value = state.confirmPassword,
-                onValueChange = { viewModel.updateConfirmPassword(it) },
-                isPassword = true
-            )
-            if (!state.confirmPasswordError.isNullOrEmpty()) {
+                label = "เบอร์โทรศัพท์",
+                value = registerRequest.phone,
+                onValueChange = { viewModel.updatePhone(it) })
+            if (!state.phoneError.isNullOrEmpty()) {
                 Text(
-                    text = state.confirmPasswordError ?: "",
+                    text = state.phoneError ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Right,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            BonBaanTextField(
+                label = "ชื่อบัญชี",
+                value = registerRequest.username,
+                onValueChange = { viewModel.updateUsername(it) })
+            if (!state.usernameError.isNullOrEmpty()) {
+                Text(
+                    text = state.usernameError ?: "",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Right,
@@ -86,8 +96,8 @@ fun PasswordSetupScreen(
             }
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
-                text = "ยืนยัน",
-                onClick = { if (viewModel.submitPassword()) navigateToEmailVerification() },
+                text = "ถัดไป",
+                onClick = { if (viewModel.submitPersonalInfo()) navigateToSetupPassword() },
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -96,12 +106,12 @@ fun PasswordSetupScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewPasswordSetupScreen() {
+fun PreviewPersonalInfoScreen() {
     KoinApplication(application = {
         modules(previewModule)
     }) {
-        PasswordSetupScreen(
-            navigateToEmailVerification = {}
+        PersonalInfoScreen(
+            navigateToSetupPassword = {}
         )
     }
 }
