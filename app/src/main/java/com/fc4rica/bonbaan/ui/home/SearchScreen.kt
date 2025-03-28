@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,7 +46,7 @@ fun SearchScreen(){
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFEBEBEB))
+            .background(MaterialTheme.colorScheme.background)
             ,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
@@ -62,7 +63,9 @@ fun SearchBar(searchValue: String, onValueChange: (String) -> Unit){
     modifier = Modifier
         .fillMaxWidth()
         .height(100.dp)
-        .background(Color(0xFF5E17EB)),
+        .background(
+            MaterialTheme.colorScheme.primary
+        ),
     contentAlignment = Alignment.Center
 ) {
         Row( modifier = Modifier.padding(horizontal = 16.dp),
@@ -101,10 +104,10 @@ fun SearchHistory(){
     Column(modifier = Modifier
         .padding(top = 12.dp)
         .fillMaxWidth()
-        .background(color = Color.White)) {
+        .background(color = MaterialTheme.colorScheme.surface)) {
         Text(text = "ประวัติการค้นหา",
             modifier = Modifier.padding(16.dp),
-            fontSize = 17.sp,color = Color(0xFF5E17EB),
+            style = MaterialTheme.typography.titleMedium,color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold)
         HistoryItem("วัดฟ้าประทาน")
         HistoryItem("วัดดอยคำ ยำอาฟเตอร์ยู")
@@ -119,7 +122,7 @@ fun HistoryItem(Name: String){
         Row(modifier = Modifier
             .fillMaxWidth()
             , horizontalArrangement = Arrangement.SpaceBetween){
-            Text(text = "$Name")
+            Text(text = "$Name",style = MaterialTheme.typography.bodyMedium)
             Icon(
                 imageVector = Icons.Filled.Close,
                 contentDescription = "Close",
@@ -138,8 +141,11 @@ fun Recommend(){
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(top = 12.dp, bottom = 12.dp)
-        .background(color = Color.White)) {
-        Text(text = "แนะนำ", modifier = Modifier.padding(16.dp), fontSize = 17.sp,color = Color(0xFF5E17EB),fontWeight = FontWeight.Bold)
+        .background(MaterialTheme.colorScheme.surface)) {
+        Text(text = "แนะนำ", modifier = Modifier.padding(16.dp),
+            style = MaterialTheme.typography.titleMedium
+            ,color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Bold)
         RecommendItem("วัดฟ้าประทาน")
         RecommendItem("วัดดอยคำ ยำอาฟเตอร์ยู")
         RecommendItem("วัดดูยูมีน ไอดอนโน บัดไอเลิฟยู")
@@ -152,7 +158,7 @@ fun RecommendItem(Name: String){
         .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
         .fillMaxWidth()
         .clip(RoundedCornerShape(7.dp))
-        .background(Color(0xFFEBEBEB))
+        .background(MaterialTheme.colorScheme.surfaceVariant)
 
     ){
         Row(
@@ -170,7 +176,7 @@ fun RecommendItem(Name: String){
 
             )
             Column (){
-                Text(text = "$Name", fontSize = 17.sp,fontWeight = FontWeight.Bold)
+                Text(text = "$Name",style = MaterialTheme.typography.titleSmall,fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
                 Row {
                     Icon(
@@ -179,19 +185,19 @@ fun RecommendItem(Name: String){
                         modifier = Modifier.size(14.dp),
                     )
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text(text = "Location") }
+                    Text(text = "Location",style = MaterialTheme.typography.bodySmall) }
 
                 Spacer(modifier = Modifier.height(8.dp))
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFF5E17EB))
+                        .background(MaterialTheme.colorScheme.primary)
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
                         text = "หมวดหมู่",
-                        color = Color.White,
-                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold
                     )
                 }
