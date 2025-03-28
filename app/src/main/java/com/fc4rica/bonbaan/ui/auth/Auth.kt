@@ -4,6 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.fc4rica.bonbaan.ui.auth.register.registerGraph
 import com.fc4rica.bonbaan.ui.navigation.Screen
 
 fun NavGraphBuilder.authenticationGraph(navController: NavHostController) {

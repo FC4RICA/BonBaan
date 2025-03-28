@@ -10,10 +10,13 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-fun provideHttpClient(): OkHttpClient {
+fun provideHttpClient(
+    authInterceptor: AuthInterceptor
+): OkHttpClient {
     Log.d("provideHttpClient", "provideHttpClient: Init")
     return OkHttpClient
         .Builder()
+        .addInterceptor(authInterceptor)
         .readTimeout(60, TimeUnit.SECONDS)
         .connectTimeout(60, TimeUnit.SECONDS)
         .build()
@@ -35,6 +38,8 @@ fun provideUserService(retrofit: Retrofit): UserApiService =
     retrofit.create(UserApiService::class.java)
 
 val networkModule = module {
+    singleOf(::TokenProvider)
+    singleOf(::AuthInterceptor)
     singleOf(::provideHttpClient)
     singleOf(::provideRetrofit)
     singleOf(::provideUserService)
