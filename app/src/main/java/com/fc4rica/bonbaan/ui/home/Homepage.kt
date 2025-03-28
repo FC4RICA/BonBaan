@@ -96,7 +96,7 @@ fun SearchBar(searchValue: String, onValueChange: (String) -> Unit) {
 fun Category(){
     Column (modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface)){
         Text(text = "หมวดหมู่", modifier = Modifier.padding(8.dp),
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary)
         Row (modifier = Modifier.horizontalScroll(rememberScrollState()).padding(8.dp)){
@@ -114,9 +114,9 @@ fun Recommended(){
     val items = listOf(
         "Sevice1", "Sevice2", "Sevice3", "Sevice4"
     )
-    Column (modifier = Modifier.fillMaxWidth().background(color = Color.White)){
+    Column (modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface)){
         Text(text = "แนะนำ",modifier = Modifier.padding(8.dp),
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary)
         LazyVerticalGrid(
@@ -154,7 +154,7 @@ fun RecommendationCard(title: String) {
 
     ) {
         Column(modifier = Modifier
-            .background(MaterialTheme.colorScheme.surface)) {
+            .background(MaterialTheme.colorScheme.surfaceVariant)) {
 
             Box(modifier = Modifier.fillMaxWidth()) {
                 Image(
@@ -202,7 +202,7 @@ fun RecommendationCard(title: String) {
                     Text(
                         text = " LocationName",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface //ไม่แน่ใจต้องใช้อันไหน
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
