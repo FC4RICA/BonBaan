@@ -13,7 +13,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fc4rica.bonbaan.R
-import com.fc4rica.bonbaan.di.previewModule
+import com.fc4rica.bonbaan.di.appModule
+import com.fc4rica.bonbaan.di.networkModule
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
 import com.fc4rica.bonbaan.ui.components.OtpInputField
@@ -96,7 +97,7 @@ fun EmailVerificationScreen(
 @Composable
 fun PreviewEmailVerificationScreen() {
     KoinApplication(application = {
-        modules(previewModule)
+        modules(appModule, networkModule)
     }) {
         EmailVerificationScreen(
             navigateToLogin = {}

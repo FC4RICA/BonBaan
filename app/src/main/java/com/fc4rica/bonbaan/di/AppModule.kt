@@ -31,14 +31,3 @@ fun initKoin() {
         modules(networkModule, appModule)
     }
 }
-
-val previewModule = module {
-    singleOf(::RegisterRepositoryImpl) bind RegisterRepository::class
-    singleOf(::AuthRepositoryImpl) bind AuthRepository::class
-
-    viewModelOf(::LoginViewModel)
-    viewModelOf(::InputEmailViewModel)
-    viewModelOf(::PersonalInfoViewModel)
-    viewModelOf(::PasswordSetupViewModel)
-    viewModelOf(::EmailVerificationViewModel)
-}

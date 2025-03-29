@@ -1,7 +1,12 @@
 package com.fc4rica.bonbaan.di
 
+import android.content.Context
 import android.util.Log
+import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
 import com.fc4rica.bonbaan.BuildConfig
+import com.fc4rica.bonbaan.data.local.UserPreferences
+import com.fc4rica.bonbaan.data.local.UserPreferencesSerializer
 import com.fc4rica.bonbaan.data.remote.UserApiService
 import okhttp3.OkHttpClient
 import org.koin.core.module.dsl.singleOf
@@ -34,11 +39,20 @@ fun provideRetrofit(
         .build()
 }
 
+val Context.dataStore: DataStore<UserPreferences> by dataStore(
+    fileName = "user_prefs.pb",
+    serializer = UserPreferencesSerializer
+)
+
+fun provideUserPreferences(context: Context): DataStore<UserPreferences> {
+    return context.dataStore
+}
+
 fun provideUserService(retrofit: Retrofit): UserApiService =
     retrofit.create(UserApiService::class.java)
 
 val networkModule = module {
-    singleOf(::TokenProvider)
+    singleOf(::provideUserPreferences)
     singleOf(::AuthInterceptor)
     singleOf(::provideHttpClient)
     singleOf(::provideRetrofit)

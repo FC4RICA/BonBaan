@@ -14,7 +14,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fc4rica.bonbaan.R
-import com.fc4rica.bonbaan.di.previewModule
+import com.fc4rica.bonbaan.di.appModule
+import com.fc4rica.bonbaan.di.networkModule
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
@@ -106,7 +107,7 @@ fun InputEmailScreen(
 @Composable
 fun PreviewInputEmailScreen() {
     KoinApplication(application = {
-        modules(previewModule)
+        modules(appModule, networkModule)
     }) {
         InputEmailScreen(
             navigateToLogin = {},

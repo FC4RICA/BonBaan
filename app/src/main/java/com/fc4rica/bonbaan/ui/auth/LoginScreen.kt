@@ -61,8 +61,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onRegisterClick: () -> Unit) {
 
     }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewScreen() {
-    LoginScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewScreen() {
+//    LoginScreen()
+//}
