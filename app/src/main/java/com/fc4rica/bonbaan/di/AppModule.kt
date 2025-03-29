@@ -9,6 +9,7 @@ import com.fc4rica.bonbaan.ui.auth.register.EmailVerificationViewModel
 import com.fc4rica.bonbaan.ui.auth.register.InputEmailViewModel
 import com.fc4rica.bonbaan.ui.auth.register.PasswordSetupViewModel
 import com.fc4rica.bonbaan.ui.auth.register.PersonalInfoViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
@@ -24,10 +25,4 @@ val appModule = module {
     viewModelOf(::PersonalInfoViewModel)
     viewModelOf(::PasswordSetupViewModel)
     viewModelOf(::EmailVerificationViewModel)
-}
-
-fun initKoin() {
-    startKoin{
-        modules(networkModule, appModule)
-    }
 }

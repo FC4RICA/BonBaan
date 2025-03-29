@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,7 +8,12 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
-
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) {
+        load(FileInputStream(file))
+    }
+}
 
 android {
     namespace = "com.fc4rica.bonbaan"
@@ -32,10 +40,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "BASE_URL", "\"${project.properties["BASE_URL"]}\"")
+            buildConfigField("String", "BASE_URL", "\"${localProperties.getProperty("BASE_URL")}\"")
         }
         debug {
-            buildConfigField("String", "BASE_URL", "\"${project.properties["BASE_URL"]}\"")
+            buildConfigField("String", "BASE_URL", "\"${localProperties.getProperty("BASE_URL")}\"")
         }
     }
 
