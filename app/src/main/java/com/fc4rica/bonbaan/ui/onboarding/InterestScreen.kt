@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -20,15 +19,15 @@ import com.fc4rica.bonbaan.ui.theme.BonBaanTheme
 fun InterestScreen(navController: NavController) {
     var selectedInterests by remember { mutableStateOf(setOf<String>()) }
 
-    val interests = listOf(
-        "การเรียน" to R.drawable.ic_learning,
-        "การงาน" to R.drawable.ic_work,
-        "ความรัก" to R.drawable.ic_love,
-        "ครอบครัว" to R.drawable.ic_family,
-        "สุขภาพ" to R.drawable.ic_health,
-        "โชคลาภ" to R.drawable.ic_luck,
-        "การเดินทาง" to R.drawable.ic_travel
-    )
+//    val interests = listOf(
+//        "การเรียน" to R.drawable.ic_learning,
+//        "การงาน" to R.drawable.ic_work,
+//        "ความรัก" to R.drawable.ic_love,
+//        "ครอบครัว" to R.drawable.ic_family,
+//        "สุขภาพ" to R.drawable.ic_health,
+//        "โชคลาภ" to R.drawable.ic_luck,
+//        "การเดินทาง" to R.drawable.ic_travel
+//    )
 
     Column(
         modifier = Modifier
@@ -40,13 +39,13 @@ fun InterestScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        InterestSelection(interests, selectedInterests) { interest ->
-            selectedInterests = if (selectedInterests.contains(interest)) {
-                selectedInterests - interest
-            } else {
-                selectedInterests + interest
-            }
-        }
+//        InterestSelection(interests, selectedInterests) { interest ->
+//            selectedInterests = if (selectedInterests.contains(interest)) {
+//                selectedInterests - interest
+//            } else {
+//                selectedInterests + interest
+//            }
+//        }
 
         Spacer(modifier = Modifier.weight(1f))
 

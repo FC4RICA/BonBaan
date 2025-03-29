@@ -1,4 +1,4 @@
-package com.fc4rica.bonbaan.ui.auth
+package com.fc4rica.bonbaan.ui.auth.register
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
@@ -26,7 +26,7 @@ fun NavGraphBuilder.registerGraph(navController: NavHostController) {
             }
         ) {
             InputEmailScreen(
-                navigateToLogin = { navController.navigate(Screen.PersonalInfo.route) },
+                navigateToLogin = { navController.navigate(Screen.Login.route) },
                 navigateToPersonalInfo = { navController.navigate(Screen.PersonalInfo.route) }
             )
         }

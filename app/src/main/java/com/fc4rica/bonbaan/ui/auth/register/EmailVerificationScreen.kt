@@ -1,4 +1,4 @@
-package com.fc4rica.bonbaan.ui.auth
+package com.fc4rica.bonbaan.ui.auth.register
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
@@ -13,7 +13,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fc4rica.bonbaan.R
-import com.fc4rica.bonbaan.di.previewModule
+import com.fc4rica.bonbaan.di.appModule
+import com.fc4rica.bonbaan.di.networkModule
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
 import com.fc4rica.bonbaan.ui.components.OtpInputField
@@ -22,7 +23,7 @@ import org.koin.compose.KoinApplication
 
 @Composable
 fun EmailVerificationScreen(
-    navigateToOnbarding: () -> Unit,
+    navigateToLogin: () -> Unit,
     viewModel: EmailVerificationViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -31,6 +32,12 @@ fun EmailVerificationScreen(
 
     LaunchedEffect(Unit) {
         viewModel.onEnterEmailVerificationScreen()
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.navigateToLogin.collect {
+            navigateToLogin()
+        }
     }
 
     Column(
@@ -60,6 +67,14 @@ fun EmailVerificationScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
             OtpInputField(value = registerRequest.code, onValueChange = { viewModel.updateOtp(it) }, length = 6)
+            if (state.isCodeValid == false) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "รหัสไม่ถูกต้องกรุณาลองใหม่อีกครั้ง",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
             Spacer(modifier = Modifier.height(24.dp))
             BonBaanButton(
                 text = "ถัดไป",
@@ -82,10 +97,10 @@ fun EmailVerificationScreen(
 @Composable
 fun PreviewEmailVerificationScreen() {
     KoinApplication(application = {
-        modules(previewModule)
+        modules(appModule, networkModule)
     }) {
         EmailVerificationScreen(
-            navigateToOnbarding = {}
+            navigateToLogin = {}
         )
     }
 }
