@@ -99,7 +99,6 @@ fun InputEmailScreen(
                 variant = ButtonVariant.TEXT
             )
         }
-
     }
 }
 

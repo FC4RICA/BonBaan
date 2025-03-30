@@ -36,13 +36,18 @@ class LoginViewModel(
         }
 
         viewModelScope.launch {
-            val result = authRepository.login(LoginRequest(state.value.emailOrUsername, state.value.password))
+            val result = authRepository.login(
+                LoginRequest(
+                    state.value.emailOrUsername,
+                    state.value.password
+                )
+            )
             result.fold(
-                onSuccess = { authResponse ->
+                onSuccess = {
                     _state.update { it.copy(errorMessage = null) }
                 },
                 onFailure = { error ->
-                    _state.update { it.copy(errorMessage = error.message) }
+                    _state.update { it.copy(errorMessage = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง" + error.message) }
                 }
             )
         }
