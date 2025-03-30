@@ -1,6 +1,7 @@
 package com.fc4rica.bonbaan.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -18,9 +19,9 @@ class MainActivity : ComponentActivity() {
         // Keep splash if auth state is not yet determined
         installSplashScreen().setKeepOnScreenCondition {
             val mainViewModel: MainViewModel by inject()
+            Log.d("MainActivity", "onCreate: ${mainViewModel.isAuthenticated.value}")
             mainViewModel.isAuthenticated.value == null
         }
-        // TODO("Fix Long Loading Time")
         // Dependency injection with koin
         startKoin{
             androidContext(this@MainActivity)
