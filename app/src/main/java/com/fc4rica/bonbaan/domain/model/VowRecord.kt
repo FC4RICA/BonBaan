@@ -10,5 +10,6 @@ data class VowRecord(
     val user: User?,
     val service: Service?,
     val vowOrder: Order?,
-    val fulfillOrder: Order?
+    val fulfillOrder: Order?,
+    val createdAt: LocalDateTime
 )
