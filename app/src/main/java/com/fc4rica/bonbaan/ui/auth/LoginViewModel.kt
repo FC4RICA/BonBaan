@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fc4rica.bonbaan.domain.model.request.LoginRequest
 import com.fc4rica.bonbaan.domain.repository.AuthRepository
+import com.fc4rica.bonbaan.domain.repository.InterestRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -13,10 +14,13 @@ data class LoginUiState(
     val emailOrUsername: String = "",
     val password: String = "",
     val errorMessage: String? = null,
+    val isLoggedIn: Boolean = false,
+    val isFirstTime: Boolean? = null
 )
 
 class LoginViewModel(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val interestRepository: InterestRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginUiState())
     val state = _state.asStateFlow()
@@ -44,6 +48,17 @@ class LoginViewModel(
             )
             result.fold(
                 onSuccess = {
+                    val interestResult = interestRepository.getInterests()
+
+                    interestResult.fold(
+                        onSuccess = { interests ->
+                            _state.update { it.copy(isLoggedIn = true, isFirstTime = interests.isEmpty()) }
+                        },
+                        onFailure = { error ->
+                            _state.update { it.copy(errorMessage = error.message) }
+                        }
+                    )
+
                     _state.update { it.copy(errorMessage = null) }
                 },
                 onFailure = { error ->

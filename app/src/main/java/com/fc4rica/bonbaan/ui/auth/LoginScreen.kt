@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -36,12 +37,20 @@ import org.koin.compose.KoinApplication
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess: () -> Unit,
+    onLoginSuccess: (Boolean) -> Unit,
     navigateToRegister: () -> Unit,
     viewModel: LoginViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val isImeVisable = rememberImeState()
+
+    LaunchedEffect(state.isLoggedIn) {
+        if (state.isLoggedIn) {
+            state.isFirstTime?.let { isFirstTime ->
+                onLoginSuccess(isFirstTime)
+            }
+        }
+    }
 
     Column(
         modifier = Modifier

@@ -8,6 +8,7 @@ import com.fc4rica.bonbaan.ui.MockScreen
 import com.fc4rica.bonbaan.ui.navigation.Screen
 
 fun NavGraphBuilder.onboardingGraph(navController: NavHostController) {
+
     navigation(startDestination = Screen.Welcome.route, route = Screen.Onboarding.route) {
         composable(Screen.Welcome.route) {
             MockScreen("WELCOME")

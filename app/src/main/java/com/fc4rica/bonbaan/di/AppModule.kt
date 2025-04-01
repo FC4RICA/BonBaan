@@ -2,7 +2,9 @@ package com.fc4rica.bonbaan.di
 
 import com.fc4rica.bonbaan.data.repository.AuthRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.RegisterRepositoryImpl
+import com.fc4rica.bonbaan.data.repository.InterestRepositoryImpl
 import com.fc4rica.bonbaan.domain.repository.AuthRepository
+import com.fc4rica.bonbaan.domain.repository.InterestRepository
 import com.fc4rica.bonbaan.domain.repository.RegisterRepository
 import com.fc4rica.bonbaan.ui.MainViewModel
 import com.fc4rica.bonbaan.ui.auth.LoginViewModel
@@ -18,6 +20,8 @@ import org.koin.dsl.module
 val appModule = module {
     singleOf(::RegisterRepositoryImpl) bind RegisterRepository::class
     singleOf(::AuthRepositoryImpl) bind AuthRepository::class
+    singleOf(::InterestRepositoryImpl) bind InterestRepository::class
+
     viewModelOf(::MainViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::InputEmailViewModel)
