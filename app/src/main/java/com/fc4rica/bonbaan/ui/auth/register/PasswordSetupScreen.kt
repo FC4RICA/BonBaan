@@ -31,6 +31,7 @@ fun PasswordSetupScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.statusBars)
             .padding(30.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.data.repository
 
+import android.util.Log
 import com.fc4rica.bonbaan.data.local.SecurePreferences
 import com.fc4rica.bonbaan.data.remote.UserApiService
 import com.fc4rica.bonbaan.data.remote.dto.toCategory
@@ -17,6 +18,7 @@ class InterestRepositoryImpl(
                 ?: return Result.failure(Exception("User ID not found"))
 
             val response = userApiService.getInterests(userId)
+            Log.d("InterestRepositoryImpl", "Response: $response")
 
             if (response.error != null) {
                 return Result.failure(Exception(response.error))
@@ -32,7 +34,7 @@ class InterestRepositoryImpl(
         return try {
             val userId = securePreferences.getUserData()?.id
             val response = userApiService.addInterest(userId!!, interests)
-
+            Log.d("InterestRepositoryImpl", "Response: $response")
             if (response.error != null) {
                 return Result.failure(Exception(response.error))
             }
@@ -42,4 +44,6 @@ class InterestRepositoryImpl(
             Result.failure(e)
         }
     }
+
+
 }
