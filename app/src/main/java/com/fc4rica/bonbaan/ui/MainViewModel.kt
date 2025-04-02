@@ -6,11 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.fc4rica.bonbaan.data.local.UserPreferences
 import com.fc4rica.bonbaan.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class MainViewModel(
@@ -18,24 +17,14 @@ class MainViewModel(
     private val userPreferences: DataStore<UserPreferences>
 ) : ViewModel() {
     private val _isAuthenticated = MutableStateFlow<Boolean?>(null)
-    val isAuthenticated: StateFlow<Boolean?> = _isAuthenticated.asStateFlow()
+    val isAuthenticated: StateFlow<Boolean?> = userPreferences.data
+        .map { it.token.isNullOrEmpty().not() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    init {
-        checkAuthStatus()
-    }
-
-    private fun checkAuthStatus() {
+    fun logout() {
         viewModelScope.launch {
-            userPreferences.data.map { it.token }
-                .onEach { token -> _isAuthenticated.value = !token.isNullOrEmpty() }
-                .launchIn(viewModelScope)
-        }
-
-        fun logout() {
-            viewModelScope.launch {
-                _isAuthenticated.value = false
-                authRepository.logout()
-            }
+            _isAuthenticated.value = false
+            authRepository.logout()
         }
     }
 }

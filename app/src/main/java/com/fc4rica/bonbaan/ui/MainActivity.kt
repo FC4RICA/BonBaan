@@ -15,17 +15,20 @@ import org.koin.core.context.startKoin
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        // Keep splash if auth state is not yet determined
-        installSplashScreen().setKeepOnScreenCondition {
-            val mainViewModel: MainViewModel by inject()
-            Log.d("MainActivity", "onCreate: ${mainViewModel.isAuthenticated.value}")
-            mainViewModel.isAuthenticated.value == null
-        }
         // Dependency injection with koin
-        startKoin{
+        startKoin {
             androidContext(this@MainActivity)
             modules(appModule, networkModule)
+        }
+
+        enableEdgeToEdge()
+
+        val mainViewModel: MainViewModel by inject() // Now safe to use
+
+        // Keep splash if auth state is not yet determined
+        installSplashScreen().setKeepOnScreenCondition {
+            Log.d("MainActivity", "onCreate: ${mainViewModel.isAuthenticated.value}")
+            mainViewModel.isAuthenticated.value == null
         }
         setContent {
             BonBaanApp()
