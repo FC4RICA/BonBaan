@@ -15,11 +15,11 @@ fun NavGraphBuilder.authenticationGraph(navController: NavHostController) {
         composable(
             Screen.Login.route,
             enterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                tween(500)
-            )
-        },
+                slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Left,
+                    tween(500)
+                )
+            },
             exitTransition = {
                 slideOutOfContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
@@ -39,9 +39,15 @@ fun NavGraphBuilder.authenticationGraph(navController: NavHostController) {
                 )
             }) {
             LoginScreen(
-                onLoginSuccess = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
+                onLoginSuccess = { isFirstTime ->
+                    if (isFirstTime) {
+                        navController.navigate(Screen.Onboarding.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
                     }
                 },
                 navigateToRegister = {
@@ -49,6 +55,7 @@ fun NavGraphBuilder.authenticationGraph(navController: NavHostController) {
                 }
             )
         }
+
         registerGraph(navController)
     }
 }

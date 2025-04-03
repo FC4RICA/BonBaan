@@ -1,110 +1,105 @@
 package com.fc4rica.bonbaan.ui.onboarding
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.fc4rica.bonbaan.R
+import com.fc4rica.bonbaan.domain.model.Category
 import com.fc4rica.bonbaan.ui.components.*
-import com.fc4rica.bonbaan.ui.theme.BonBaanTheme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun InterestScreen(navController: NavController) {
-    var selectedInterests by remember { mutableStateOf(setOf<String>()) }
+fun InterestScreen(
+    onSuccess: () -> Unit,
+    viewModel: InterestViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsState()
 
-//    val interests = listOf(
-//        "การเรียน" to R.drawable.ic_learning,
-//        "การงาน" to R.drawable.ic_work,
-//        "ความรัก" to R.drawable.ic_love,
-//        "ครอบครัว" to R.drawable.ic_family,
-//        "สุขภาพ" to R.drawable.ic_health,
-//        "โชคลาภ" to R.drawable.ic_luck,
-//        "การเดินทาง" to R.drawable.ic_travel
-//    )
+    LaunchedEffect(Unit) {
+        viewModel.getInterests()
+    }
+
+    LaunchedEffect(state.isSuccessful) {
+        if (state.isSuccessful) {
+            onSuccess()
+        }
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 24.dp, vertical = 32.dp),
+            .windowInsetsPadding(WindowInsets.statusBars)
+            .padding(30.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        OnboardingHeader(title = "เรื่องที่สนใจ", subtitle = "เลือกด้านที่คุณสนใจในการบนน")
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-//        InterestSelection(interests, selectedInterests) { interest ->
-//            selectedInterests = if (selectedInterests.contains(interest)) {
-//                selectedInterests - interest
-//            } else {
-//                selectedInterests + interest
-//            }
-//        }
-
-        Spacer(modifier = Modifier.weight(1f))
-
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxSize(0.3f)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.logo1),
+                    contentDescription = "App Logo",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 16.dp)
+                )
+            }
+            Text(
+                text = "เลือกหัวข้อที่คุณสนใจในการบน",
+                style = MaterialTheme.typography.headlineSmall
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "เราจะใช้ข้อมูลนี้ในการแนะนำสถานที่บนให้กับคุณ",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center
+            )
+        }
+        Spacer(modifier = Modifier.height(48.dp))
+        InterestSelection(state.categories, state.selectedInterests) { categoryId ->
+            viewModel.selectInterest(categoryId)
+        }
+        Spacer(modifier = Modifier.height(32.dp))
         BonBaanButton(
-            text = "ตกลง",
-            onClick = { navController.navigate("nextScreen") },
+            text = "ยืนยัน",
+            onClick = { viewModel.submitInterests() },
             variant = ButtonVariant.PRIMARY,
             modifier = Modifier.fillMaxWidth(),
-            isEnabled = selectedInterests.isNotEmpty() // Disable button if no interest is selected
+            isEnabled = state.selectedInterests.isNotEmpty()
         )
     }
 }
 
-@Composable
-fun OnboardingHeader(title: String, subtitle: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Icon(
-            painter = painterResource(id = R.drawable.logo1),
-            contentDescription = "Bonbaan Logo",
-            tint = Color.Unspecified,
-            modifier = Modifier.size(80.dp)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleSmall
-        )
-        Text(
-            text = subtitle,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-    }
-}
-
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun InterestSelection(
-    interests: List<Pair<String, Int>>,
-    selectedInterests: Set<String>,
+    categories: List<Category>,
+    selectedInterests: List<String>,
     onSelect: (String) -> Unit
 ) {
-    Row(
+    FlowRow(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
     ) {
-        interests.forEach { (label, iconRes) ->
-            FilterChip(label, iconRes, selectedInterests.contains(label)) {
-                onSelect(label)
+        categories.forEach { category ->
+            FilterChip(
+                category.name,
+                category.icon,
+                selectedInterests.contains(category.id)
+            ) {
+                onSelect(category.id)
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewInterestScreen() {
-    val navController = rememberNavController()
-    BonBaanTheme {
-        InterestScreen(navController)
     }
 }

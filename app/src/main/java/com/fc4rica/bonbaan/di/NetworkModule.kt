@@ -8,7 +8,12 @@ import com.fc4rica.bonbaan.BuildConfig
 import com.fc4rica.bonbaan.data.local.SecurePreferences
 import com.fc4rica.bonbaan.data.local.UserPreferences
 import com.fc4rica.bonbaan.data.local.UserPreferencesSerializer
+import com.fc4rica.bonbaan.data.remote.NotificationApiService
+import com.fc4rica.bonbaan.data.remote.OrderApiService
+import com.fc4rica.bonbaan.data.remote.ReviewApiService
+import com.fc4rica.bonbaan.data.remote.ServiceApiService
 import com.fc4rica.bonbaan.data.remote.UserApiService
+import com.fc4rica.bonbaan.data.remote.VowRecordApiService
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.singleOf
@@ -48,12 +53,29 @@ val Context.dataStore: DataStore<UserPreferences> by dataStore(
 
 fun provideUserService(retrofit: Retrofit): UserApiService =
     retrofit.create(UserApiService::class.java)
+fun provideServiceApiService(retrofit: Retrofit): ServiceApiService =
+    retrofit.create(ServiceApiService::class.java)
+fun provideOrderApiService(retrofit: Retrofit): OrderApiService =
+    retrofit.create(OrderApiService::class.java)
+fun provideReviewApiService(retrofit: Retrofit): ReviewApiService =
+    retrofit.create(ReviewApiService::class.java)
+fun provideNotificationApiService(retrofit: Retrofit): NotificationApiService =
+    retrofit.create(NotificationApiService::class.java)
+fun provideVowRecordApiService(retrofit: Retrofit): VowRecordApiService =
+    retrofit.create(VowRecordApiService::class.java)
 
 val networkModule = module {
     singleOf(::SecurePreferences)
     single<DataStore<UserPreferences>> { androidContext().dataStore }
+
     singleOf(::AuthInterceptor)
     singleOf(::provideHttpClient)
     singleOf(::provideRetrofit)
+
     singleOf(::provideUserService)
+    singleOf(::provideServiceApiService)
+    singleOf(::provideOrderApiService)
+    singleOf(::provideReviewApiService)
+    singleOf(::provideNotificationApiService)
+    singleOf(::provideVowRecordApiService)
 }
