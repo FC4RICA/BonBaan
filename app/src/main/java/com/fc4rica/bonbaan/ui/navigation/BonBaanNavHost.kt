@@ -9,8 +9,16 @@ import com.fc4rica.bonbaan.ui.home.HomeScreen
 import com.fc4rica.bonbaan.ui.onboarding.onboardingGraph
 
 @Composable
-fun BonBaanNavHost(navController: NavHostController, isAuthenticated: Boolean) {
-    val startDestination = if (isAuthenticated) Screen.Onboarding.route else Screen.Auth.route
+fun BonBaanNavHost(
+    navController: NavHostController,
+    isAuthenticated: Boolean,
+    hasSelectedInterests: Boolean
+) {
+    val startDestination = when {
+        !isAuthenticated -> Screen.Auth.route
+        !hasSelectedInterests -> Screen.Onboarding.route
+        else -> Screen.Home.route
+    }
 
     NavHost(navController = navController, startDestination = startDestination) {
         authenticationGraph(navController)

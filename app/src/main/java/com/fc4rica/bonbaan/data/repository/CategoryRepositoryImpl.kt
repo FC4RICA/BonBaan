@@ -14,7 +14,7 @@ class CategoryRepositoryImpl(
             val response = serviceApiService.getCategories()
             Log.d("CategoryRepositoryImpl", "Response: $response")
 
-            if (response.error != null) {
+            if (response.error != null || response.data == null) {
                 return Result.failure(Exception(response.error))
             }
 

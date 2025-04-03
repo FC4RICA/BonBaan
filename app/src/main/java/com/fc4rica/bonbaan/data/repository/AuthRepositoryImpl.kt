@@ -21,7 +21,7 @@ class AuthRepositoryImpl(
             val loginResponse = userApiService.login(request)
             Log.d("AuthRepositoryImpl", "login-response: $loginResponse")
 
-            if (loginResponse.data.token.isEmpty()) {
+            if (loginResponse.data == null || loginResponse.data.token.isEmpty()) {
                 return Result.failure(Exception("Invalid credentials"))
             }
             // save token to local storage
@@ -31,6 +31,9 @@ class AuthRepositoryImpl(
 
             // fetch user profile
             val profileResponse = userApiService.getProfile()
+            if (profileResponse.error != null || profileResponse.data == null) {
+                return Result.failure(Exception("Invalid or expired token"))
+            }
             Log.d("AuthRepositoryImpl", "profile-response: $profileResponse")
             val user = profileResponse.data.toUser()
             // save user to local storage
@@ -52,8 +55,12 @@ class AuthRepositoryImpl(
 
             // if not found in local storage, fetch from server
             val response = userApiService.getProfile()
-            val user = response.data.toUser()
 
+            if (response.error != null || response.data == null) {
+                return Result.failure(Exception("Invalid or expired token"))
+            }
+
+            val user = response.data.toUser()
             securePreferences.saveUserData(user)
             Result.success(user)
         } catch (e: Exception) {

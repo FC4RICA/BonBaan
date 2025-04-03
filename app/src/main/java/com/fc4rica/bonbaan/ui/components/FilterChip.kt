@@ -25,7 +25,6 @@ fun FilterChip(label: String, icon: ImageVector?, isSelected: Boolean, onClick: 
         modifier = Modifier
             .clip(RoundedCornerShape(50))
             .clickable { onClick() }
-            .padding(4.dp)
             .background(backgroundColor, shape = RoundedCornerShape(50))
             .border(1.dp, MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(50))
             .padding(horizontal = 16.dp, vertical = 6.dp),
