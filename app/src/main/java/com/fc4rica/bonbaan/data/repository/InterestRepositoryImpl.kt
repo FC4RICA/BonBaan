@@ -20,7 +20,7 @@ class InterestRepositoryImpl(
             val response = userApiService.getInterests(userId)
             Log.d("InterestRepositoryImpl", "Response: $response")
 
-            if (response.error != null) {
+            if (response.error != null || response.data == null) {
                 return Result.failure(Exception(response.error))
             }
 
@@ -47,6 +47,4 @@ class InterestRepositoryImpl(
             Result.failure(e)
         }
     }
-
-
 }

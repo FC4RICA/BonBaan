@@ -22,14 +22,16 @@ fun BonBaanApp(mainViewModel: MainViewModel = koinViewModel()) {
 
             val navController = rememberNavController()
             val isAuthenticated by mainViewModel.isAuthenticated.collectAsState()
+            val hasSelectedInterests by mainViewModel.hasSelectedInterests.collectAsState()
 
-            if (isAuthenticated != null) {
-                BonBaanNavHost(navController, isAuthenticated!!)
+            if (isAuthenticated == null || hasSelectedInterests == null) {
+                return@KoinContext
             }
+
+            BonBaanNavHost(navController, isAuthenticated!!, hasSelectedInterests!!)
         }
     }
 }
-
 
 
 @Composable

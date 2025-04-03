@@ -71,7 +71,7 @@ fun InterestScreen(
         InterestSelection(state.categories, state.selectedInterests) { categoryId ->
             viewModel.selectInterest(categoryId)
         }
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(48.dp))
         BonBaanButton(
             text = "ยืนยัน",
             onClick = { viewModel.submitInterests() },
@@ -91,6 +91,8 @@ fun InterestSelection(
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         categories.forEach { category ->
             FilterChip(
