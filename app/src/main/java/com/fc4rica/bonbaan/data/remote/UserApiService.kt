@@ -27,9 +27,9 @@ interface UserApiService {
     suspend fun sendOtp(@Body request: OtpRequest): ApiResponse<Unit>
 
     // Interest
-    @POST("users/{id}/interests")
+    @POST("users/{id}/interest")
     suspend fun addInterest(@Path("id") userId: String, @Body request: InterestRequest): ApiResponse<Unit>
 
-    @GET("users/{id}/interests")
+    @GET("users/{id}/interest")
     suspend fun getInterests(@Path("id") userId: String): ApiResponse<List<CategoryResponse>>
 }

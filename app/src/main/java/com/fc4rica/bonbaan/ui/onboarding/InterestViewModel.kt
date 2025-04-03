@@ -61,6 +61,7 @@ class InterestViewModel(
     fun submitInterests() {
         Log.d("InterestViewModel", "submitInterests called")
         viewModelScope.launch {
+            Log.d("InterestViewModel", "Selected Interests: ${InterestRequest(_state.value.selectedInterests)}")
             val result = interestRepository.addInterest(
                 InterestRequest(_state.value.selectedInterests)
             )
@@ -70,6 +71,7 @@ class InterestViewModel(
                     _state.update { it.copy(isSuccessful = true) }
                 },
                 onFailure = { error ->
+                    Log.d("InterestViewModel", "Error: $error")
                     _state.update { it.copy(errorMessage = error.message) }
                 }
             )

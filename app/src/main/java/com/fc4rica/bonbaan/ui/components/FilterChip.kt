@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,10 +23,11 @@ fun FilterChip(label: String, icon: ImageVector?, isSelected: Boolean, onClick: 
 
     Row(
         modifier = Modifier
-            .padding(4.dp)
-            .border(1.dp, MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(50))
-            .background(backgroundColor, shape = RoundedCornerShape(50))
+            .clip(RoundedCornerShape(50))
             .clickable { onClick() }
+            .padding(4.dp)
+            .background(backgroundColor, shape = RoundedCornerShape(50))
+            .border(1.dp, MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(50))
             .padding(horizontal = 16.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
