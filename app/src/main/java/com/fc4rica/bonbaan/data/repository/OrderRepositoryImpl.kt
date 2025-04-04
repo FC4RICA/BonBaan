@@ -5,6 +5,8 @@ import com.fc4rica.bonbaan.data.remote.OrderApiService
 import com.fc4rica.bonbaan.data.remote.dto.toOrder
 import com.fc4rica.bonbaan.domain.model.Order
 import com.fc4rica.bonbaan.domain.model.Status
+import com.fc4rica.bonbaan.domain.model.request.FulfillOrderRequest
+import com.fc4rica.bonbaan.domain.model.request.VowOrderRequest
 import com.fc4rica.bonbaan.domain.repository.OrderRepository
 
 class OrderRepositoryImpl(
@@ -12,7 +14,20 @@ class OrderRepositoryImpl(
     private val securePreferences: SecurePreferences
 ) : OrderRepository {
     override suspend fun getOrders(): Result<List<Order>> {
-        TODO("Not yet implemented")
+        return try {
+            val userId = securePreferences.getUserData()?.id
+                ?: return Result.failure(Exception("User ID not found"))
+
+            val response = orderApiService.getOrders(userId)
+            if (response.error != null || response.data == null) {
+                return Result.failure(Exception(response.error))
+            }
+
+            val orders = response.data.map { it.toOrder() }
+            Result.success(orders)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun getOrder(id: String): Result<Order> {
@@ -20,7 +35,11 @@ class OrderRepositoryImpl(
     }
 
 
-    override suspend fun createOrder(order: Order): Result<Order> {
+    override suspend fun createVowOrder(request: VowOrderRequest): Result<Order> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun createFulfillOrder(request: FulfillOrderRequest): Result<Order> {
         TODO("Not yet implemented")
     }
 
