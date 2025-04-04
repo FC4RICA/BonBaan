@@ -19,6 +19,7 @@ import com.fc4rica.bonbaan.ui.auth.register.InputEmailViewModel
 import com.fc4rica.bonbaan.ui.auth.register.PasswordSetupViewModel
 import com.fc4rica.bonbaan.ui.auth.register.PersonalInfoViewModel
 import com.fc4rica.bonbaan.ui.home.notification.NotificationViewModel
+import com.fc4rica.bonbaan.ui.home.profile.OrderStatusDetailViewModel
 import com.fc4rica.bonbaan.ui.home.profile.OrdersStatusViewModel
 import com.fc4rica.bonbaan.ui.home.profile.ProfileViewModel
 import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordDetailViewModel
@@ -49,4 +50,5 @@ val appModule = module {
     viewModelOf(::NotificationViewModel)
     viewModelOf(::ProfileViewModel)
     viewModelOf(::OrdersStatusViewModel)
+    viewModelOf(::OrderStatusDetailViewModel)
 }
