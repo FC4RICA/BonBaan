@@ -21,10 +21,6 @@ fun InterestScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.getInterests()
-    }
-
     LaunchedEffect(state.isSuccessful) {
         if (state.isSuccessful) {
             onSuccess()

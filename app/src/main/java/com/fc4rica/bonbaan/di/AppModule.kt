@@ -14,6 +14,8 @@ import com.fc4rica.bonbaan.ui.auth.register.EmailVerificationViewModel
 import com.fc4rica.bonbaan.ui.auth.register.InputEmailViewModel
 import com.fc4rica.bonbaan.ui.auth.register.PasswordSetupViewModel
 import com.fc4rica.bonbaan.ui.auth.register.PersonalInfoViewModel
+import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordDetailViewModel
+import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordViewModel
 import com.fc4rica.bonbaan.ui.onboarding.InterestViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
@@ -33,4 +35,6 @@ val appModule = module {
     viewModelOf(::PasswordSetupViewModel)
     viewModelOf(::EmailVerificationViewModel)
     viewModelOf(::InterestViewModel)
+    viewModelOf(::VowRecordViewModel)
+    viewModelOf(::VowRecordDetailViewModel)
 }
