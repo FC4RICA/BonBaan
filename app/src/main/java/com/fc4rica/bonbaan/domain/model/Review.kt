@@ -6,7 +6,7 @@ data class Review(
     val id: String,
     val user: User?,
     val service: Service?,
-    val rating: Int,
+    val rating: Double,
     val detail: String,
     val createdAt: LocalDateTime
 )

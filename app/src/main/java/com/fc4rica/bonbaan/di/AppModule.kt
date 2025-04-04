@@ -6,12 +6,14 @@ import com.fc4rica.bonbaan.data.repository.RegisterRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.InterestRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.NotificationRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.OrderRepositoryImpl
+import com.fc4rica.bonbaan.data.repository.ReviewRepositoryImpl
 import com.fc4rica.bonbaan.domain.repository.AuthRepository
 import com.fc4rica.bonbaan.domain.repository.CategoryRepository
 import com.fc4rica.bonbaan.domain.repository.InterestRepository
 import com.fc4rica.bonbaan.domain.repository.NotificationRepository
 import com.fc4rica.bonbaan.domain.repository.OrderRepository
 import com.fc4rica.bonbaan.domain.repository.RegisterRepository
+import com.fc4rica.bonbaan.domain.repository.ReviewRepository
 import com.fc4rica.bonbaan.ui.MainViewModel
 import com.fc4rica.bonbaan.ui.auth.LoginViewModel
 import com.fc4rica.bonbaan.ui.auth.register.EmailVerificationViewModel
@@ -38,6 +40,7 @@ val appModule = module {
     singleOf(::CategoryRepositoryImpl) bind CategoryRepository::class
     singleOf(::NotificationRepositoryImpl) bind NotificationRepository::class
     singleOf(::OrderRepositoryImpl) bind OrderRepository::class
+    singleOf(::ReviewRepositoryImpl) bind ReviewRepository::class
 
     viewModelOf(::MainViewModel)
     viewModelOf(::LoginViewModel)
