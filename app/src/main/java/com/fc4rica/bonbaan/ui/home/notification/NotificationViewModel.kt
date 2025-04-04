@@ -41,16 +41,19 @@ class NotificationViewModel(
     }
 
     fun markAsRead(id: String) {
+        _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             val result = notificationRepository.markAsRead(id)
             result.fold(
                 onSuccess = {
-                    _state.update { it.copy(notifications = it.notifications.map {
-                        if (it.id == id) it.copy(isRead = true) else it
-                    }, isLoading = false) }
+                    _state.update { current ->
+                        current.copy(notifications = current.notifications.map { notification ->
+                            if (notification.id == id) notification.copy(isRead = true) else notification
+                        }, isLoading = false)
+                    }
                 },
                 onFailure = { error ->
-                    _state.update { it.copy(errorMessage = error.message) }
+                    _state.update { it.copy(errorMessage = error.message, isLoading = false) }
                 }
             )
         }
