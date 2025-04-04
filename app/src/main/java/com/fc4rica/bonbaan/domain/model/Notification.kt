@@ -8,5 +8,5 @@ data class Notification(
     val body: String,
     val isRead: Boolean,
     val createdAt: LocalDateTime,
-    val order: Order?,
+    val orderId: String,
 )

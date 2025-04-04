@@ -4,9 +4,11 @@ import com.fc4rica.bonbaan.data.repository.AuthRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.CategoryRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.RegisterRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.InterestRepositoryImpl
+import com.fc4rica.bonbaan.data.repository.NotificationRepositoryImpl
 import com.fc4rica.bonbaan.domain.repository.AuthRepository
 import com.fc4rica.bonbaan.domain.repository.CategoryRepository
 import com.fc4rica.bonbaan.domain.repository.InterestRepository
+import com.fc4rica.bonbaan.domain.repository.NotificationRepository
 import com.fc4rica.bonbaan.domain.repository.RegisterRepository
 import com.fc4rica.bonbaan.ui.MainViewModel
 import com.fc4rica.bonbaan.ui.auth.LoginViewModel
@@ -27,6 +29,7 @@ val appModule = module {
     singleOf(::AuthRepositoryImpl) bind AuthRepository::class
     singleOf(::InterestRepositoryImpl) bind InterestRepository::class
     singleOf(::CategoryRepositoryImpl) bind CategoryRepository::class
+    singleOf(::NotificationRepositoryImpl) bind NotificationRepository::class
 
     viewModelOf(::MainViewModel)
     viewModelOf(::LoginViewModel)
