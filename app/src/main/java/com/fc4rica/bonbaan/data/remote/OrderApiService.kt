@@ -14,7 +14,7 @@ import retrofit2.http.Query
 
 interface OrderApiService {
     @GET("users/{id}/orders")
-    suspend fun getOrders(@Path("id") userId: String, @Query("status") statusID: String): ApiResponse<List<OrderResponse>>
+    suspend fun getOrders(@Path("id") userId: String, @Query("status") statusID: String? = null): ApiResponse<List<OrderResponse>>
 
     @GET("orders/{id}")
     suspend fun getOrder(@Path("id") orderId: String): ApiResponse<OrderResponse>
