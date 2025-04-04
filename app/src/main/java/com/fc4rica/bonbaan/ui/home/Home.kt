@@ -41,11 +41,14 @@ import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.ui.home.feed.FeedScreen
 import com.fc4rica.bonbaan.ui.home.feed.SearchScreen
 import com.fc4rica.bonbaan.ui.home.feed.ServiceDetailScreen
+import com.fc4rica.bonbaan.ui.home.notification.NotificationScreen
 import com.fc4rica.bonbaan.ui.home.profile.MyReviewsScreen
 import com.fc4rica.bonbaan.ui.home.profile.OrderStatusDetailScreen
 import com.fc4rica.bonbaan.ui.home.profile.OrdersStatusScreen
 import com.fc4rica.bonbaan.ui.home.profile.ProfileScreen
 import com.fc4rica.bonbaan.ui.home.profile.ProfileSettingScreen
+import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordDetailScreen
+import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordScreen
 import com.fc4rica.bonbaan.ui.navigation.Screen
 
 @Composable
@@ -82,6 +85,7 @@ fun HomeScreen() {
     }
 }
 
+// Navigation Graph
 fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     // Bottom Navigation Screens
     composable(Screen.Feed.route) {
@@ -102,11 +106,18 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         SearchScreen()
     }
     composable(
-        route = Screen.ServiceDetail("{serviceId}").route,
+        route = Screen.ServiceDetail.route,
         arguments = listOf(navArgument("serviceId") { type = NavType.StringType })
-    ) { backStackEntry ->
-        val serviceId = backStackEntry.arguments?.getString("serviceId") ?: ""
-        ServiceDetailScreen(serviceId)
+    ) {
+        ServiceDetailScreen()
+    }
+
+    // Nested VowRecord Screen
+    composable(
+        route = Screen.VowRecordDetail.route,
+        arguments = listOf(navArgument("vowId") { type = NavType.StringType })
+    ) {
+        VowRecordDetailScreen()
     }
 
     // Nested Profile Screens
@@ -114,11 +125,10 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         OrdersStatusScreen()
     }
     composable(
-        route = Screen.OrderStatusDetail("{orderId}").route,
+        route = Screen.OrderStatusDetail.route,
         arguments = listOf(navArgument("orderId") { type = NavType.StringType })
-    ) { backStackEntry ->
-        val orderId = backStackEntry.arguments?.getString("orderId") ?: ""
-        OrderStatusDetailScreen(orderId)
+    ) {
+        OrderStatusDetailScreen()
     }
     composable(Screen.MyReviews.route) { MyReviewsScreen() }
     composable(Screen.ProfileSetting.route) { ProfileSettingScreen() }

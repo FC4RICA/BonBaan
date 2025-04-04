@@ -27,7 +27,11 @@ class InterestViewModel(
     private val _state = MutableStateFlow(InterestUiState())
     val state = _state.asStateFlow()
 
-    fun getInterests() {
+    init {
+        getInterests()
+    }
+
+    private fun getInterests() {
         Log.d("InterestViewModel", "getInterests called")
         viewModelScope.launch {
             val result = categoryRepository.getCategories()
