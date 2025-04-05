@@ -38,7 +38,7 @@ class InterestViewModel(
             Log.d("InterestViewModel", "Result: $result")
             result.fold(
                 onSuccess = { categories ->
-                    val mappedCategory = CategoryUtils.mapCategories(categories)
+                    val mappedCategory = CategoryUtils.mapCategoriesIcon(categories)
                     _state.update { it.copy(categories = mappedCategory) }
                 },
                 onFailure = { error ->
