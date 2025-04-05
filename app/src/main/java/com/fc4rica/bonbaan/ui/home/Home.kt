@@ -46,7 +46,6 @@ import com.fc4rica.bonbaan.ui.home.profile.MyReviewsScreen
 import com.fc4rica.bonbaan.ui.home.profile.OrderStatusDetailScreen
 import com.fc4rica.bonbaan.ui.home.profile.OrdersStatusScreen
 import com.fc4rica.bonbaan.ui.home.profile.ProfileScreen
-import com.fc4rica.bonbaan.ui.home.profile.ProfileSettingScreen
 import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordDetailScreen
 import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordScreen
 import com.fc4rica.bonbaan.ui.navigation.Screen
@@ -131,7 +130,6 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         OrderStatusDetailScreen()
     }
     composable(Screen.MyReviews.route) { MyReviewsScreen() }
-    composable(Screen.ProfileSetting.route) { ProfileSettingScreen() }
 }
 
 sealed class HomeSection(
