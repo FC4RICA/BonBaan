@@ -12,6 +12,5 @@ data class Order(
     val cancellationReason: String?,
     val status: Status,
     val attachments: List<Attachment> = emptyList(),
-    val service: Service?,
-    val user: User?,
+    val service: Service?
 )

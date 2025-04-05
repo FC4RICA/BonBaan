@@ -5,6 +5,5 @@ import com.fc4rica.bonbaan.domain.model.Review
 interface ReviewRepository {
     suspend fun getReview(id: String): Result<Review>
     suspend fun getReviews(): Result<List<Review>>
-    suspend fun getReviewsByService(serviceId: String): Result<List<Review>>
     suspend fun createReview(review: Review): Result<Review>
 }

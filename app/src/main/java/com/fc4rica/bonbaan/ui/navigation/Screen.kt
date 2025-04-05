@@ -39,5 +39,4 @@ sealed class Screen(val route: String) {
         fun createRoute(orderId: String) = "orderStatusDetail/$orderId"
     }
     data object MyReviews : Screen("myReviews")
-    data object ProfileSetting : Screen("profileSetting")
 }
