@@ -91,6 +91,10 @@ class FilteredServiceViewModel(
     }
 
     fun getServicess() {
+        if (_state.value.isLoading) return
+
+        _state.update { it.copy(isLoading = true) }
+
         viewModelScope.launch {
             val result = when (_state.value.sortType) {
                 SortType.Recommend -> // TODO add search query
@@ -114,10 +118,10 @@ class FilteredServiceViewModel(
             }
             result.fold(
                 onSuccess = { services ->
-                    _state.update { it.copy(services = services) }
+                    _state.update { it.copy(services = services, isLoading = false) }
                 },
                 onFailure = { error ->
-                    _state.update { it.copy(errorMessage = error.message) }
+                    _state.update { it.copy(errorMessage = error.message, isLoading = false) }
                 }
             )
         }

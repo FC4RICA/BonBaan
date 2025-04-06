@@ -51,6 +51,8 @@ class SearchViewModel(
     }
 
     private fun search(query: String) {
+        if (_state.value.isLoading) return
+
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             val result = serviceRepository.getServices(
@@ -61,13 +63,12 @@ class SearchViewModel(
             )
             result.fold(
                 onSuccess = { services ->
-                    _state.update { it.copy(searchResult = services) }
+                    _state.update { it.copy(searchResult = services, isLoading = false) }
                 },
                 onFailure = { error ->
-                    _state.update { it.copy(errorMessage = error.message) }
+                    _state.update { it.copy(errorMessage = error.message, isLoading = false) }
                 }
             )
-            _state.update { it.copy(isLoading = false) }
         }
     }
 }

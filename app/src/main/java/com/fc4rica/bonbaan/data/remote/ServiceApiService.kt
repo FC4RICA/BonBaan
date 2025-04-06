@@ -42,6 +42,9 @@ interface ServiceApiService {
     @GET("categories")
     suspend fun getCategories(): ApiResponse<List<CategoryResponse>>
 
+    @GET("categories/{id}")
+    suspend fun getCategory(@Path("id") categoryId: String): ApiResponse<CategoryResponse>
+
     // Packages
     @GET("services/{id}/packages")
     suspend fun getPackages(@Path("id") userId: String): ApiResponse<List<PackageResponse>>
