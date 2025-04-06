@@ -24,6 +24,12 @@ sealed class Screen(val route: String) {
 
     // Nested Screens (Inside Feed)
     data object Search : Screen("search")
+    data object CategorizeService : Screen("categorizeService/{categoryId}") {
+        fun createRoute(categoryId: String) = "categorizeService/$categoryId"
+    }
+    data object FilteredService : Screen("filteredService/{query}") {
+        fun createRoute(query: String) = "filteredService/$query"
+    }
     data object ServiceDetail : Screen("serviceDetail/{serviceId}") {
         fun createRoute(serviceId: String) = "serviceDetail/$serviceId"
     }

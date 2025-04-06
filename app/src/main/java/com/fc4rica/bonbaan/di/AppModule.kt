@@ -7,6 +7,7 @@ import com.fc4rica.bonbaan.data.repository.InterestRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.NotificationRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.OrderRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.ReviewRepositoryImpl
+import com.fc4rica.bonbaan.data.repository.ServiceRepositoryImpl
 import com.fc4rica.bonbaan.domain.repository.AuthRepository
 import com.fc4rica.bonbaan.domain.repository.CategoryRepository
 import com.fc4rica.bonbaan.domain.repository.InterestRepository
@@ -14,12 +15,17 @@ import com.fc4rica.bonbaan.domain.repository.NotificationRepository
 import com.fc4rica.bonbaan.domain.repository.OrderRepository
 import com.fc4rica.bonbaan.domain.repository.RegisterRepository
 import com.fc4rica.bonbaan.domain.repository.ReviewRepository
+import com.fc4rica.bonbaan.domain.repository.ServiceRepository
 import com.fc4rica.bonbaan.ui.MainViewModel
 import com.fc4rica.bonbaan.ui.auth.LoginViewModel
 import com.fc4rica.bonbaan.ui.auth.register.EmailVerificationViewModel
 import com.fc4rica.bonbaan.ui.auth.register.InputEmailViewModel
 import com.fc4rica.bonbaan.ui.auth.register.PasswordSetupViewModel
 import com.fc4rica.bonbaan.ui.auth.register.PersonalInfoViewModel
+import com.fc4rica.bonbaan.ui.home.feed.CategorizeServiceViewModel
+import com.fc4rica.bonbaan.ui.home.feed.FeedViewModel
+import com.fc4rica.bonbaan.ui.home.feed.FilteredServiceViewModel
+import com.fc4rica.bonbaan.ui.home.feed.SearchViewModel
 import com.fc4rica.bonbaan.ui.home.notification.NotificationViewModel
 import com.fc4rica.bonbaan.ui.home.profile.OrderStatusDetailViewModel
 import com.fc4rica.bonbaan.ui.home.profile.OrdersStatusViewModel
@@ -41,6 +47,7 @@ val appModule = module {
     singleOf(::NotificationRepositoryImpl) bind NotificationRepository::class
     singleOf(::OrderRepositoryImpl) bind OrderRepository::class
     singleOf(::ReviewRepositoryImpl) bind ReviewRepository::class
+    singleOf(::ServiceRepositoryImpl) bind ServiceRepository::class
 
     viewModelOf(::MainViewModel)
     viewModelOf(::LoginViewModel)
@@ -56,4 +63,8 @@ val appModule = module {
     viewModelOf(::OrdersStatusViewModel)
     viewModelOf(::OrderStatusDetailViewModel)
     viewModelOf(::PreviousReviewsViewModel)
+    viewModelOf(::FeedViewModel)
+    viewModelOf(::SearchViewModel)
+    viewModelOf(::FilteredServiceViewModel)
+    viewModelOf(::CategorizeServiceViewModel)
 }

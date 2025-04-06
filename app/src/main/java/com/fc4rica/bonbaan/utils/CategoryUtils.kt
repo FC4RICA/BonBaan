@@ -21,7 +21,7 @@ object CategoryUtils {
         "การค้าขาย" to Icons.Filled.Store
     )
 
-    fun mapCategories(categories: List<Category>): List<Category> {
+    fun mapCategoriesIcon(categories: List<Category>): List<Category> {
         return categories.map { category ->
             category.copy(icon = categoryIconMap[category.name])
         }
