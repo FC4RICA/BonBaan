@@ -32,10 +32,6 @@ class ServiceRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun searchServices(query: String): Result<List<Service>> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getRecommendedServices(page: Int, pageSize: Int): Result<List<Service>> {
         return try {
             val response = serviceApiService.getRecommendedServices(page, pageSize)
@@ -49,7 +45,15 @@ class ServiceRepositoryImpl(
     }
 
     override suspend fun getPopularServices(page: Int, pageSize: Int): Result<List<Service>> {
-        TODO("Not yet implemented")
+        return try {
+            val response = serviceApiService.getPopularServices(page, pageSize)
+            if (response.error != null || response.data == null) {
+                return Result.failure(Exception(response.error))
+            }
+            Result.success(response.data.services.map { it.toService() })
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun getServicesByCategory(categoryId: String): Result<List<Service>> {
