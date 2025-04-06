@@ -12,13 +12,25 @@ import retrofit2.http.Query
 
 interface ServiceApiService {
     @GET("services")
-    suspend fun getServices(@Query("page") page: Int, @Query("pageSize") pageSize: Int = 10): ApiResponse<ServicesResponse>
+    suspend fun getServices(
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int = 10,
+        @Query("search") search: String? = null,
+        @Query("orderBy") orderBy: String? = null,
+        @Query("orderDirection") orderDirection: String? = null
+    ): ApiResponse<ServicesResponse>
 
     @GET("services/recommend")
-    suspend fun getRecommendedServices(@Query("page") page: Int, @Query("pageSize") pageSize: Int = 10): ApiResponse<ServicesResponse>
+    suspend fun getRecommendedServices(
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int = 10
+    ): ApiResponse<ServicesResponse>
 
     @GET("services/popular")
-    suspend fun getPopularServices(@Query("page") page: Int, @Query("pageSize") pageSize: Int = 10): ApiResponse<ServicesResponse>
+    suspend fun getPopularServices(
+        @Query("page") page: Int,
+        @Query("pageSize") pageSize: Int = 10
+    ): ApiResponse<ServicesResponse>
 
     @GET("services/{id}")
     suspend fun getService(@Path("id") serviceId: String): ApiResponse<ServiceResponse>
