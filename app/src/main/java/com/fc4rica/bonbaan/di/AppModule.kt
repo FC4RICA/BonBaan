@@ -8,6 +8,7 @@ import com.fc4rica.bonbaan.data.repository.NotificationRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.OrderRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.ReviewRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.ServiceRepositoryImpl
+import com.fc4rica.bonbaan.data.repository.VowRecordRepositoryImpl
 import com.fc4rica.bonbaan.domain.repository.AuthRepository
 import com.fc4rica.bonbaan.domain.repository.CategoryRepository
 import com.fc4rica.bonbaan.domain.repository.InterestRepository
@@ -16,6 +17,7 @@ import com.fc4rica.bonbaan.domain.repository.OrderRepository
 import com.fc4rica.bonbaan.domain.repository.RegisterRepository
 import com.fc4rica.bonbaan.domain.repository.ReviewRepository
 import com.fc4rica.bonbaan.domain.repository.ServiceRepository
+import com.fc4rica.bonbaan.domain.repository.VowRecordRepository
 import com.fc4rica.bonbaan.ui.MainViewModel
 import com.fc4rica.bonbaan.ui.auth.LoginViewModel
 import com.fc4rica.bonbaan.ui.auth.register.EmailVerificationViewModel
@@ -31,6 +33,7 @@ import com.fc4rica.bonbaan.ui.home.profile.OrderStatusDetailViewModel
 import com.fc4rica.bonbaan.ui.home.profile.OrdersStatusViewModel
 import com.fc4rica.bonbaan.ui.home.profile.PreviousReviewsViewModel
 import com.fc4rica.bonbaan.ui.home.profile.ProfileViewModel
+import com.fc4rica.bonbaan.ui.home.service.ServiceDetailViewModel
 import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordDetailViewModel
 import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordViewModel
 import com.fc4rica.bonbaan.ui.onboarding.InterestViewModel
@@ -48,6 +51,8 @@ val appModule = module {
     singleOf(::OrderRepositoryImpl) bind OrderRepository::class
     singleOf(::ReviewRepositoryImpl) bind ReviewRepository::class
     singleOf(::ServiceRepositoryImpl) bind ServiceRepository::class
+    singleOf(::VowRecordRepositoryImpl) bind VowRecordRepository::class
+
 
     viewModelOf(::MainViewModel)
     viewModelOf(::LoginViewModel)
@@ -67,4 +72,5 @@ val appModule = module {
     viewModelOf(::SearchViewModel)
     viewModelOf(::FilteredServiceViewModel)
     viewModelOf(::CategorizeServiceViewModel)
+    viewModelOf(::ServiceDetailViewModel)
 }

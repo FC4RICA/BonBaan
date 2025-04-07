@@ -6,7 +6,7 @@ import com.fc4rica.bonbaan.domain.model.request.PaginationRequest
 interface ServiceRepository {
     suspend fun getServices(pagination: PaginationRequest): Result<List<Service>>
     suspend fun getService(id: String): Result<Service>
-    suspend fun getRecommendedServices(page: Int, pageSize: Int): Result<List<Service>>
-    suspend fun getPopularServices(page: Int, pageSize: Int): Result<List<Service>>
+    suspend fun getRecommendedServices(pagination: PaginationRequest): Result<List<Service>>
+    suspend fun getBestSellerServices(pagination: PaginationRequest): Result<List<Service>>
     suspend fun getServicesByCategory(categoryId: String): Result<List<Service>>
 }
