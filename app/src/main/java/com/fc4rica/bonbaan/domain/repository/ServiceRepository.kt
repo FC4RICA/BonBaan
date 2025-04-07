@@ -8,5 +8,5 @@ interface ServiceRepository {
     suspend fun getService(id: String): Result<Service>
     suspend fun getRecommendedServices(pagination: PaginationRequest): Result<List<Service>>
     suspend fun getBestSellerServices(pagination: PaginationRequest): Result<List<Service>>
-    suspend fun getServicesByCategory(categoryId: String): Result<List<Service>>
+    suspend fun getServicesByCategory(id: String): Result<List<Service>>
 }

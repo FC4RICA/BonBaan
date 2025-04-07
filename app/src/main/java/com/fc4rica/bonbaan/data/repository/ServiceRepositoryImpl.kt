@@ -65,7 +65,15 @@ class ServiceRepositoryImpl(
         }
     }
 
-    override suspend fun getServicesByCategory(categoryId: String): Result<List<Service>> {
-        TODO("Not yet implemented")
+    override suspend fun getServicesByCategory(id: String): Result<List<Service>> {
+        return try {
+            val response = serviceApiService.getServicesByCategory(id)
+            if (response.error != null || response.data == null) {
+                return Result.failure(Exception(response.error))
+            }
+            Result.success(response.data.map { it.toService() })
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }
