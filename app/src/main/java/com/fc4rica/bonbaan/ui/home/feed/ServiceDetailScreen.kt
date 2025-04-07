@@ -4,6 +4,6 @@ import androidx.compose.runtime.Composable
 import com.fc4rica.bonbaan.ui.MockScreen
 
 @Composable
-fun ServiceDetailScreen (serviceId: String) {
-    MockScreen("SERVICE DETAIL $serviceId")
+fun ServiceDetailScreen () {
+    MockScreen("SERVICE DETAIL")
 }

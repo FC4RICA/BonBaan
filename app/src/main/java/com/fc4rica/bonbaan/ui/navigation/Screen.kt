@@ -15,6 +15,7 @@ sealed class Screen(val route: String) {
     data object Interest : Screen("interest")
 
     data object Home : Screen("home")
+
     // Bottom Navigation Screens
     data object Feed : Screen("feed")
     data object VowRecord : Screen("vowRecord")
@@ -23,28 +24,25 @@ sealed class Screen(val route: String) {
 
     // Nested Screens (Inside Feed)
     data object Search : Screen("search")
-    data class ServiceDetail(val serviceId: String) : Screen("serviceDetail/{serviceId}") {
-        companion object {
-            fun createRoute(serviceId: String) = "serviceDetail/$serviceId"
-        }
+    data object CategorizeService : Screen("categorizeService/{categoryId}") {
+        fun createRoute(categoryId: String) = "categorizeService/$categoryId"
+    }
+    data object FilteredService : Screen("filteredService/{query}") {
+        fun createRoute(query: String) = "filteredService/$query"
+    }
+    data object ServiceDetail : Screen("serviceDetail/{serviceId}") {
+        fun createRoute(serviceId: String) = "serviceDetail/$serviceId"
     }
 
     // Nested Screen (Inside VowRecord)
-    data class VowRecordDetail(val vowId: String) :
-        Screen("vowRecordDetail/{vowId}") {
-        companion object {
-            fun createRoute(vowId: String) = "previousVowsDetail/$vowId"
-        }
+    data object VowRecordDetail : Screen("vowRecordDetail/{vowRecordId}") {
+        fun createRoute(vowRecordId: String) = "vowRecordDetail/$vowRecordId"
     }
 
     // Nested Screens (Inside Profile)
     data object OrdersStatus : Screen("ordersStatus")
-    data class OrderStatusDetail(val orderId: String) :
-        Screen("orderStatusDetail/{orderId}") {
-        companion object {
-            fun createRoute(orderId: String) = "orderStatusDetail/$orderId"
-        }
+    data object OrderStatusDetail : Screen("orderStatusDetail/{orderId}") {
+        fun createRoute(orderId: String) = "orderStatusDetail/$orderId"
     }
     data object MyReviews : Screen("myReviews")
-    data object ProfileSetting : Screen("profileSetting")
 }

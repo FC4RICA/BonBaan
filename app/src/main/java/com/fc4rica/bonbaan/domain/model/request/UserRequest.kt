@@ -9,3 +9,12 @@ data class RegisterRequest(
     val password: String = "",
     val code: String = ""
 )
+
+data class LoginRequest(
+    val emailOrUsername: String = "",
+    val password: String = ""
+)
+
+data class OtpRequest(
+    val email: String = "",
+)
