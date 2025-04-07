@@ -1,6 +1,8 @@
 package com.fc4rica.bonbaan.data.remote.dto
 
+import com.fc4rica.bonbaan.domain.model.VowRecord
 import com.google.gson.annotations.SerializedName
+import java.time.LocalDateTime
 
 data class VowRecordResponse(
     @SerializedName("ID")
@@ -14,3 +16,16 @@ data class VowRecordResponse(
     @SerializedName("CreatedAt")
     val createdAt: String
 )
+
+fun VowRecordResponse.toVowRecord(): VowRecord {
+    return VowRecord(
+        id = id,
+        vow = vow,
+        deadline = LocalDateTime.parse(deadline),
+        note = note,
+        service = service?.toService(),
+        vowOrder = vowOrder?.toOrder(),
+        fulfillOrder = fulfillOrder?.toOrder(),
+        createdAt = LocalDateTime.parse(createdAt)
+    )
+}

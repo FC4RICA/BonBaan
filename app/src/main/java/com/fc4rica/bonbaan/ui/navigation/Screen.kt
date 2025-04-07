@@ -30,8 +30,16 @@ sealed class Screen(val route: String) {
     data object FilteredService : Screen("filteredService/{query}") {
         fun createRoute(query: String) = "filteredService/$query"
     }
+
+    // Service Screen
     data object ServiceDetail : Screen("serviceDetail/{serviceId}") {
         fun createRoute(serviceId: String) = "serviceDetail/$serviceId"
+    }
+    data object ServiceReview : Screen("serviceReview/{serviceId}") {
+        fun createRoute(serviceId: String) = "serviceReview/$serviceId"
+    }
+    data object ServicePackage : Screen("servicePackage/{serviceId}") {
+        fun createRoute(serviceId: String) = "servicePackage/$serviceId"
     }
 
     // Nested Screen (Inside VowRecord)

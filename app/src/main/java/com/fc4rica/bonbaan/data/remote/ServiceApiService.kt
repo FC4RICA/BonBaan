@@ -17,19 +17,22 @@ interface ServiceApiService {
         @Query("pageSize") pageSize: Int = 10,
         @Query("search") search: String? = null,
         @Query("orderBy") orderBy: String? = null,
-        @Query("orderDirection") orderDirection: String? = null
     ): ApiResponse<ServicesResponse>
 
     @GET("services/recommend")
     suspend fun getRecommendedServices(
         @Query("page") page: Int,
-        @Query("pageSize") pageSize: Int = 10
+        @Query("pageSize") pageSize: Int = 10,
+        @Query("search") search: String? = null,
+        @Query("orderBy") orderBy: String? = null,
     ): ApiResponse<ServicesResponse>
 
-    @GET("services/popular")
-    suspend fun getPopularServices(
+    @GET("services/bestseller")
+    suspend fun getBestSellerServices(
         @Query("page") page: Int,
-        @Query("pageSize") pageSize: Int = 10
+        @Query("pageSize") pageSize: Int = 10,
+        @Query("search") search: String? = null,
+        @Query("orderBy") orderBy: String? = null,
     ): ApiResponse<ServicesResponse>
 
     @GET("services/{id}")

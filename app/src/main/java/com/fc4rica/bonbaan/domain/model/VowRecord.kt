@@ -7,7 +7,6 @@ data class VowRecord(
     val vow: String,
     val deadline: LocalDateTime,
     val note: String?,
-    val user: User?,
     val service: Service?,
     val vowOrder: Order?,
     val fulfillOrder: Order?,
