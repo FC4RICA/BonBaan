@@ -1,9 +1,11 @@
 package com.fc4rica.bonbaan.ui.home.feed
 
+import android.app.DatePickerDialog
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,126 +38,156 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.fc4rica.bonbaan.ui.components.BonBaanButton
 
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
+import com.fc4rica.bonbaan.ui.components.ButtonVariant
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 
 @Composable
 fun OrderFormScreen() {
     var vowDetail by remember { mutableStateOf("") }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-    )
-    {
-        Row(
+    ) {
+
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-               ,
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(start = 30.dp, top = 16.dp, end = 30.dp, bottom = 100.dp) // เผื่อปุ่มล่าง
         ) {
-            IconButton(
-                onClick = { },
-                modifier = Modifier.padding(start = 30.dp)
-                    .size(40.dp)
-                    .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = Color.White
+                IconButton(
+                    onClick = { },
+                    modifier = Modifier
+                        .padding(start = 0.dp)
+                        .size(40.dp)
+                        .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color.White
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Text(
+                    text = "คำสั่งซื้อ",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
                 )
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
 
-            Text(
-                text = "คำสั่งซื้อ",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-        }
-        Column(modifier = Modifier.padding(start = 30.dp, top = 16.dp, end = 30.dp)) {
-            Text(text = "ชื่อจริง", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            BonBaanTextField(
-                label = "อีเมลหรือชื่อผู้ใช้",
+
+            BonBaanTextField(label = "ชื่อจริง",
                 value = "Name",
                 onValueChange = { })
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = "นามสกุล", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(4.dp))
-            BonBaanTextField(
-                label = "อีเมลหรือชื่อผู้ใช้",
+
+            BonBaanTextField(label = "นามสกุล",
                 value = "Surname",
                 onValueChange = { })
 
             Spacer(modifier = Modifier.height(16.dp))
-
             Text(text = "คำขอในการบนบานของคุณ", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(4.dp))
-            BigTextField(
-                value = vowDetail,
-                onValueChange = { vowDetail = it }
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(text = "คุณต้องการให้คำขอของคุณสำเร็จภายในเวลา", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(){
-                NumberField(title = "เดือน")
-                Spacer(modifier = Modifier.width(16.dp))
-                NumberField(title = "วัน")
-           }
+            BigTextField(value = vowDetail,
+                onValueChange = { vowDetail = it })
 
             Spacer(modifier = Modifier.height(16.dp))
+            DatePickerSection()
 
+            Spacer(modifier = Modifier.height(16.dp))
             Text(text = "บันทึกเพิ่มเติมเพื่อเตือนความจำ", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(4.dp))
-            BigTextField(
-                value = vowDetail,
-                onValueChange = { vowDetail = it }
-            )
+            BigTextField(value = vowDetail, onValueChange = { vowDetail = it })
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.primary)
+                .padding(vertical = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            BonBaanButton(
+                text = "ยืนยันคำสั่งซื้อ",
+                onClick = { },
+                variant = ButtonVariant.SECONDARY
+            )
         }
     }
-
 }
 
+
 @Composable
-fun NumberField(title: String) {
-    var number by remember { mutableStateOf("") }
+fun DatePickerSection() {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+    val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
+    var selectedDateText by remember { mutableStateOf("") }
 
-        TextField(
-            value = number,
-            onValueChange = { newValue ->
-                if (newValue.all { it.isDigit() } && newValue.length <= 2) {
-                    number = newValue
-                }
+    val datePickerDialog = remember {
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                calendar.set(year, month, dayOfMonth)
+                selectedDateText = dateFormat.format(calendar.time)
             },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.width(30.dp).height(30.dp),
-            singleLine = true,
-            shape = RoundedCornerShape(8.dp),
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
         )
+    }
 
-        Text(text = title)
+    Column {
+        Text(
+            text = "คุณต้องการให้คำขอของคุณสำเร็จภายในเวลา",
+            style = MaterialTheme.typography.titleMedium
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(1.dp, Color.Gray, shape = RoundedCornerShape(8.dp))
+                .padding(12.dp)
+                .clickable { datePickerDialog.show() }
+        ) {
+            Text(
+                text = if (selectedDateText.isEmpty()) "เลือกวันที่" else selectedDateText,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
     }
 }
 
@@ -170,7 +202,7 @@ fun BigTextField(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp)
+            .height(120.dp)
             .border(1.dp, Color.Gray, shape = RoundedCornerShape(8.dp))
             .padding(12.dp)
     ) {
