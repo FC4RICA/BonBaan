@@ -1,0 +1,61 @@
+package com.fc4rica.bonbaan.data.repository
+
+import com.fc4rica.bonbaan.data.local.SecurePreferences
+import com.fc4rica.bonbaan.data.remote.VowRecordApiService
+import com.fc4rica.bonbaan.data.remote.dto.toVowRecord
+import com.fc4rica.bonbaan.domain.model.VowRecord
+import com.fc4rica.bonbaan.domain.repository.VowRecordRepository
+
+class VowRecordRepositoryImpl(
+    private val vowRecordApiService: VowRecordApiService,
+    private val securePreferences: SecurePreferences
+) : VowRecordRepository {
+    override suspend fun getVowRecords(): Result<List<VowRecord>> {
+        return try {
+            val userId = securePreferences.getUserData()?.id
+                ?: return Result.failure(Exception("User not logged in"))
+
+            val response = vowRecordApiService.getVowRecords(userId)
+
+            if (response.error != null || response.data == null) {
+                return Result.failure(Exception(response.error))
+            }
+
+            Result.success(response.data.map { it.toVowRecord() })
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getVowRecord(id: String): Result<VowRecord> {
+        return try {
+            val response = vowRecordApiService.getVowRecord(id)
+
+            if (response.error != null || response.data == null) {
+                return Result.failure(Exception(response.error))
+            }
+
+            Result.success(response.data.toVowRecord())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getUnFulfilledVowRecordsByService(serviceId: String): Result<VowRecord> {
+        return try {
+            val userId = securePreferences.getUserData()?.id
+                ?: return Result.failure(Exception("User not logged in"))
+
+            val response = vowRecordApiService.getVowRecords(userId)
+
+            if (response.error != null || response.data == null) {
+                return Result.failure(Exception(response.error))
+            }
+
+            Result.success(response.data.filter { it.service?.id == serviceId && it.fulfillOrder == null }
+                .map { it.toVowRecord() }.first())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+}
