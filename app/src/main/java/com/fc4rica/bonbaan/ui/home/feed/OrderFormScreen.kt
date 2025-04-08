@@ -26,6 +26,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -52,10 +56,29 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+data class PackageItem(
+    val id: String,
+    val name: String,
+    val price: Int,
+    val items: String
+)
+
 
 @Composable
 fun OrderFormScreen() {
+    val initialPackageId = "3"
     var vowDetail by remember { mutableStateOf("") }
+
+    val packages = listOf(
+        PackageItem("1", "คนคุยทันใจ", 100,"ธูป"),
+        PackageItem("2", "แฟนดีไม่่หนีไม่จ่าย", 200,"เทียน"),
+        PackageItem("3", "อิอิซ่า", 300,"ปลาร้า")
+    )
+
+
+    var selectedPackage by remember {
+        mutableStateOf(packages.find { it.id == initialPackageId })
+    }
 
     Box(
         modifier = Modifier
@@ -99,20 +122,35 @@ fun OrderFormScreen() {
                 )
             }
 
+            Text(text = "เลือกชุดแพ็คเกจ", style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(8.dp))
 
+            PackageOption(
+                packages = packages,
+                selectedPackage = selectedPackage,
+                onPackageSelected = { selectedPackage = it }
+            )
 
-            BonBaanTextField(label = "ชื่อจริง",
+            if (selectedPackage != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+                TextField(
+                    value = selectedPackage!!.items,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("รายละเอียดแพ็คเกจ") },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = false
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(text = "รายละเอียดเพิ่มเติม", style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(8.dp))
+            BonBaanTextField(label = "ชื่อจริง - นามสกุล",
                 value = "Name",
                 onValueChange = { })
             Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(4.dp))
-
-            BonBaanTextField(label = "นามสกุล",
-                value = "Surname",
-                onValueChange = { })
-
-            Spacer(modifier = Modifier.height(16.dp))
             Text(text = "คำขอในการบนบานของคุณ", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(4.dp))
             BigTextField(value = vowDetail,
@@ -135,15 +173,27 @@ fun OrderFormScreen() {
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.primary)
-                .padding(vertical = 16.dp),
-            contentAlignment = Alignment.Center
+                .padding(horizontal = 30.dp, vertical = 16.dp)
         ) {
-            BonBaanButton(
-                text = "ยืนยันคำสั่งซื้อ",
-                onClick = { },
-                variant = ButtonVariant.SECONDARY
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = selectedPackage?.let { "฿ ${it.price}" } ?: "",
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                BonBaanButton(modifier = Modifier.width(200.dp),
+                    text = "ยืนยันคำสั่งซื้อ",
+                    onClick = { },
+                    variant = ButtonVariant.SECONDARY
+                )
+            }
         }
+
     }
 }
 
@@ -151,10 +201,14 @@ fun OrderFormScreen() {
 @Composable
 fun DatePickerSection() {
     val context = LocalContext.current
-    val calendar = Calendar.getInstance()
+    val calendar = Calendar.getInstance().apply {
+        add(Calendar.DAY_OF_YEAR, 1)
+    }
     val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
-    var selectedDateText by remember { mutableStateOf("") }
+    var selectedDateText by remember {
+        mutableStateOf(dateFormat.format(calendar.time))
+    }
 
     val datePickerDialog = remember {
         DatePickerDialog(
@@ -184,13 +238,55 @@ fun DatePickerSection() {
                 .clickable { datePickerDialog.show() }
         ) {
             Text(
-                text = if (selectedDateText.isEmpty()) "เลือกวันที่" else selectedDateText,
+                text = selectedDateText,
                 style = MaterialTheme.typography.bodyLarge
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PackageOption(
+    packages: List<PackageItem>,
+    selectedPackage: PackageItem?,
+    onPackageSelected: (PackageItem) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        TextField(
+            readOnly = true,
+            value = selectedPackage?.name ?: "เลือกแพ็คเกจ",
+            onValueChange = {},
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth(),
+            label = { Text("แพ็คเกจ") }
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            packages.forEach { item ->
+                DropdownMenuItem(
+                    text = { Text("${item.name} (${item.price} บาท)") },
+                    onClick = {
+                        onPackageSelected(item)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun BigTextField(
