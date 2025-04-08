@@ -15,6 +15,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -53,7 +57,6 @@ fun PackageReviewScreen() {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Top bar
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -75,7 +78,7 @@ fun PackageReviewScreen() {
                 )
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(20.dp))
 
             Text(
                 text = "รีวิว",
@@ -116,9 +119,14 @@ fun ReviewCard(reviewItem: ReviewItem) {
 
         Row {
             repeat(5) { index ->
-                Text(
-                    text = if (index < reviewItem.rating) "★" else "☆",
-                    color = if (index < reviewItem.rating) Color(0xFF8B00FF) else Color.Gray
+                Icon(
+                    imageVector = if (index < reviewItem.rating)
+                        Icons.Rounded.Star
+                    else
+                        Icons.Rounded.StarBorder,
+                    contentDescription = null,
+                    tint = if (index < reviewItem.rating) Color(0xFF8B00FF) else Color.Gray,
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
