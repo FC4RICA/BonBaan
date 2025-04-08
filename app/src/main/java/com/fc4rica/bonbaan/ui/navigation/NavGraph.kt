@@ -13,7 +13,6 @@ fun MainNavGraph() {
     NavHost(navController, startDestination = "account") {
         composable("account") { AccountScreen(navController) }
         composable("profile") { ProfileScreen() }
-        composable("order") { OrderScreen() }
         composable("reviews") { ReviewsScreen() }
     }
 }
