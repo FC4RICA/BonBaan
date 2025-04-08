@@ -2,17 +2,76 @@ package com.fc4rica.bonbaan.data.repository
 
 import com.fc4rica.bonbaan.data.local.SecurePreferences
 import com.fc4rica.bonbaan.data.remote.OrderApiService
+import com.fc4rica.bonbaan.data.remote.dto.ApiResponse
+import com.fc4rica.bonbaan.data.remote.dto.OrderResponse
 import com.fc4rica.bonbaan.data.remote.dto.toOrder
 import com.fc4rica.bonbaan.domain.model.Order
 import com.fc4rica.bonbaan.domain.model.Status
 import com.fc4rica.bonbaan.domain.model.request.FulfillOrderRequest
+import com.fc4rica.bonbaan.domain.model.request.OrderRequest
 import com.fc4rica.bonbaan.domain.model.request.VowOrderRequest
 import com.fc4rica.bonbaan.domain.repository.OrderRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class OrderRepositoryImpl(
     private val orderApiService: OrderApiService,
     private val securePreferences: SecurePreferences
 ) : OrderRepository {
+    private val _orderRequest = MutableStateFlow<OrderRequest?>(null)
+    override val orderRequest: StateFlow<OrderRequest?> = _orderRequest.asStateFlow()
+
+    override fun setOrderRequest(request: OrderRequest) {
+        _orderRequest.value = request
+    }
+    override fun updateOrderRequest(update: (OrderRequest?) -> OrderRequest?) {
+        _orderRequest.update { current -> update(current) }
+    }
+
+    override fun clearOrderRequest() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun sendOrderRequest(): Result<Order> {
+        val result = when (val order = _orderRequest.value) {
+            is OrderRequest.Vow -> sendVowOrder(order.request)
+            is OrderRequest.Fulfill -> sendFulfillOrder(order.request)
+            else -> return Result.failure(Exception("Invalid order request"))
+        }
+
+        clearOrderRequest()
+        return result
+    }
+
+    private suspend fun sendVowOrder(request: VowOrderRequest): Result<Order> {
+        val response = if (request.packageId.isNotEmpty()) {
+            orderApiService.createVowOrder(request)
+        } else {
+            orderApiService.createCustomVowOrder(request)
+        }
+
+        return handleOrderResponse(response)
+    }
+
+    private suspend fun sendFulfillOrder(request: FulfillOrderRequest): Result<Order> {
+        val response = if (request.packageId.isNotEmpty()) {
+            orderApiService.createFulfillOrder(request)
+        } else {
+            orderApiService.createCustomFulfillOrder(request)
+        }
+
+        return handleOrderResponse(response)
+    }
+
+    private fun handleOrderResponse(response: ApiResponse<OrderResponse>): Result<Order> {
+        response.error?.let { return Result.failure(Exception(it)) }
+        response.data ?: return Result.failure(Exception("Empty response"))
+
+        return Result.success(response.data.toOrder())
+    }
+
     override suspend fun getOrders(): Result<List<Order>> {
         return try {
             val userId = securePreferences.getUserData()?.id
