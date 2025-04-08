@@ -31,7 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-data class ReviewItem(
+data class ReviewsItem(
     val profile:String,
     val name:String,
     val packageName:String,
@@ -41,15 +41,15 @@ data class ReviewItem(
 
 @Composable
 fun PackageReviewScreen() {
-    val reviewItems = listOf(ReviewItem("Profile", "หมีเนย", "คนคุยมาแน่", 5, "มะกี้เหงามาก อยู่ดีๆก้อมีคนชวรคุย"),
-        ReviewItem("Profile", "หมูเด้ง", "คนคุยมาแน่", 4, "ก็ดี"),
-        ReviewItem("Profile", "มาดามจือ", "คนคุยมาแน่", 2, "ขอไป 5 นาทีแร้ว ไหนอะไม่เหรมีคัยมาคุยเรย"),
-        ReviewItem("Profile", "หมีเนย", "คนคุยมาแน่", 5, "มะกี้เหงามาก อยู่ดีๆก้อมีคนชวรคุย"),
-        ReviewItem("Profile", "หมูเด้ง", "คนคุยมาแน่", 4, "ก็ดี"),
-        ReviewItem("Profile", "มาดามจือ", "คนคุยมาแน่", 2, "ขอไป 5 นาทีแร้ว ไหนอะไม่เหรมีคัยมาคุยเรย"),
-        ReviewItem("Profile", "หมีเนย", "คนคุยมาแน่", 5, "มะกี้เหงามาก อยู่ดีๆก้อมีคนชวรคุย"),
-        ReviewItem("Profile", "หมูเด้ง", "คนคุยมาแน่", 4, "ก็ดี"),
-        ReviewItem("Profile", "มาดามจือ", "คนคุยมาแน่", 2, "ขอไป 5 นาทีแร้ว ไหนอะไม่เหรมีคัยมาคุยเรย"),
+    val reviewItems = listOf(ReviewsItem("Profile", "หมีเนย", "คนคุยมาแน่", 5, "มะกี้เหงามาก อยู่ดีๆก้อมีคนชวรคุย"),
+        ReviewsItem("Profile", "หมูเด้ง", "คนคุยมาแน่", 4, "ก็ดี"),
+        ReviewsItem("Profile", "มาดามจือ", "คนคุยมาแน่", 2, "ขอไป 5 นาทีแร้ว ไหนอะไม่เหรมีคัยมาคุยเรย"),
+        ReviewsItem("Profile", "หมีเนย", "คนคุยมาแน่", 5, "มะกี้เหงามาก อยู่ดีๆก้อมีคนชวรคุย"),
+        ReviewsItem("Profile", "หมูเด้ง", "คนคุยมาแน่", 4, "ก็ดี"),
+        ReviewsItem("Profile", "มาดามจือ", "คนคุยมาแน่", 2, "ขอไป 5 นาทีแร้ว ไหนอะไม่เหรมีคัยมาคุยเรย"),
+        ReviewsItem("Profile", "หมีเนย", "คนคุยมาแน่", 5, "มะกี้เหงามาก อยู่ดีๆก้อมีคนชวรคุย"),
+        ReviewsItem("Profile", "หมูเด้ง", "คนคุยมาแน่", 4, "ก็ดี"),
+        ReviewsItem("Profile", "มาดามจือ", "คนคุยมาแน่", 2, "ขอไป 5 นาทีแร้ว ไหนอะไม่เหรมีคัยมาคุยเรย"),
     )
 
     Column(
@@ -101,7 +101,7 @@ fun PackageReviewScreen() {
 }
 
 @Composable
-fun ReviewCard(reviewItem: ReviewItem) {
+fun ReviewCard(reviewItem: ReviewsItem) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
