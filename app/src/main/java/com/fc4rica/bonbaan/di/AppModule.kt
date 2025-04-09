@@ -35,6 +35,7 @@ import com.fc4rica.bonbaan.ui.home.profile.OrderStatusDetailViewModel
 import com.fc4rica.bonbaan.ui.home.profile.OrdersStatusViewModel
 import com.fc4rica.bonbaan.ui.home.profile.PreviousReviewsViewModel
 import com.fc4rica.bonbaan.ui.home.profile.ProfileViewModel
+import com.fc4rica.bonbaan.ui.home.service.OrderSummaryViewModel
 import com.fc4rica.bonbaan.ui.home.service.OrderViewModel
 import com.fc4rica.bonbaan.ui.home.service.ServiceDetailViewModel
 import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordDetailViewModel
@@ -78,4 +79,5 @@ val appModule = module {
     viewModelOf(::CategorizeServiceViewModel)
     viewModelOf(::ServiceDetailViewModel)
     viewModelOf(::OrderViewModel)
+    viewModelOf(::OrderSummaryViewModel)
 }
