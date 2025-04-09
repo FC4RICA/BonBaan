@@ -31,7 +31,7 @@ class OrderRepositoryImpl(
     }
 
     override fun clearOrderRequest() {
-        TODO("Not yet implemented")
+        _orderRequest.value = null
     }
 
     override suspend fun sendOrderRequest(): Result<Order> {
@@ -45,7 +45,7 @@ class OrderRepositoryImpl(
         return result
     }
 
-    private suspend fun sendVowOrder(request: VowOrderRequest): Result<Order> {
+    override suspend fun sendVowOrder(request: VowOrderRequest): Result<Order> {
         val response = if (request.packageId.isNotEmpty()) {
             orderApiService.createVowOrder(request)
         } else {
@@ -55,7 +55,7 @@ class OrderRepositoryImpl(
         return handleOrderResponse(response)
     }
 
-    private suspend fun sendFulfillOrder(request: FulfillOrderRequest): Result<Order> {
+    override suspend fun sendFulfillOrder(request: FulfillOrderRequest): Result<Order> {
         val response = if (request.packageId.isNotEmpty()) {
             orderApiService.createFulfillOrder(request)
         } else {
@@ -90,16 +90,17 @@ class OrderRepositoryImpl(
     }
 
     override suspend fun getOrder(id: String): Result<Order> {
-        TODO("Not yet implemented")
-    }
+        return try {
+            val response = orderApiService.getOrder(id)
+            if (response.error != null || response.data == null) {
+                return Result.failure(Exception(response.error))
+            }
 
-
-    override suspend fun createVowOrder(request: VowOrderRequest): Result<Order> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun createFulfillOrder(request: FulfillOrderRequest): Result<Order> {
-        TODO("Not yet implemented")
+            val orders = response.data.toOrder()
+            Result.success(orders)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun approveOrder(id: String): Result<Unit> {
