@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fc4rica.bonbaan.domain.model.Category
 import com.fc4rica.bonbaan.domain.model.Service
+import com.fc4rica.bonbaan.domain.model.request.PaginationRequest
 import com.fc4rica.bonbaan.domain.repository.CategoryRepository
 import com.fc4rica.bonbaan.domain.repository.ServiceRepository
 import com.fc4rica.bonbaan.utils.CategoryUtils
@@ -54,7 +55,9 @@ class FeedViewModel(
         _state.update { it.copy(isPaginating = true) }
 
         viewModelScope.launch {
-            val result = serviceRepository.getRecommendedServices(page = currentPage, pageSize = pageSize)
+            val result = serviceRepository.getRecommendedServices(PaginationRequest(
+                page = currentPage, pageSize = pageSize
+            ))
             result.fold(
                 onSuccess = { newServices ->
                     val updatedList = _state.value.services + newServices
@@ -82,7 +85,9 @@ class FeedViewModel(
         _state.update { it.copy(isEndReached = false) }
 
         viewModelScope.launch {
-            val result = serviceRepository.getRecommendedServices(page = currentPage, pageSize = pageSize)
+            val result = serviceRepository.getRecommendedServices(PaginationRequest(
+                page = currentPage, pageSize = pageSize
+            ))
             result.fold(
                 onSuccess = { services ->
                     _state.update { it.copy(services = services) }

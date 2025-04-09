@@ -16,7 +16,6 @@ class ServiceRepositoryImpl(
                 pageSize = pagination.pageSize,
                 search = pagination.search,
                 orderBy = pagination.orderBy,
-                orderDirection = pagination.orderDirection
             )
             if (response.error != null || response.data == null) {
                 return Result.failure(Exception(response.error))
@@ -32,9 +31,14 @@ class ServiceRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun getRecommendedServices(page: Int, pageSize: Int): Result<List<Service>> {
+    override suspend fun getRecommendedServices(pagination: PaginationRequest): Result<List<Service>> {
         return try {
-            val response = serviceApiService.getRecommendedServices(page, pageSize)
+            val response = serviceApiService.getRecommendedServices(
+                page = pagination.page,
+                pageSize = pagination.pageSize,
+                search = pagination.search,
+                orderBy = pagination.orderBy,
+            )
             if (response.error != null || response.data == null) {
                 return Result.failure(Exception(response.error))
             }
@@ -44,9 +48,14 @@ class ServiceRepositoryImpl(
         }
     }
 
-    override suspend fun getPopularServices(page: Int, pageSize: Int): Result<List<Service>> {
+    override suspend fun getBestSellerServices(pagination: PaginationRequest): Result<List<Service>> {
         return try {
-            val response = serviceApiService.getPopularServices(page, pageSize)
+            val response = serviceApiService.getBestSellerServices(
+                page = pagination.page,
+                pageSize = pagination.pageSize,
+                search = pagination.search,
+                orderBy = pagination.orderBy,
+            )
             if (response.error != null || response.data == null) {
                 return Result.failure(Exception(response.error))
             }
@@ -56,7 +65,15 @@ class ServiceRepositoryImpl(
         }
     }
 
-    override suspend fun getServicesByCategory(categoryId: String): Result<List<Service>> {
-        TODO("Not yet implemented")
+    override suspend fun getServicesByCategory(id: String): Result<List<Service>> {
+        return try {
+            val response = serviceApiService.getServicesByCategory(id)
+            if (response.error != null || response.data == null) {
+                return Result.failure(Exception(response.error))
+            }
+            Result.success(response.data.map { it.toService() })
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 }
