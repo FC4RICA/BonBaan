@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class OrderFlowState(
+data class OrderUiState(
     val packages: List<Package> = emptyList(),
     val selectedPackageId: String? = null,
     val isVow: Boolean = true,
@@ -26,7 +26,7 @@ class OrderViewModel(
     private val packageRepository: PackageRepository,
     private val orderRepository: OrderRepository
 ) : ViewModel() {
-    private val _state = MutableStateFlow(OrderFlowState())
+    private val _state = MutableStateFlow(OrderUiState())
     val state = _state.asStateFlow()
 
     init {
@@ -58,8 +58,8 @@ class OrderViewModel(
                 onSuccess = { packages ->
                     _state.update { it.copy(packages = packages.filter { pack -> pack.orderType.id == orderTypeId }) }
                 },
-                onFailure = {
-                    _state.update { it.copy(errorMessage = it.errorMessage) }
+                onFailure = { error ->
+                    _state.update { it.copy(errorMessage = error.message) }
                 }
             )
         }
