@@ -66,7 +66,7 @@ data class PackageItems(
 
 @Composable
 fun OrderFormScreen() {
-    val initialPackageId = "3"
+    val initialPackageId = "2"
     var vowDetail by remember { mutableStateOf("") }
 
     val packages = listOf(
