@@ -50,14 +50,23 @@ class FilteredServiceViewModel(
 
         viewModelScope.launch {
             val result = when (_state.value.sortType) {
-                SortType.Recommend -> // TODO add search query
+                SortType.Recommend ->
                     serviceRepository.getRecommendedServices(
-                        page = currentPage,
-                        pageSize = pageSize
+                        PaginationRequest(
+                            page = currentPage,
+                            pageSize = pageSize,
+                            search = query
+                        )
                     )
 
-                SortType.Popular -> // TODO add search query
-                    serviceRepository.getPopularServices(page = currentPage, pageSize = pageSize)
+                SortType.Popular ->
+                    serviceRepository.getBestSellerServices(
+                        PaginationRequest(
+                            page = currentPage,
+                            pageSize = pageSize,
+                            search = query
+                        )
+                    )
 
                 SortType.Rating ->
                     serviceRepository.getServices(
@@ -99,12 +108,21 @@ class FilteredServiceViewModel(
             val result = when (_state.value.sortType) {
                 SortType.Recommend -> // TODO add search query
                     serviceRepository.getRecommendedServices(
-                        page = currentPage,
-                        pageSize = pageSize
+                        PaginationRequest(
+                            page = currentPage,
+                            pageSize = pageSize,
+                            search = query
+                        )
                     )
 
                 SortType.Popular -> // TODO add search query
-                    serviceRepository.getPopularServices(page = currentPage, pageSize = pageSize)
+                    serviceRepository.getBestSellerServices(
+                        PaginationRequest(
+                            page = currentPage,
+                            pageSize = pageSize,
+                            search = query
+                        )
+                    )
 
                 SortType.Rating ->
                     serviceRepository.getServices(
