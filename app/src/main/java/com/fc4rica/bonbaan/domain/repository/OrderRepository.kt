@@ -13,12 +13,12 @@ interface OrderRepository {
     fun updateOrderRequest(update: (OrderRequest?) -> OrderRequest?)
     fun clearOrderRequest()
     suspend fun sendOrderRequest(): Result<Order>
+    suspend fun sendVowOrder(request: VowOrderRequest): Result<Order>
+    suspend fun sendFulfillOrder(request: FulfillOrderRequest): Result<Order>
 
     suspend fun getOrders(): Result<List<Order>>
     suspend fun getOrder(id: String): Result<Order>
 
-    suspend fun createVowOrder(request: VowOrderRequest): Result<Order>
-    suspend fun createFulfillOrder(request: FulfillOrderRequest): Result<Order>
     suspend fun approveOrder(id: String): Result<Unit>
     suspend fun cancelOrder(id: String): Result<Unit>
     suspend fun completeOrder(id: String): Result<Unit>
