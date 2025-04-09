@@ -68,12 +68,7 @@ data class OrderDetail(
     val items: List<String>,
 )
 
-data class PackageItem(
-    val id: String,
-    val name: String,
-    val price: Int,
-    val items: String
-)
+
 
 
 @Composable
@@ -99,7 +94,7 @@ fun OrderSummaryScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Gray)
+            .background(MaterialTheme.colorScheme.background)
     ) {
 
         Column(
