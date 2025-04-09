@@ -47,16 +47,16 @@ class OrderViewModel(
     }
 
     private fun getPackages(orderRequest: OrderRequest?) {
-        val serviceId = when (orderRequest) {
-            is OrderRequest.Vow -> orderRequest.request.serviceId
-            is OrderRequest.Fulfill -> orderRequest.request.serviceId
+        val (serviceId, orderTypeId) = when (orderRequest) {
+            is OrderRequest.Vow -> orderRequest.request.serviceId to orderRequest.request.orderTypeID
+            is OrderRequest.Fulfill -> orderRequest.request.serviceId to orderRequest.request.orderTypeID
             else -> null
         } ?: return
         viewModelScope.launch {
-            val result = packageRepository.getPackagesByService(serviceId)
+            val result = packageRepository.getPackagesByService(serviceId!!)
             result.fold(
                 onSuccess = { packages ->
-                    _state.update { it.copy(packages = packages) }
+                    _state.update { it.copy(packages = packages.filter { pack -> pack.orderType.id == orderTypeId }) }
                 },
                 onFailure = {
                     _state.update { it.copy(errorMessage = it.errorMessage) }
@@ -102,4 +102,15 @@ class OrderViewModel(
         _state.update { it.copy(orderRequest = wrapped) }
     }
 
+    fun submitVowOrder() {
+        val current = (_state.value.orderRequest as? OrderRequest.Vow)?.request ?: return
+        val wrapped = OrderRequest.Vow(current)
+        orderRepository.setOrderRequest(wrapped)
+    }
+
+    fun submitFulfillOrder() {
+        val current = (_state.value.orderRequest as? OrderRequest.Fulfill)?.request ?: return
+        val wrapped = OrderRequest.Fulfill(current)
+        orderRepository.setOrderRequest(wrapped)
+    }
 }
