@@ -56,7 +56,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-data class PackageItem(
+data class PackageItems(
     val id: String,
     val name: String,
     val price: Int,
@@ -70,9 +70,9 @@ fun OrderFormScreen() {
     var vowDetail by remember { mutableStateOf("") }
 
     val packages = listOf(
-        PackageItem("1", "คนคุยทันใจ", 100,"ธูป"),
-        PackageItem("2", "แฟนดีไม่่หนีไม่จ่าย", 200,"เทียน"),
-        PackageItem("3", "อิอิซ่า", 300,"ปลาร้า")
+        PackageItems("1", "คนคุยทันใจ", 100,"ธูป"),
+        PackageItems("2", "แฟนดีไม่่หนีไม่จ่าย", 200,"เทียน"),
+        PackageItems("3", "อิอิซ่า", 300,"ปลาร้า")
     )
 
 
@@ -248,9 +248,9 @@ fun DatePickerSection() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PackageOption(
-    packages: List<PackageItem>,
-    selectedPackage: PackageItem?,
-    onPackageSelected: (PackageItem) -> Unit
+    packages: List<PackageItems>,
+    selectedPackage: PackageItems?,
+    onPackageSelected: (PackageItems) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
