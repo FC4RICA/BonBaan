@@ -29,25 +29,22 @@ class MainViewModel(
 
     private fun checkAuthentication() {
         viewModelScope.launch {
-            userPreferences.data.firstOrNull()?.let { prefs ->
-                val token = prefs.token
-                if (token.isNullOrEmpty()) {
-                    _isAuthenticated.value = false
-                    return@launch
-                }
-
-                // Validate token by fetching user profile
-                val result = authRepository.getProfile()
-                _isAuthenticated.value = result.isSuccess
-
-                if (result.isSuccess) {
-                    _isAuthenticated.value = true
-                    checkUserInterests()
-                } else {
-                    _isAuthenticated.value = false
-                }
-            } ?: run {
+            val prefs = userPreferences.data.firstOrNull()
+            val token = prefs?.token
+            if (token.isNullOrEmpty()) {
                 _isAuthenticated.value = false
+                _hasSelectedInterests.value = false
+                return@launch
+            }
+
+            // Validate token by fetching user profile
+            val result = authRepository.getProfile()
+            _isAuthenticated.value = result.isSuccess
+
+            if (result.isSuccess) {
+                checkUserInterests()
+            } else {
+                _hasSelectedInterests.value = false
             }
         }
     }
@@ -55,7 +52,14 @@ class MainViewModel(
     private fun checkUserInterests() {
         viewModelScope.launch {
             val result = interestRepository.getInterests()
-            _hasSelectedInterests.value = result.getOrNull()?.isNotEmpty() == true
+            result.fold(
+                onSuccess = { interests ->
+                    _hasSelectedInterests.value = interests.isNotEmpty()
+                },
+                onFailure = {
+                    _hasSelectedInterests.value = false
+                }
+            )
         }
     }
 
