@@ -1,21 +1,24 @@
 package com.fc4rica.bonbaan.ui.home.feed
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Work
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,13 +31,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fc4rica.bonbaan.domain.model.Attachment
 import com.fc4rica.bonbaan.domain.model.Category
 import com.fc4rica.bonbaan.domain.model.Service
 import com.fc4rica.bonbaan.ui.components.ServiceCard
+import com.fc4rica.bonbaan.utils.CategoryUtils
 
 val services = listOf(
     Service(
@@ -158,9 +162,41 @@ val services = listOf(
     )
 )
 
+val categoriesList = listOf(
+    Category(
+        id = "1",
+        name = "การเรียน",
+    ),
+    Category(
+        id = "2",
+        name = "การงาน",
+    ),
+    Category(
+        id = "3",
+        name = "ความรัก",
+    ),
+    Category(
+        id = "4",
+        name = "ครอบครัว",
+    ),
+    Category(
+        id = "5",
+        name = "สุขภาพ",
+    ),
+    Category(
+        id = "6",
+        name = "การเงิน",
+    ),
+    Category(
+        id = "7",
+        name = "การค้าขาย",
+    )
+)
+
 @Composable
 fun FeedScreen() {
     var searchValue by remember { mutableStateOf("") }
+    val categories = CategoryUtils.mapCategoriesIcon(categoriesList)
 
     Scaffold(
         topBar = {
@@ -180,20 +216,12 @@ fun FeedScreen() {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(0.dp),
+                horizontalArrangement = Arrangement.spacedBy(0.dp)
+
             ) {
                 item(span = { GridItemSpan(2) }) {
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Category()
-                }
-
-                item(span = { GridItemSpan(2) }) {
-                    Text(
-                        text = "แนะนำ",
-                        modifier = Modifier.padding(8.dp),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    CategoryRow(categories)
                 }
 
                 items(services) { service ->
@@ -205,44 +233,51 @@ fun FeedScreen() {
 }
 
 @Composable
-fun Category() {
-    Column(
+fun CategoryRow(categories: List<Category> = listOf()) {
+    Row(
         modifier = Modifier
-            .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface)
+            .horizontalScroll(rememberScrollState())
+            .padding(vertical = 8.dp, horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(
-            text = "หมวดหมู่", modifier = Modifier.padding(8.dp),
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
-        Row(
-            modifier = Modifier
-                .horizontalScroll(rememberScrollState())
-                .padding(8.dp)
-        ) {
-            SubCategory("ความรัก")
-            SubCategory("การงาน")
-            SubCategory("ค้าขาย")
-            SubCategory("การเงิน")
-            SubCategory("สุขภาพ")
+        categories.forEach { category ->
+            CategoryButton(category, {})
         }
     }
 }
 
 @Composable
-fun SubCategory(name: String) {
+fun CategoryButton(category: Category, onClick: (String) -> Unit) {
     Column(
-        modifier = Modifier.padding(top = 12.dp, start = 22.dp, end = 22.dp, bottom = 12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .clickable(onClick = { onClick(category.id) })
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Icon(
-            Icons.Filled.Work,
-            contentDescription = "Briefcase",
-            tint = MaterialTheme.colorScheme.primary
+        Box(
+            modifier = Modifier
+                .padding(bottom = 2.dp)
+                .border(
+                    width = 2.dp,
+                    color = MaterialTheme.colorScheme.surfaceContainer,
+                    shape = RoundedCornerShape(100)
+                )
+                .padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = category.icon ?: Icons.Filled.Error,
+                contentDescription = "Briefcase",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+        Text(
+            text = category.name,
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.Center
         )
-        Text(text = name, style = MaterialTheme.typography.bodyMedium)
     }
 }
 
