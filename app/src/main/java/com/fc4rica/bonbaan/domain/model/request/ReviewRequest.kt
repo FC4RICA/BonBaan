@@ -4,4 +4,5 @@ data class ReviewRequest(
     val serviceId: String,
     val rating: Int,
     val detail: String,
+    val orderId: String
 )

@@ -38,6 +38,7 @@ import com.fc4rica.bonbaan.ui.home.profile.ProfileViewModel
 import com.fc4rica.bonbaan.ui.home.service.OrderSummaryViewModel
 import com.fc4rica.bonbaan.ui.home.service.OrderViewModel
 import com.fc4rica.bonbaan.ui.home.service.PaymentViewModel
+import com.fc4rica.bonbaan.ui.home.service.ReviewOrderViewModel
 import com.fc4rica.bonbaan.ui.home.service.ServiceDetailViewModel
 import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordDetailViewModel
 import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordViewModel
@@ -82,4 +83,5 @@ val appModule = module {
     viewModelOf(::OrderViewModel)
     viewModelOf(::OrderSummaryViewModel)
     viewModelOf(::PaymentViewModel)
+    viewModelOf(::ReviewOrderViewModel)
 }

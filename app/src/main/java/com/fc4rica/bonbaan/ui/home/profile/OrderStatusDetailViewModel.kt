@@ -29,6 +29,36 @@ class OrderStatusDetailViewModel(
         getOrderDetail()
     }
 
+    fun cancelOrder() {
+        _state.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            val result = orderRepository.cancelOrder(orderId)
+            result.fold(
+                onSuccess = {
+                    _state.update { it.copy(isLoading = false) }
+                },
+                onFailure = { error ->
+                    _state.update { it.copy(errorMessage = error.message, isLoading = false) }
+                }
+            )
+        }
+    }
+
+    fun confirmOrder() {
+        _state.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            val result = orderRepository.approveOrder(orderId)
+            result.fold(
+                onSuccess = {
+                    _state.update { it.copy(isLoading = false) }
+                },
+                onFailure = { error ->
+                    _state.update { it.copy(errorMessage = error.message, isLoading = false) }
+                }
+            )
+        }
+    }
+
     private fun getOrderDetail() {
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {

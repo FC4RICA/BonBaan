@@ -45,6 +45,9 @@ sealed class Screen(val route: String) {
     data object Payment  : Screen("payment/{orderId}") {
         fun createRoute(orderId: String) = "payment/$orderId"
     }
+    data object Review : Screen("review/{orderId}") {
+        fun createRoute(orderId: String) = "review/$orderId"
+    }
 
     // Nested Screen (Inside VowRecord)
     data object VowRecordDetail : Screen("vowRecordDetail/{vowRecordId}") {
