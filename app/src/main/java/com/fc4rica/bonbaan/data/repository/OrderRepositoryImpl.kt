@@ -5,6 +5,7 @@ import com.fc4rica.bonbaan.data.remote.OrderApiService
 import com.fc4rica.bonbaan.data.remote.dto.ApiResponse
 import com.fc4rica.bonbaan.data.remote.dto.OrderResponse
 import com.fc4rica.bonbaan.data.remote.dto.toOrder
+import com.fc4rica.bonbaan.data.remote.dto.toStatus
 import com.fc4rica.bonbaan.domain.model.Order
 import com.fc4rica.bonbaan.domain.model.Status
 import com.fc4rica.bonbaan.domain.model.request.FulfillOrderRequest
@@ -26,6 +27,7 @@ class OrderRepositoryImpl(
     override fun setOrderRequest(request: OrderRequest) {
         _orderRequest.value = request
     }
+
     override fun updateOrderRequest(update: (OrderRequest?) -> OrderRequest?) {
         _orderRequest.update { current -> update(current) }
     }
@@ -108,21 +110,59 @@ class OrderRepositoryImpl(
     }
 
     override suspend fun cancelOrder(id: String): Result<Unit> {
-        TODO("Not yet implemented")
+        return try {
+            val response = orderApiService.cancelOrder(id)
+            if (response.error != null) {
+                return Result.failure(Exception(response.error))
+            }
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun completeOrder(id: String): Result<Unit> {
-        TODO("Not yet implemented")
+        return try {
+            val response = orderApiService.completeOrder(id)
+            if (response.error != null) {
+                return Result.failure(Exception(response.error))
+            }
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
 
     // Order Status
     override suspend fun getOrderStatuses(): Result<List<Status>> {
-        TODO("Not yet implemented")
+        return try {
+            val response = orderApiService.getOrderStatuses()
+            if (response.error != null || response.data == null) {
+                return Result.failure(Exception(response.error))
+            }
+
+            Result.success(response.data.map { it.toStatus() })
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun getOrdersByStatus(statusId: String): Result<List<Order>> {
-        TODO("Not yet implemented")
+        return try {
+            val userId = securePreferences.getUserData()?.id
+                ?: return Result.failure(Exception("User ID not found"))
+
+            val response = orderApiService.getOrders(userId, statusId)
+            if (response.error != null || response.data == null) {
+                return Result.failure(Exception(response.error))
+            }
+
+            val orders = response.data.map { it.toOrder() }
+            Result.success(orders)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun getOrdersCountByStatus(): Result<Map<Status, Int>> {
