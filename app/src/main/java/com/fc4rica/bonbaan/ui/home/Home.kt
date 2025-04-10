@@ -38,9 +38,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.fc4rica.bonbaan.R
+import com.fc4rica.bonbaan.ui.home.feed.CategorizeServiceScreen
 import com.fc4rica.bonbaan.ui.home.feed.FeedScreen
+import com.fc4rica.bonbaan.ui.home.feed.FilteredServiceScreen
 import com.fc4rica.bonbaan.ui.home.feed.SearchScreen
-import com.fc4rica.bonbaan.ui.home.feed.ServiceDetailScreen
+import com.fc4rica.bonbaan.ui.home.service.ServiceDetailScreen
 import com.fc4rica.bonbaan.ui.home.notification.NotificationScreen
 import com.fc4rica.bonbaan.ui.home.profile.MyReviewsScreen
 import com.fc4rica.bonbaan.ui.home.profile.OrderStatusDetailScreen
@@ -49,6 +51,7 @@ import com.fc4rica.bonbaan.ui.home.profile.ProfileScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderSummaryScreen
 import com.fc4rica.bonbaan.ui.home.service.PaymentScreen
+import com.fc4rica.bonbaan.ui.home.service.ServiceReviewScreen
 import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordDetailScreen
 import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordScreen
 import com.fc4rica.bonbaan.ui.navigation.Screen
@@ -104,6 +107,15 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     }
 
     //  Nested Feed Screens
+    composable(Screen.CategorizeService.route) {
+        CategorizeServiceScreen()
+    }
+    composable(
+        route = Screen.FilteredService.route,
+        arguments = listOf(navArgument("query") { type = NavType.StringType })
+    ) {
+        FilteredServiceScreen()
+    }
     composable(Screen.Search.route) {
         SearchScreen()
     }
@@ -112,6 +124,12 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         arguments = listOf(navArgument("serviceId") { type = NavType.StringType })
     ) {
         ServiceDetailScreen()
+    }
+    composable(
+        route = Screen.ServiceReview.route,
+        arguments = listOf(navArgument("serviceId") { type = NavType.StringType })
+    ) {
+        ServiceReviewScreen()
     }
 
     // Order Flow Screens
@@ -131,7 +149,7 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     // Nested VowRecord Screen
     composable(
         route = Screen.VowRecordDetail.route,
-        arguments = listOf(navArgument("vowId") { type = NavType.StringType })
+        arguments = listOf(navArgument("vowRecordId") { type = NavType.StringType })
     ) {
         VowRecordDetailScreen()
     }

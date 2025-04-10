@@ -1,4 +1,4 @@
-package com.fc4rica.bonbaan.ui.home.feed
+package com.fc4rica.bonbaan.ui.home.service
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -15,8 +15,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material3.Icon
@@ -41,7 +39,8 @@ data class ReviewsItem(
 
 @Composable
 fun PackageReviewScreen() {
-    val reviewItems = listOf(ReviewsItem("Profile", "หมีเนย", "คนคุยมาแน่", 5, "มะกี้เหงามาก อยู่ดีๆก้อมีคนชวรคุย"),
+    val reviewItems = listOf(
+        ReviewsItem("Profile", "หมีเนย", "คนคุยมาแน่", 5, "มะกี้เหงามาก อยู่ดีๆก้อมีคนชวรคุย"),
         ReviewsItem("Profile", "หมูเด้ง", "คนคุยมาแน่", 4, "ก็ดี"),
         ReviewsItem("Profile", "มาดามจือ", "คนคุยมาแน่", 2, "ขอไป 5 นาทีแร้ว ไหนอะไม่เหรมีคัยมาคุยเรย"),
         ReviewsItem("Profile", "หมีเนย", "คนคุยมาแน่", 5, "มะกี้เหงามาก อยู่ดีๆก้อมีคนชวรคุย"),
