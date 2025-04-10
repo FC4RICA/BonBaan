@@ -28,7 +28,16 @@ class ServiceRepositoryImpl(
     }
 
     override suspend fun getService(id: String): Result<Service> {
-        TODO("Not yet implemented")
+        return try {
+            val response = serviceApiService.getService(id)
+            if (response.error != null || response.data == null) {
+                return Result.failure(Exception(response.error))
+            }
+
+            Result.success(response.data.toService())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun getRecommendedServices(pagination: PaginationRequest): Result<List<Service>> {
