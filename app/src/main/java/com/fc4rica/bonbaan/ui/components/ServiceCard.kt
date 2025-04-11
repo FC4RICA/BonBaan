@@ -5,11 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -53,12 +52,12 @@ fun ServiceCard(service: Service) {
                     contentScale = ContentScale.Crop
                 )
                 Box(
-                    modifier = Modifier
+                    modifier = Modifier.offset(x = (6).dp, y = (12).dp)
                         .background(
                             MaterialTheme.colorScheme.primary,
-                            shape = RoundedCornerShape(8.dp)
+                            shape = RoundedCornerShape(100)
                         )
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .padding(horizontal = 16.dp, vertical = 2.dp)
                         .align(Alignment.BottomStart)
                 ) {
                     Text(
@@ -73,7 +72,8 @@ fun ServiceCard(service: Service) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(12.dp)
+                    .padding(top = 16.dp, start = 12.dp, end = 12.dp, bottom = 8.dp),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -101,7 +101,6 @@ fun ServiceCard(service: Service) {
 
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
 
                 Row {
                     Icon(
@@ -116,7 +115,6 @@ fun ServiceCard(service: Service) {
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = (service.packages.minByOrNull { it.price }?.price?.toString()
