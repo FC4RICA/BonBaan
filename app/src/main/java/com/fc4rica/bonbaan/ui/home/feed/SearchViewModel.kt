@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.ui.home.feed
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fc4rica.bonbaan.domain.model.Service
@@ -23,12 +24,15 @@ data class SearchUiState(
 
 @OptIn(FlowPreview::class)
 class SearchViewModel(
-    private val serviceRepository: ServiceRepository
+    private val serviceRepository: ServiceRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _state = MutableStateFlow(SearchUiState())
+    private val _query = savedStateHandle.get<String>("query") ?: ""
+
+    private val _state = MutableStateFlow(SearchUiState(query = _query))
     val state = _state.asStateFlow()
 
-    private val _queryFlow = MutableStateFlow("")
+    private val _queryFlow = MutableStateFlow(_query)
 
     init {
         viewModelScope.launch {

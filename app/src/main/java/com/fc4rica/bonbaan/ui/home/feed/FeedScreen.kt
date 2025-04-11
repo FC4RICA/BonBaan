@@ -39,7 +39,11 @@ import com.fc4rica.bonbaan.ui.components.ServiceCard
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun FeedScreen(viewModel: FeedViewModel = koinViewModel()) {
+fun FeedScreen(
+    onClickSearch: () -> Unit,
+    onClickCategory: (String) -> Unit,
+    viewModel: FeedViewModel = koinViewModel()
+) {
     val state by viewModel.state.collectAsState()
 
     Scaffold(
@@ -50,7 +54,7 @@ fun FeedScreen(viewModel: FeedViewModel = koinViewModel()) {
                     .background(MaterialTheme.colorScheme.primary)
                     .padding(vertical = 16.dp, horizontal = 24.dp),
             ) {
-                SearchBarPlaceholder(onClick = {})
+                SearchBarPlaceholder(onClick = onClickSearch)
             }
         },
 
@@ -72,7 +76,7 @@ fun FeedScreen(viewModel: FeedViewModel = koinViewModel()) {
 
             ) {
                 item(span = { GridItemSpan(2) }) {
-                    CategoryRow(state.categories)
+                    CategoryRow(state.categories, onClick = onClickCategory)
                 }
 
                 items(state.services) { service ->
@@ -84,7 +88,7 @@ fun FeedScreen(viewModel: FeedViewModel = koinViewModel()) {
 }
 
 @Composable
-fun CategoryRow(categories: List<Category> = listOf()) {
+fun CategoryRow(categories: List<Category> = listOf(), onClick: (String) -> Unit) {
     Box{
         Box(
             modifier = Modifier
@@ -103,7 +107,7 @@ fun CategoryRow(categories: List<Category> = listOf()) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 categories.forEach { category ->
-                    CategoryButton(category, {})
+                    CategoryButton(category, onClick)
                 }
             }
         }

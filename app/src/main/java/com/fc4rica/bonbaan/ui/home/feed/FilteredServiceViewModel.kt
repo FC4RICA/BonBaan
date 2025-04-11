@@ -22,68 +22,75 @@ data class FilteredServiceUiState(
 )
 
 sealed class SortType {
-    object Recommend : SortType()
-    object Popular : SortType()
-    object Rating : SortType()
+    data object Recommend : SortType()
+    data object Popular : SortType()
+    data object Rating : SortType()
 }
 
 class FilteredServiceViewModel(
     private val serviceRepository: ServiceRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val query = savedStateHandle.get<String>("query") ?: ""
+    private val _query = savedStateHandle.get<String>("query") ?: ""
 
-    private val _state = MutableStateFlow(FilteredServiceUiState(query = query))
+    private val _state = MutableStateFlow(FilteredServiceUiState(query = _query))
     val state = _state.asStateFlow()
 
     private var currentPage = 1
     private val pageSize = 10
 
     init {
-        getServicess()
+        getServices()
+    }
+
+    fun setSortType(newSortType: SortType) {
+        if (_state.value.sortType == newSortType) return
+        _state.update { it.copy(sortType = newSortType, services = emptyList(), isEndReached = false) }
+        getServices()
+    }
+
+    fun getServices() {
+        if (_state.value.isLoading) return
+        currentPage = 1
+        fetchServices(clearPrevious = true)
     }
 
     fun getMoreService() {
         if (_state.value.isLoading || _state.value.isPaginating || _state.value.isEndReached) return
+        fetchServices()
+    }
 
-        _state.update { it.copy(isLoading = true) }
+    private fun fetchServices(clearPrevious: Boolean = false) {
+        if (clearPrevious) {
+            _state.update { it.copy(isLoading = true) }
+        } else {
+            _state.update { it.copy(isPaginating = true) }
+        }
 
         viewModelScope.launch {
+            val paginationRequest = PaginationRequest(
+                page = currentPage,
+                pageSize = pageSize,
+                search = _state.value.query,
+                orderBy = if (_state.value.sortType is SortType.Rating) "rate" else null
+            )
+
             val result = when (_state.value.sortType) {
                 SortType.Recommend ->
-                    serviceRepository.getRecommendedServices(
-                        PaginationRequest(
-                            page = currentPage,
-                            pageSize = pageSize,
-                            search = query
-                        )
-                    )
+                    serviceRepository.getRecommendedServices(paginationRequest)
 
                 SortType.Popular ->
-                    serviceRepository.getBestSellerServices(
-                        PaginationRequest(
-                            page = currentPage,
-                            pageSize = pageSize,
-                            search = query
-                        )
-                    )
+                    serviceRepository.getBestSellerServices(paginationRequest)
 
                 SortType.Rating ->
-                    serviceRepository.getServices(
-                        PaginationRequest(
-                            page = currentPage,
-                            pageSize = pageSize,
-                            orderBy = "rate",
-                            search = query
-                        )
-                    )
+                    serviceRepository.getServices(paginationRequest)
             }
             result.fold(
                 onSuccess = { newServices ->
-                    val updatedList = _state.value.services + newServices
                     _state.update {
                         it.copy(
-                            services = updatedList,
+                            services = if (clearPrevious) newServices else it.services + newServices,
+                            isLoading = false,
                             isPaginating = false,
                             isEndReached = newServices.size < pageSize
                         )
@@ -92,54 +99,12 @@ class FilteredServiceViewModel(
                 },
                 onFailure = { error ->
                     _state.update {
-                        it.copy(errorMessage = error.message, isPaginating = false)
+                        it.copy(
+                            isLoading = false,
+                            isPaginating = false,
+                            errorMessage = error.message
+                        )
                     }
-                }
-            )
-        }
-    }
-
-    fun getServicess() {
-        if (_state.value.isLoading) return
-
-        _state.update { it.copy(isLoading = true) }
-
-        viewModelScope.launch {
-            val result = when (_state.value.sortType) {
-                SortType.Recommend -> // TODO add search query
-                    serviceRepository.getRecommendedServices(
-                        PaginationRequest(
-                            page = currentPage,
-                            pageSize = pageSize,
-                            search = query
-                        )
-                    )
-
-                SortType.Popular -> // TODO add search query
-                    serviceRepository.getBestSellerServices(
-                        PaginationRequest(
-                            page = currentPage,
-                            pageSize = pageSize,
-                            search = query
-                        )
-                    )
-
-                SortType.Rating ->
-                    serviceRepository.getServices(
-                        PaginationRequest(
-                            page = currentPage,
-                            pageSize = pageSize,
-                            orderBy = "rate",
-                            search = query
-                        )
-                    )
-            }
-            result.fold(
-                onSuccess = { services ->
-                    _state.update { it.copy(services = services, isLoading = false) }
-                },
-                onFailure = { error ->
-                    _state.update { it.copy(errorMessage = error.message, isLoading = false) }
                 }
             )
         }

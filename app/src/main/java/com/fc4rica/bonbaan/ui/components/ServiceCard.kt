@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.fc4rica.bonbaan.domain.model.Service
@@ -52,7 +53,8 @@ fun ServiceCard(service: Service) {
                     contentScale = ContentScale.Crop
                 )
                 Box(
-                    modifier = Modifier.offset(x = (6).dp, y = (12).dp)
+                    modifier = Modifier
+                        .offset(x = (6).dp, y = (12).dp)
                         .background(
                             MaterialTheme.colorScheme.primary,
                             shape = RoundedCornerShape(100)
@@ -75,34 +77,18 @@ fun ServiceCard(service: Service) {
                     .padding(top = 16.dp, start = 12.dp, end = 12.dp, bottom = 8.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
+                Text(
+                    text = service.name,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
+
+
+
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Text(
-                        text = service.name,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Row {
-                        Text(
-                            text = service.rate.toString(),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Icon(
-                            imageVector = Icons.Filled.Star,
-                            contentDescription = "Rating",
-                            modifier = Modifier.size(14.dp),
-                            tint = MaterialTheme.colorScheme.secondary
-                        )
-                    }
-
-                }
-
-
-                Row {
                     Icon(
                         imageVector = Icons.Filled.LocationOn,
                         contentDescription = "Location",
@@ -115,15 +101,53 @@ fun ServiceCard(service: Service) {
                     )
                 }
 
-
-                Text(
-                    text = (service.packages.minByOrNull { it.price }?.price?.toString()
-                        ?: "") + " ~ " + (service.packages.maxByOrNull { it.price }?.price?.toString()
-                        ?: ""),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = (service.packages.minByOrNull { it.price }?.price?.toString()
+                            ?: "") + " ~ " + (service.packages.maxByOrNull { it.price }?.price?.toString()
+                            ?: ""),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = service.rate.toString(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = "Rating",
+                            modifier = Modifier.size(16.dp),
+                            tint = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                }
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ServiceCardPreview() {
+    val service = Service(
+        id = "1",
+        name = "Service Name",
+        description = "Service Description",
+        rate = 4.5,
+        address = "Service Address",
+        categories = listOf(),
+        attachments = listOf(),
+        packages = listOf()
+    )
+
+    ServiceCard(service)
 }

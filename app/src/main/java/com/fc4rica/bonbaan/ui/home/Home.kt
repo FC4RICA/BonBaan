@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.Icons
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -88,7 +90,10 @@ fun HomeScreen() {
 fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     // Bottom Navigation Screens
     composable(Screen.Feed.route) {
-        FeedScreen()
+        FeedScreen(
+            onClickSearch = { navController.navigate(Screen.Search.createRoute("")) },
+            onClickCategory = { navController.navigate(Screen.CategorizeService.createRoute(it)) }
+        )
     }
     composable(Screen.VowRecord.route) {
         VowRecordScreen()
@@ -203,7 +208,8 @@ fun BonBaanBottomNavBar(
                     icon = {
                         Icon(
                             imageVector = section.icon,
-                            contentDescription = stringResource(section.title)
+                            contentDescription = stringResource(section.title),
+                            modifier = Modifier.size(28.dp)
                         )
                     },
                     label = { Text(stringResource(section.title)) },
