@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -28,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -238,16 +240,29 @@ fun FeedScreen() {
 
 @Composable
 fun CategoryRow(categories: List<Category> = listOf()) {
-    Row(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.surface)
-            .horizontalScroll(rememberScrollState())
-            .padding(vertical = 8.dp, horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        categories.forEach { category ->
-            CategoryButton(category, {})
+    Box() {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
+                .background(MaterialTheme.colorScheme.primary)
+        )
+        Box(
+            modifier = Modifier
+            .padding(8.dp)
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp))
+            .padding(vertical = 8.dp, horizontal = 16.dp)) {
+            Row(
+                modifier = Modifier
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                categories.forEach { category ->
+                    CategoryButton(category, {})
+                }
+            }
         }
+
     }
 }
 
@@ -255,8 +270,9 @@ fun CategoryRow(categories: List<Category> = listOf()) {
 fun CategoryButton(category: Category, onClick: (String) -> Unit) {
     Column(
         modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
             .clickable(onClick = { onClick(category.id) })
-            .padding(8.dp),
+            .padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
@@ -267,7 +283,7 @@ fun CategoryButton(category: Category, onClick: (String) -> Unit) {
                     color = MaterialTheme.colorScheme.surfaceContainer,
                     shape = RoundedCornerShape(100)
                 )
-                .padding(8.dp),
+                .padding(12.dp),
             contentAlignment = Alignment.Center
         ) {
             Icon(
