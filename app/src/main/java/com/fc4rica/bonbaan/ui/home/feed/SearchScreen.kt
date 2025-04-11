@@ -15,14 +15,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.fc4rica.bonbaan.R
-import com.fc4rica.bonbaan.ui.components.BonBaanTextField
+import com.fc4rica.bonbaan.ui.components.SearchBox
 
 @Composable
 fun SearchScreen() {
@@ -48,53 +46,11 @@ fun SearchScreen() {
         ,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        SearchBar(searchValue = searchValue, onValueChange = { searchValue = it })
+        SearchBox(searchValue = searchValue, onValueChange = { searchValue = it })
         SearchHistory()
         Recommend()
     }
 
-}
-
-@Composable
-fun SearchBar(searchValue: String, onValueChange: (String) -> Unit){
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp)
-            .background(
-                MaterialTheme.colorScheme.primary
-            ),
-        contentAlignment = Alignment.Center
-    ) {
-        Row( modifier = Modifier.padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically){
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                tint = Color.White
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-
-            BonBaanTextField(
-                label = "ค้นหา",
-                value = searchValue,
-                onValueChange = onValueChange
-            )
-
-            TextField(
-                value = "",
-                onValueChange = {},
-
-                placeholder = { Text("ค้นหา") },
-                modifier = Modifier.background(Color(0xFF5E17EB))
-
-                    .height(38.dp)
-                    .fillMaxWidth(0.9f)
-                    .clip(
-                        RoundedCornerShape(7.dp),
-                    ))
-        }
-    }
 }
 
 @Composable
