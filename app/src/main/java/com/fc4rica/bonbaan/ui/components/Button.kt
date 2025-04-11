@@ -3,8 +3,13 @@ package com.fc4rica.bonbaan.ui.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -69,8 +74,42 @@ fun BonBaanButton(
     }
 }
 
+@Composable
+fun BackButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    variant: ButtonVariant = ButtonVariant.PRIMARY,
+) {
+    val colors = when (variant) {
+        ButtonVariant.PRIMARY -> IconButtonDefaults.iconButtonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            disabledContainerColor = Color.LightGray,
+            disabledContentColor = Color.Gray
+        )
+        ButtonVariant.SECONDARY -> IconButtonDefaults.iconButtonColors(
+            containerColor = MaterialTheme.colorScheme.onPrimary,
+            contentColor = MaterialTheme.colorScheme.primary,
+            disabledContainerColor = Color.LightGray,
+            disabledContentColor = Color.Gray
+        )
+        else -> null
+    }
+
+    IconButton(
+        onClick = onClick,
+        modifier = modifier,
+        colors = colors!!
+    ) {
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = "back button",
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewBonBaanButton() {
-    BonBaanButton(text = "submit", onClick = {})
+    BackButton(onClick = {})
 }

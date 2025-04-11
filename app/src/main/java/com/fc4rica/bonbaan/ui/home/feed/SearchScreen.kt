@@ -20,31 +20,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.fc4rica.bonbaan.domain.model.Attachment
 import com.fc4rica.bonbaan.domain.model.Category
 import com.fc4rica.bonbaan.domain.model.Service
-import com.fc4rica.bonbaan.ui.components.SearchBox
+import com.fc4rica.bonbaan.ui.components.BackNavBar
+import com.fc4rica.bonbaan.ui.components.SearchBarPlaceholder
 
 val services = listOf(
     Service(
@@ -141,9 +134,20 @@ val services = listOf(
 
 @Composable
 fun SearchScreen() {
-    var searchValue by remember { mutableStateOf("") }
+
     Scaffold(
-        topBar = { SearchBox(searchValue = searchValue, onValueChange = { searchValue = it }) },
+        topBar = {
+            BackNavBar(
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+                onBackClick = { /*TODO*/ },
+                content = {
+                    SearchBarPlaceholder(
+                        onClick = { /*TODO*/ },
+                        text = "ค้นหาสถานที่บน",
+                    )
+                }
+            )
+        },
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
@@ -156,26 +160,21 @@ fun SearchScreen() {
                     bottom = 0.dp
                 )
         ) {
-            RecommendServices(services, {})
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 16.dp, end = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                item { Spacer(Modifier.height(4.dp)) }
+                items(services) { service ->
+                    RecommendServiceItem(service, onClick = {})
+                }
+                item { Spacer(Modifier.height(4.dp)) }
+            }
         }
     }
 
-}
-
-@Composable
-fun RecommendServices(services: List<Service> = listOf(), onClick: (String) -> Unit) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 16.dp, end = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        item { Spacer(Modifier.height(4.dp)) }
-        items(services) { service ->
-            RecommendServiceItem(service, onClick)
-        }
-        item { Spacer(Modifier.height(4.dp)) }
-    }
 }
 
 @Composable
@@ -239,50 +238,50 @@ fun RecommendServiceItem(service: Service, onClick: (String) -> Unit) {
     }
 }
 
-@Composable
-fun SearchHistory() {
-    Column(
-        modifier = Modifier
-            .padding(top = 12.dp)
-            .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.surface)
-    ) {
-        Text(
-            text = "ประวัติการค้นหา",
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold
-        )
-        HistoryItem("วัดฟ้าประทาน")
-        HistoryItem("วัดดอยคำ ยำอาฟเตอร์ยู")
-        HistoryItem("วัดดูยูมีน ไอดอนโน บัดไอเลิฟยู")
-    }
-
-}
-
-@Composable
-fun HistoryItem(name: String) {
-    Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(text = name, style = MaterialTheme.typography.bodyMedium)
-            Icon(
-                imageVector = Icons.Filled.Close,
-                contentDescription = "Close",
-                modifier = Modifier.size(14.dp),
-
-                tint = Color.Black
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        HorizontalDivider(color = Color.Gray, thickness = 1.dp)
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SearchScreenPreview() {
-    SearchScreen()
-}
+//@Composable
+//fun SearchHistory() {
+//    Column(
+//        modifier = Modifier
+//            .padding(top = 12.dp)
+//            .fillMaxWidth()
+//            .background(color = MaterialTheme.colorScheme.surface)
+//    ) {
+//        Text(
+//            text = "ประวัติการค้นหา",
+//            modifier = Modifier.padding(16.dp),
+//            style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary,
+//            fontWeight = FontWeight.Bold
+//        )
+//        HistoryItem("วัดฟ้าประทาน")
+//        HistoryItem("วัดดอยคำ ยำอาฟเตอร์ยู")
+//        HistoryItem("วัดดูยูมีน ไอดอนโน บัดไอเลิฟยู")
+//    }
+//
+//}
+//
+//@Composable
+//fun HistoryItem(name: String) {
+//    Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)) {
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+//        ) {
+//            Text(text = name, style = MaterialTheme.typography.bodyMedium)
+//            Icon(
+//                imageVector = Icons.Filled.Close,
+//                contentDescription = "Close",
+//                modifier = Modifier.size(14.dp),
+//
+//                tint = Color.Black
+//            )
+//        }
+//        Spacer(modifier = Modifier.height(8.dp))
+//        HorizontalDivider(color = Color.Gray, thickness = 1.dp)
+//    }
+//}
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun SearchScreenPreview() {
+//    SearchScreen()
+//}
