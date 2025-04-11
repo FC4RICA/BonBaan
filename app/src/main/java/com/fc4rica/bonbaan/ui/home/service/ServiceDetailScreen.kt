@@ -1,4 +1,4 @@
-package com.fc4rica.bonbaan.ui.home.feed
+package com.fc4rica.bonbaan.ui.home.service
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

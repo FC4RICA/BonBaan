@@ -1,14 +1,11 @@
 package com.fc4rica.bonbaan.ui.home
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.Icons
@@ -22,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,9 +34,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.fc4rica.bonbaan.R
+import com.fc4rica.bonbaan.ui.home.feed.CategorizeServiceScreen
 import com.fc4rica.bonbaan.ui.home.feed.FeedScreen
+import com.fc4rica.bonbaan.ui.home.feed.FilteredServiceScreen
 import com.fc4rica.bonbaan.ui.home.feed.SearchScreen
-import com.fc4rica.bonbaan.ui.home.feed.ServiceDetailScreen
+import com.fc4rica.bonbaan.ui.home.service.ServiceDetailScreen
 import com.fc4rica.bonbaan.ui.home.notification.NotificationScreen
 import com.fc4rica.bonbaan.ui.home.profile.MyReviewsScreen
 import com.fc4rica.bonbaan.ui.home.profile.OrderStatusDetailScreen
@@ -49,6 +47,7 @@ import com.fc4rica.bonbaan.ui.home.profile.ProfileScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderSummaryScreen
 import com.fc4rica.bonbaan.ui.home.service.PaymentScreen
+import com.fc4rica.bonbaan.ui.home.service.ServiceReviewScreen
 import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordDetailScreen
 import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordScreen
 import com.fc4rica.bonbaan.ui.navigation.Screen
@@ -91,7 +90,10 @@ fun HomeScreen() {
 fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     // Bottom Navigation Screens
     composable(Screen.Feed.route) {
-        FeedScreen(navController)
+        FeedScreen(
+            onClickSearch = { navController.navigate(Screen.Search.createRoute("")) },
+            onClickCategory = { navController.navigate(Screen.CategorizeService.createRoute(it)) }
+        )
     }
     composable(Screen.VowRecord.route) {
         VowRecordScreen()
@@ -104,6 +106,15 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     }
 
     //  Nested Feed Screens
+    composable(Screen.CategorizeService.route) {
+        CategorizeServiceScreen()
+    }
+    composable(
+        route = Screen.FilteredService.route,
+        arguments = listOf(navArgument("query") { type = NavType.StringType })
+    ) {
+        FilteredServiceScreen()
+    }
     composable(Screen.Search.route) {
         SearchScreen()
     }
@@ -112,6 +123,12 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         arguments = listOf(navArgument("serviceId") { type = NavType.StringType })
     ) {
         ServiceDetailScreen()
+    }
+    composable(
+        route = Screen.ServiceReview.route,
+        arguments = listOf(navArgument("serviceId") { type = NavType.StringType })
+    ) {
+        ServiceReviewScreen()
     }
 
     // Order Flow Screens
@@ -131,7 +148,7 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     // Nested VowRecord Screen
     composable(
         route = Screen.VowRecordDetail.route,
-        arguments = listOf(navArgument("vowId") { type = NavType.StringType })
+        arguments = listOf(navArgument("vowRecordId") { type = NavType.StringType })
     ) {
         VowRecordDetailScreen()
     }
@@ -177,19 +194,8 @@ fun BonBaanBottomNavBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .windowInsetsPadding(WindowInsets.navigationBars)
+            .background(MaterialTheme.colorScheme.primary)
     ) {
-        // Background with rounded top corners
-        Surface(
-            color = MaterialTheme.colorScheme.primary,
-            shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
-            shadowElevation = 4.dp,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(76.dp)
-                .align(androidx.compose.ui.Alignment.BottomCenter)
-        ) {}
-
         NavigationBar(
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -202,7 +208,8 @@ fun BonBaanBottomNavBar(
                     icon = {
                         Icon(
                             imageVector = section.icon,
-                            contentDescription = stringResource(section.title)
+                            contentDescription = stringResource(section.title),
+                            modifier = Modifier.size(28.dp)
                         )
                     },
                     label = { Text(stringResource(section.title)) },

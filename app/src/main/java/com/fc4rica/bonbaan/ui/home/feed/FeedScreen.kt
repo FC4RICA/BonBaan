@@ -1,214 +1,151 @@
 package com.fc4rica.bonbaan.ui.home.feed
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Work
-import androidx.compose.material3.Card
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.fc4rica.bonbaan.R
+import com.fc4rica.bonbaan.domain.model.Category
+import com.fc4rica.bonbaan.ui.components.SearchBarPlaceholder
+import com.fc4rica.bonbaan.ui.components.ServiceCard
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun FeedScreen(navController: NavHostController) {
-    var searchValue by remember { mutableStateOf("") }
+fun FeedScreen(
+    onClickSearch: () -> Unit,
+    onClickCategory: (String) -> Unit,
+    viewModel: FeedViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        SearchBar(searchValue = searchValue, onValueChange = { searchValue = it })
-        Spacer(modifier = Modifier.height(12.dp))
-        Category()
-        Spacer(modifier = Modifier.height(12.dp))
-        Recommended()
-
-    }
-
-}
-
-@Composable
-fun Category() {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .background(MaterialTheme.colorScheme.surface)) {
-        Text(
-            text = "หมวดหมู่", modifier = Modifier.padding(8.dp),
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
-        Row(modifier = Modifier
-            .horizontalScroll(rememberScrollState())
-            .padding(8.dp)) {
-            SubCategory("ความรัก")
-            SubCategory("การงาน")
-            SubCategory("ค้าขาย")
-            SubCategory("การเงิน")
-            SubCategory("สุขภาพ")
-        }
-    }
-}
-
-@Composable
-fun Recommended() {
-    val items = listOf(
-        "Sevice1", "Sevice2", "Sevice3", "Sevice4"
-    )
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .background(MaterialTheme.colorScheme.surface)) {
-        Text(
-            text = "แนะนำ", modifier = Modifier.padding(8.dp),
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(items) { item ->
-                RecommendationCard(title = item)
+    Scaffold(
+        topBar = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primary)
+                    .padding(vertical = 16.dp, horizontal = 24.dp),
+            ) {
+                SearchBarPlaceholder(onClick = onClickSearch)
             }
-        }
+        },
 
-    }
-}
-
-@Composable
-fun SubCategory(name: String) {
-    Column(
-        modifier = Modifier.padding(top = 12.dp, start = 22.dp, end = 22.dp, bottom = 12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            Icons.Filled.Work,
-            contentDescription = "Briefcase",
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Text(text = name, style = MaterialTheme.typography.bodyMedium)
-    }
-}
-
-
-@Composable
-fun RecommendationCard(title: String) {
-    Card(
-        modifier = Modifier
-            .height(250.dp)
-            .width(220.dp)
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clip(RoundedCornerShape(12.dp)),
-
-        ) {
-        Column(
+        ) { innerPadding ->
+        Box(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .fillMaxSize()
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    bottom = 0.dp
+                )
+                .background(MaterialTheme.colorScheme.surfaceContainer)
         ) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(0.dp),
+                horizontalArrangement = Arrangement.spacedBy(0.dp)
 
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Image(
-                    painter = painterResource(id = R.drawable.logo1),
-                    contentDescription = "Logo",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(130.dp)
-                )
-                Box(
-                    modifier = Modifier
-                        .background(
-                            MaterialTheme.colorScheme.primary,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                        .align(Alignment.BottomStart)
-                ) {
-                    Text(
-                        text = "หมวดหมู่",
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-
-            Column(modifier = Modifier.padding(12.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Row {
-                        Text(
-                            text = "Rating ",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(text = "icon")
-                    }
-
+            ) {
+                item(span = { GridItemSpan(2) }) {
+                    CategoryRow(state.categories, onClick = onClickCategory)
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Row {
-                    Text(text = "icon")
-                    Text(
-                        text = " LocationName",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                items(state.services) { service ->
+                    ServiceCard(service)
                 }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "฿Price",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
             }
         }
+    }
+}
+
+@Composable
+fun CategoryRow(categories: List<Category> = listOf(), onClick: (String) -> Unit) {
+    Box{
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
+                .background(MaterialTheme.colorScheme.primary)
+        )
+        Box(
+            modifier = Modifier
+            .padding(8.dp)
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp))
+            .padding(vertical = 8.dp, horizontal = 16.dp)) {
+            Row(
+                modifier = Modifier
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                categories.forEach { category ->
+                    CategoryButton(category, onClick)
+                }
+            }
+        }
+
+    }
+}
+
+@Composable
+fun CategoryButton(category: Category, onClick: (String) -> Unit) {
+    Column(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .clickable(onClick = { onClick(category.id) })
+            .padding(4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(bottom = 2.dp)
+                .border(
+                    width = 2.dp,
+                    color = MaterialTheme.colorScheme.surfaceContainer,
+                    shape = RoundedCornerShape(100)
+                )
+                .padding(12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = category.icon ?: Icons.Filled.Error,
+                contentDescription = "Briefcase",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+        Text(
+            text = category.name,
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.Center
+        )
     }
 }
