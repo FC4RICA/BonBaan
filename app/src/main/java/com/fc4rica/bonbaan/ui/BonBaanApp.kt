@@ -29,7 +29,7 @@ fun BonBaanApp(mainViewModel: MainViewModel = koinViewModel()) {
             if (isAuthenticated == null || hasSelectedInterests == null) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(
-                        modifier = Modifier.size(160.dp),
+                        modifier = Modifier.size(64.dp),
                         color = MaterialTheme.colorScheme.primary
                     )
                 }

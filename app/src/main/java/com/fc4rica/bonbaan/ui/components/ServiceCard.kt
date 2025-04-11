@@ -79,7 +79,7 @@ fun ServiceCard(service: Service) {
             ) {
                 Text(
                     text = service.name,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
 

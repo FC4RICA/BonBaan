@@ -2,14 +2,10 @@ package com.fc4rica.bonbaan.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -27,28 +23,20 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SearchBox(searchValue: String, onValueChange: (String) -> Unit) {
-    Box(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
-            .background(
-                MaterialTheme.colorScheme.primary
-            ),
-        contentAlignment = Alignment.Center
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(vertical = 16.dp, horizontal = 24.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                tint = Color.White
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-
-            SearchBarPlaceholder(onClick = {})
-        }
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = "Return Button",
+            tint = Color.White
+        )
+        SearchBarPlaceholder(onClick = {})
     }
 }
 
@@ -72,9 +60,16 @@ fun SearchBarPlaceholder(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            if (text.isNotEmpty()) { Text(text) }
-            else {Text(placeholderText, color = Color.Gray)}
-            Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+            if (text.isNotEmpty()) {
+                Text(text)
+            } else {
+                Text(placeholderText, color = Color.Gray)
+            }
+            Icon(
+                Icons.Default.Search,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }
