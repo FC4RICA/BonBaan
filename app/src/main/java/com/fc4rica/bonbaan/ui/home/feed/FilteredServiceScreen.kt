@@ -61,7 +61,9 @@ fun FilteredServiceScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surfaceContainer),
         topBar = {
             BackNavBar(
                 modifier = Modifier.background(MaterialTheme.colorScheme.surface),
@@ -77,6 +79,7 @@ fun FilteredServiceScreen(
     ) { innerPadding ->
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .padding(
                     top = innerPadding.calculateTopPadding(),

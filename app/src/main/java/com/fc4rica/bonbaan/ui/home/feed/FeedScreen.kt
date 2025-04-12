@@ -51,13 +51,15 @@ fun FeedScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.primary)
-                    .padding(vertical = 16.dp, horizontal = 24.dp),
+                    .padding(vertical = 20.dp, horizontal = 24.dp),
             ) {
                 SearchBarPlaceholder(onClick = onClickSearch)
             }
         },
-
-        ) { innerPadding ->
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -82,7 +84,7 @@ fun FeedScreen(
 
 @Composable
 fun CategoryRow(categories: List<Category> = listOf(), onClick: (String) -> Unit) {
-    Box{
+    Box {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -91,9 +93,10 @@ fun CategoryRow(categories: List<Category> = listOf(), onClick: (String) -> Unit
         )
         Box(
             modifier = Modifier
-            .padding(8.dp)
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp))
-            .padding(vertical = 8.dp, horizontal = 16.dp)) {
+                .padding(8.dp)
+                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(16.dp))
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+        ) {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {

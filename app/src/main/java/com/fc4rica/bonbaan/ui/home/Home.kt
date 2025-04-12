@@ -117,7 +117,7 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         FilteredServiceScreen(
             onBackClick = { navController.popBackStack() },
             onServiceClick = { navController.navigate(Screen.ServiceDetail.createRoute(it)) },
-            onSearching = { query -> navController.navigate(Screen.FilteredService.createRoute(query)) }
+            onSearching = { navController.navigate(Screen.Search.createRoute(it)) }
         )
     }
     composable(Screen.Search.route) {

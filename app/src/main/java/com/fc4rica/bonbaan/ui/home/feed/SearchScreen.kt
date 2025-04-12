@@ -38,7 +38,7 @@ import coil3.compose.AsyncImage
 import com.fc4rica.bonbaan.domain.model.Service
 import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.LoadingIndicator
-import com.fc4rica.bonbaan.ui.components.SearchBarPlaceholder
+import com.fc4rica.bonbaan.ui.components.SearchBarInput
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -55,19 +55,22 @@ fun SearchScreen(
                 modifier = Modifier.background(MaterialTheme.colorScheme.surface),
                 onBackClick = onBackClick,
                 content = {
-                    SearchBarPlaceholder(
-                        onClick = { onSearching(state.query) },
-                        text = state.query,
+                    SearchBarInput(
+                        query = state.query,
+                        onQueryChange = { viewModel.updateSearchQuery(it) },
+                        onSearch = onSearching,
+                        placeholderText = "ค้นหาสถานที่บน"
                     )
                 }
             )
         },
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(MaterialTheme.colorScheme.surfaceContainer),
     ) { innerPadding ->
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .padding(
                     top = innerPadding.calculateTopPadding(),
@@ -92,7 +95,6 @@ fun SearchScreen(
             }
         }
     }
-
 }
 
 @Composable
