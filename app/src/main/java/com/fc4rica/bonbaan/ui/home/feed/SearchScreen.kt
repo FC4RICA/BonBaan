@@ -26,6 +26,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,117 +35,29 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.fc4rica.bonbaan.domain.model.Attachment
-import com.fc4rica.bonbaan.domain.model.Category
 import com.fc4rica.bonbaan.domain.model.Service
 import com.fc4rica.bonbaan.ui.components.BackNavBar
+import com.fc4rica.bonbaan.ui.components.LoadingIndicator
 import com.fc4rica.bonbaan.ui.components.SearchBarPlaceholder
-
-val services = listOf(
-    Service(
-        id = "1",
-        name = "วัดฟ้าประทาน",
-        address = "KMUTT",
-        categories = listOf(Category(id = "1", name = "ความรัก")),
-        rate = 4.5,
-        attachments = listOf(Attachment(id = "1", url = "https://picsum.photos/200")),
-        description = "This is a description of the service"
-    ),
-    Service(
-        id = "1",
-        name = "วัดฟ้าประทาน",
-        address = "KMUTT",
-        categories = listOf(Category(id = "1", name = "ความรัก")),
-        rate = 4.5,
-        attachments = listOf(Attachment(id = "1", url = "https://picsum.photos/200")),
-        description = "This is a description of the service"
-    ),
-    Service(
-        id = "1",
-        name = "วัดฟ้าประทาน",
-        address = "KMUTT",
-        categories = listOf(Category(id = "1", name = "ความรัก")),
-        rate = 4.5,
-        attachments = listOf(Attachment(id = "1", url = "https://picsum.photos/200")),
-        description = "This is a description of the service"
-    ),
-    Service(
-        id = "1",
-        name = "วัดฟ้าประทาน",
-        address = "KMUTT",
-        categories = listOf(Category(id = "1", name = "ความรัก")),
-        rate = 4.5,
-        attachments = listOf(Attachment(id = "1", url = "https://picsum.photos/200")),
-        description = "This is a description of the service"
-    ),
-    Service(
-        id = "1",
-        name = "วัดฟ้าประทาน",
-        address = "KMUTT",
-        categories = listOf(Category(id = "1", name = "ความรัก")),
-        rate = 4.5,
-        attachments = listOf(Attachment(id = "1", url = "https://picsum.photos/200")),
-        description = "This is a description of the service"
-    ),
-    Service(
-        id = "1",
-        name = "วัดฟ้าประทาน",
-        address = "KMUTT",
-        categories = listOf(Category(id = "1", name = "ความรัก")),
-        rate = 4.5,
-        attachments = listOf(Attachment(id = "1", url = "https://picsum.photos/200")),
-        description = "This is a description of the service"
-    ),
-    Service(
-        id = "1",
-        name = "วัดฟ้าประทาน",
-        address = "KMUTT",
-        categories = listOf(Category(id = "1", name = "ความรัก")),
-        rate = 4.5,
-        attachments = listOf(Attachment(id = "1", url = "https://picsum.photos/200")),
-        description = "This is a description of the service"
-    ),
-    Service(
-        id = "1",
-        name = "วัดฟ้าประทาน",
-        address = "KMUTT",
-        categories = listOf(Category(id = "1", name = "ความรัก")),
-        rate = 4.5,
-        attachments = listOf(Attachment(id = "1", url = "https://picsum.photos/200")),
-        description = "This is a description of the service"
-    ),
-    Service(
-        id = "1",
-        name = "วัดฟ้าประทาน",
-        address = "KMUTT",
-        categories = listOf(Category(id = "1", name = "ความรัก")),
-        rate = 4.5,
-        attachments = listOf(Attachment(id = "1", url = "https://picsum.photos/200")),
-        description = "This is a description of the service"
-    ),
-    Service(
-        id = "1",
-        name = "วัดฟ้าประทาน",
-        address = "KMUTT",
-        categories = listOf(Category(id = "1", name = "ความรัก")),
-        rate = 4.5,
-        attachments = listOf(Attachment(id = "1", url = "https://picsum.photos/200")),
-        description = "This is a description of the service"
-    )
-)
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun SearchScreen() {
+fun SearchScreen(
+    onBackClick: () -> Unit,
+    onSearching: (String) -> Unit,
+    viewModel: SearchViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsState()
 
     Scaffold(
         topBar = {
             BackNavBar(
                 modifier = Modifier.background(MaterialTheme.colorScheme.surface),
-                onBackClick = { /*TODO*/ },
+                onBackClick = onBackClick,
                 content = {
                     SearchBarPlaceholder(
-                        onClick = { /*TODO*/ },
-                        text = "ค้นหาสถานที่บน",
+                        onClick = { onSearching(state.query) },
+                        text = state.query,
                     )
                 }
             )
@@ -160,17 +74,21 @@ fun SearchScreen() {
                     bottom = 0.dp
                 )
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 16.dp, end = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                item { Spacer(Modifier.height(4.dp)) }
-                items(services) { service ->
-                    RecommendServiceItem(service, onClick = {})
+            if (state.searchResult.isEmpty() && state.isLoading) {
+                LoadingIndicator()
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 16.dp, end = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    item { Spacer(Modifier.height(4.dp)) }
+                    items(state.searchResult) { service ->
+                        RecommendServiceItem(service, onClick = {})
+                    }
+                    item { Spacer(Modifier.height(4.dp)) }
                 }
-                item { Spacer(Modifier.height(4.dp)) }
             }
         }
     }

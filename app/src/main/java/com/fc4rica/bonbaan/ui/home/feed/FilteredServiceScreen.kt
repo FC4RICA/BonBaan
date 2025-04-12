@@ -5,6 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
@@ -13,36 +17,64 @@ import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fc4rica.bonbaan.ui.components.BackNavBar
+import com.fc4rica.bonbaan.ui.components.LoadingIndicator
 import com.fc4rica.bonbaan.ui.components.SearchBarPlaceholder
+import com.fc4rica.bonbaan.ui.components.ServiceCard
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun FilteredServiceScreen() {
+fun FilteredServiceScreen(
+    onBackClick: () -> Unit,
+    onServiceClick: (String) -> Unit,
+    onSearching: (String) -> Unit,
+    viewModel: FilteredServiceViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsState()
+
+    val selectedTabIndex = when (state.sortType) {
+        SortType.Recommend -> 0
+        SortType.Popular -> 1
+        SortType.Rating -> 2
+    }
+
+    val gridState = rememberLazyGridState()
+    LaunchedEffect(gridState) {
+        snapshotFlow { gridState.layoutInfo }
+            .collect { layoutInfo ->
+                val totalItems = layoutInfo.totalItemsCount
+                val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+
+                // Trigger when user scrolls within 3 items of the end
+                if (lastVisibleItem >= totalItems - 3) {
+                    viewModel.getMoreService()
+                }
+            }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             BackNavBar(
                 modifier = Modifier.background(MaterialTheme.colorScheme.surface),
-                onBackClick = { /*TODO*/ },
+                onBackClick = onBackClick,
                 content = {
                     SearchBarPlaceholder(
-                        onClick = { /*TODO*/ },
-                        text = "ค้นหาสถานที่บน",
+                        onClick = { onSearching(state.query) },
+                        text = state.query,
                     )
                 }
             )
         }
-    ){ innerPadding ->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.surfaceContainer)
@@ -51,16 +83,38 @@ fun FilteredServiceScreen() {
                     bottom = 0.dp
                 )
         ) {
-            FilterTabs()
+            FilterTabs(
+                selectedTabIndex = selectedTabIndex,
+                onTabSelected = { index ->
+                    when (index) {
+                        0 -> viewModel.setSortType(SortType.Recommend)
+                        1 -> viewModel.setSortType(SortType.Popular)
+                        2 -> viewModel.setSortType(SortType.Rating)
+                    }
+                }
+            )
+            if (state.isLoading && state.services.isEmpty()) {
+                LoadingIndicator()
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    items(state.services) { service ->
+                        ServiceCard(service, onServiceClick)
+                    }
+                }
+            }
         }
     }
-
 }
 
 @Composable
-fun FilterTabs() {
+fun FilterTabs(
+    selectedTabIndex: Int,
+    onTabSelected: (Int) -> Unit
+) {
     val tabs = listOf("แนะนำ", "ขายดี", "รีวิวดี")
-    var selectedTabIndex by remember { mutableStateOf(0) }
 
     TabRow(
         selectedTabIndex = selectedTabIndex,
@@ -79,7 +133,7 @@ fun FilterTabs() {
         tabs.forEachIndexed { index, title ->
             Tab(
                 selected = selectedTabIndex == index,
-                onClick = { selectedTabIndex = index },
+                onClick = { onTabSelected(index) },
                 selectedContentColor = MaterialTheme.colorScheme.primary,
                 unselectedContentColor = Color.Gray,
             ) {
@@ -92,10 +146,4 @@ fun FilterTabs() {
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewFilteredServiceScreen() {
-    FilteredServiceScreen()
 }

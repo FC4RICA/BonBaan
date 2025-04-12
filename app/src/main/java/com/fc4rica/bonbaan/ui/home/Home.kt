@@ -92,7 +92,8 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     composable(Screen.Feed.route) {
         FeedScreen(
             onClickSearch = { navController.navigate(Screen.Search.createRoute("")) },
-            onClickCategory = { navController.navigate(Screen.CategorizeService.createRoute(it)) }
+            onClickCategory = { navController.navigate(Screen.CategorizeService.createRoute(it)) },
+            onClickService = { navController.navigate(Screen.ServiceDetail.createRoute(it)) }
         )
     }
     composable(Screen.VowRecord.route) {
@@ -113,10 +114,17 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         route = Screen.FilteredService.route,
         arguments = listOf(navArgument("query") { type = NavType.StringType })
     ) {
-        FilteredServiceScreen()
+        FilteredServiceScreen(
+            onBackClick = { navController.popBackStack() },
+            onServiceClick = { navController.navigate(Screen.ServiceDetail.createRoute(it)) },
+            onSearching = { query -> navController.navigate(Screen.FilteredService.createRoute(query)) }
+        )
     }
     composable(Screen.Search.route) {
-        SearchScreen()
+        SearchScreen(
+            onBackClick = { navController.popBackStack() },
+            onSearching = { navController.navigate(Screen.FilteredService.createRoute(it)) }
+        )
     }
     composable(
         route = Screen.ServiceDetail.route,
@@ -172,8 +180,11 @@ sealed class HomeSection(
     val screen: Screen
 ) {
     data object Feed : HomeSection(R.string.home_feed, Icons.Filled.Home, Screen.Feed)
-    data object VowRecord : HomeSection(R.string.home_vow_record,
-        Icons.AutoMirrored.Filled.StickyNote2, Screen.VowRecord)
+    data object VowRecord : HomeSection(
+        R.string.home_vow_record,
+        Icons.AutoMirrored.Filled.StickyNote2, Screen.VowRecord
+    )
+
     data object Notification :
         HomeSection(R.string.home_notification, Icons.Filled.Notifications, Screen.Notification)
 

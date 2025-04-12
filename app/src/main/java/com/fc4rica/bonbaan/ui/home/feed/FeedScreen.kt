@@ -40,6 +40,7 @@ import org.koin.androidx.compose.koinViewModel
 fun FeedScreen(
     onClickSearch: () -> Unit,
     onClickCategory: (String) -> Unit,
+    onClickService: (String) -> Unit,
     viewModel: FeedViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -72,7 +73,7 @@ fun FeedScreen(
                 modifier = Modifier.fillMaxSize(),
             ) {
                 items(state.services) { service ->
-                    ServiceCard(service)
+                    ServiceCard(service, onClickService)
                 }
             }
         }
