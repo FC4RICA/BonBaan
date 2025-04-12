@@ -49,7 +49,7 @@ class FilteredServiceViewModel(
         getServices()
     }
 
-    fun getServices() {
+    private fun getServices() {
         if (_state.value.isLoading) return
         currentPage = 1
         fetchServices(clearPrevious = true)

@@ -24,18 +24,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.fc4rica.bonbaan.domain.model.Service
 
 @Composable
-fun ServiceCard(service: Service) {
+fun ServiceCard(service: Service, onClick: (String) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(0.75f)
             .padding(8.dp),
+        onClick = { onClick(service.id) },
         shape = RoundedCornerShape(8.dp)
     ) {
         Column(
@@ -79,7 +79,7 @@ fun ServiceCard(service: Service) {
             ) {
                 Text(
                     text = service.name,
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
 
@@ -133,21 +133,4 @@ fun ServiceCard(service: Service) {
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ServiceCardPreview() {
-    val service = Service(
-        id = "1",
-        name = "Service Name",
-        description = "Service Description",
-        rate = 4.5,
-        address = "Service Address",
-        categories = listOf(),
-        attachments = listOf(),
-        packages = listOf()
-    )
-
-    ServiceCard(service)
 }
