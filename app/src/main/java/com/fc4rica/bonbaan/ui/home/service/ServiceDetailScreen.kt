@@ -48,6 +48,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.domain.model.Category
+import com.fc4rica.bonbaan.domain.model.Package
+import com.fc4rica.bonbaan.domain.model.Review
+import com.fc4rica.bonbaan.domain.model.Service
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
 
@@ -55,17 +58,18 @@ import com.fc4rica.bonbaan.utils.CategoryUtils
 
 enum class Choice { Vow, Fullfill }
 
-data class ReviewItem(
-    val rating: Int,
-    val comment: String
-)
-
-
-data class PackageItem(
-    val name: String,
-    val price: String,
-    val detailItems: List<String>,
-    val reviewItems:List<ReviewItem>
+data class StateData (
+    val service: Service = Service(
+        id = "123",
+        name = "Service title",
+        description = "service description",
+        rate = 3.6,
+        address = "KMUTT",
+        categories = listOf(),
+        packages = listOf(),
+        attachments = listOf(),
+        reviews = listOf(),
+    )
 )
 
 @Composable
@@ -75,59 +79,11 @@ fun ServiceDetailScreen () {
 
     var selectedChoice by remember { mutableStateOf(Choice.Vow) }
 
-    val vowPackageList = listOf(
-        PackageItem(
-            "ชุดคนคุยเร่นๆ",
-            "฿ 39",
-            listOf("ดอกไม้ 1 ดอก", "ธูป 1 ดอก", "เทียน 1 คู่"),
-            listOf(
-                ReviewItem(5, "มะกี้เหงามาก อยู่ดีๆก้อมีคนชวรคุย"),
-                ReviewItem(4, "ก็ดี"),
-                ReviewItem(2, "ขอไป 5 นาทีแร้ว ไหนอะไม่เหรมีคัยมาคุยเรย")
-            )
-        ),
-        PackageItem(
-            "ชุดแฟนไม่หนี แถมฟรีความสุข",
-            "฿ 89",
-            listOf("ดอกกุหลาบสีแดง 9 ดอก", "ธูปแดง 9 ดอก", "เทียน 1 คู่", "น้ำแดง 1 ขวด"),
-            listOf(
-                ReviewItem(5, "มะกี้ทะเลาะกับแฟน ตอนนี้ดีกันระ"),
-                ReviewItem(4, "ก็ดี"),
-                ReviewItem(2, "ขอไป 5 นาทีแร้ว แฟนมะเหนรักเรย แง")
-            )
-        ),
-        PackageItem(
-            "ชุดเนื้อคู่ด่วน",
-            "฿ 159",
-            listOf("ดอกไม้ 12 ดอก", "น้ำเขียว 1 ขวด", "เทียน 1 คู่"),
-            listOf(
-                ReviewItem(5, "ขอเมื่อกี้ ตอนนี้มีแฟนระ"),
-                ReviewItem(4, "ก็ดี"),
-                ReviewItem(2, "ขอไป 5 นาทีแร้ว ไหนอะแฟร")
-            )
-        )
-    )
-
-    val fulfillPackageList = listOf(
-        PackageItem(
-            "ชุดขอบคุณเทพ", "฿ 59", listOf("น้ำแดง 1 ขวด", "พวงมาลัย 1 พวง"), listOf(
-                ReviewItem(5, "ได้ตามบรีฟเรย ขอบคุรจร้า"),
-                ReviewItem(4, "ขอบคุนงับ"),
-                ReviewItem(2, "สมหวังอย่ แต่ช้าอ้ะ")
-            )
-        ),
-        PackageItem(
-            "ชุดแก้บนจัดเต็ม", "฿ 3999", listOf("นางรำ 50 คน", "วงดนตรีไทย"), listOf(
-                ReviewItem(5, "ได้ตามบรีฟเรย ขอบคุรจร้า"),
-                ReviewItem(4, "ก็ดี แต่ช้าไปนิสน้า"),
-                ReviewItem(2, "ช้ามาก")
-            )
-        )
-    )
+    val state = StateData()
 
     val packageList = when (selectedChoice) {
-        Choice.Vow -> vowPackageList
-        Choice.Fullfill -> fulfillPackageList
+        Choice.Vow -> state.service.packages.filter { it.orderType.name == "บนบาน" }
+        Choice.Fullfill -> state.service.packages.filter { it.orderType.name == "แก้บน" }
     }
 
     var selectedPackage by remember { mutableStateOf(packageList.first()) }
@@ -135,8 +91,9 @@ fun ServiceDetailScreen () {
     LaunchedEffect(selectedChoice) {
         selectedPackage = packageList.first()
     }
+
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(
+        Column( 
             modifier = Modifier.fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
@@ -242,7 +199,7 @@ fun ServiceDetailScreen () {
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Text("พระตรีมูรติเป็นเทพแห่งความรักและสมหวังที่ผู้คนเคารพบูชา โดยเฉพาะในเรื่องความรัก การงาน และโชคลาภ การบนบานนิยมใช้ดอกกุหลาบแดง ธูปแดง 9 ดอก และเทียนแดง 1 คู่ พิธีมักทำวันพฤหัสบดี เวลา 21:30 น. ซึ่งเชื่อว่าเป็นเวลาศักดิ์สิทธิ์ในการขอพรให้สำเร็จผล")
+                Text(state.service.description)
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Row(
@@ -279,11 +236,8 @@ fun ServiceDetailScreen () {
                     modifier = Modifier.horizontalScroll(rememberScrollState())
                 ) {
                     packageList.forEach { pack ->
-                        Package(
-                            name = pack.name,
-                            price = pack.price,
-                            detailItem = pack.detailItems,
-                            reviewItem = pack.reviewItems,
+                        PackageItem(
+                            packageData = pack,
                             onClick = { selectedPackage = pack },
                             isSelected = selectedPackage.name == pack.name
                         )
@@ -299,7 +253,7 @@ fun ServiceDetailScreen () {
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Column {
-                    selectedPackage.detailItems.forEach { item ->
+                    selectedPackage.items.forEach { item ->
                         Text("• $item", style = MaterialTheme.typography.bodySmall)
                     }
                 }
@@ -319,8 +273,8 @@ fun ServiceDetailScreen () {
                         )
                         Text("Link to คะแนนทั้งหมด")
                     }
-                    selectedPackage.reviewItems.forEach { review ->
-                        Review(reviewItem = review)
+                    state.service.reviews.map { review ->
+                        ReviewItem(review)
                     }
                 }
 
@@ -387,18 +341,18 @@ fun ChoiceTab(
 
 
 @Composable
-fun Review(reviewItem: ReviewItem) {
+fun ReviewItem(review: Review) {
     Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)) {
         Row {
             repeat(5) { index ->
                 Text(
-                    text = if (index < reviewItem.rating) "★" else "☆",
-                    color = if (index < reviewItem.rating) Color(0xFF8B00FF) else Color.Gray
+                    text = if (index < review.rating) "★" else "☆",
+                    color = if (index < review.rating) Color(0xFF8B00FF) else Color.Gray
                 )
             }
         }
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = reviewItem.comment, style = MaterialTheme.typography.bodyMedium)
+        Text(text = review.detail, style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(8.dp))
         Divider(color = Color.Gray, thickness = 1.dp)
     }
@@ -407,14 +361,13 @@ fun Review(reviewItem: ReviewItem) {
 
 
 @Composable
-fun Package(
-    name: String,
-    price: String,
-    detailItem: List<String>,
-    reviewItem: List<ReviewItem>,
+fun PackageItem(
+    packageData: Package,
     onClick: () -> Unit,
     isSelected: Boolean
 ) {
+    val textColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onBackground
+
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
@@ -424,8 +377,8 @@ fun Package(
                 .padding(end = 4.dp))
             .clickable { onClick() }
     ) {
-        Text(text = name, color = Color.White)
-        Text(text = price, fontWeight = FontWeight.Bold, color = Color.White)
+        Text(text = packageData.name, color = textColor)
+        Text(text = packageData.price.toString(), fontWeight = FontWeight.Bold, color = textColor)
     }
 }
 
