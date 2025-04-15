@@ -1,15 +1,11 @@
 package com.fc4rica.bonbaan.ui.home.service
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,18 +17,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.Divider
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,42 +34,49 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.fc4rica.bonbaan.R
 import com.fc4rica.bonbaan.domain.model.Category
+import com.fc4rica.bonbaan.domain.model.OrderType
 import com.fc4rica.bonbaan.domain.model.Package
-import com.fc4rica.bonbaan.domain.model.Review
 import com.fc4rica.bonbaan.domain.model.Service
+import com.fc4rica.bonbaan.ui.components.BackButton
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
+import com.fc4rica.bonbaan.ui.components.FilterChip
+import com.fc4rica.bonbaan.ui.components.ImageCarousel
+import com.fc4rica.bonbaan.ui.components.ReviewCard
 
 import com.fc4rica.bonbaan.utils.CategoryUtils
 
 enum class Choice { Vow, Fullfill }
 
-data class StateData (
+data class StateData(
     val service: Service = Service(
         id = "123",
         name = "Service title",
         description = "service description",
         rate = 3.6,
         address = "KMUTT",
-        categories = listOf(),
-        packages = listOf(),
+        categories = CategoryUtils.mapCategoriesIcon(listOf(Category("1", "ความรัก"))),
+        packages = listOf(
+            Package(
+                id = "1",
+                name = "Package 1",
+                description = "Package 1 description",
+                price = 100.0,
+                items = listOf("Item 1", "Item 2"),
+                orderType = OrderType("1", "บนบาน")
+            )
+        ),
         attachments = listOf(),
         reviews = listOf(),
     )
 )
 
 @Composable
-fun ServiceDetailScreen () {
-    val serviceCategory = Category("1", "ความรัก")
-    val categoryWithIcon = CategoryUtils.mapCategoriesIcon(listOf(serviceCategory)).first()
-
+fun ServiceDetailScreen() {
     var selectedChoice by remember { mutableStateOf(Choice.Vow) }
 
     val state = StateData()
@@ -86,56 +86,47 @@ fun ServiceDetailScreen () {
         Choice.Fullfill -> state.service.packages.filter { it.orderType.name == "แก้บน" }
     }
 
-    var selectedPackage by remember { mutableStateOf(packageList.first()) }
+    var selectedPackage by remember { mutableStateOf(packageList.firstOrNull()) }
 
-    LaunchedEffect(selectedChoice) {
-        selectedPackage = packageList.first()
-    }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column( 
-            modifier = Modifier.fillMaxSize()
+
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
+                .padding(
+                    top = 0.dp,
+                    bottom = it.calculateBottomPadding()
+                )
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp)
                     .background(
                         MaterialTheme.colorScheme.primary
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.logo2),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-                IconButton(
+                ImageCarousel(images = state.service.attachments)
+                BackButton(
                     onClick = { },
                     modifier = Modifier
                         .padding(16.dp)
-                        .size(40.dp)
-                        .align(Alignment.TopStart)
-                        .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.White
-                    )
-                }
-
-
+                        .align(Alignment.TopStart),
+                    variant = ButtonVariant.SECONDARY
+                )
             }
-            Spacer(modifier = Modifier.height(12.dp))
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(top = 16.dp, start = 30.dp, end = 30.dp),
-                verticalArrangement = Arrangement.Center
             ) {
+                // Title
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -143,15 +134,31 @@ fun ServiceDetailScreen () {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "Title",
+                        text = state.service.name,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
-                    Text("Price")
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = state.service.rate.toString(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = "Rating",
+                            modifier = Modifier.size(20.dp),
+                            tint = MaterialTheme.colorScheme.secondary
+                        )
+                    }
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
+                // Location
                 Row {
                     Icon(
                         imageVector = Icons.Filled.LocationOn,
@@ -159,49 +166,31 @@ fun ServiceDetailScreen () {
                         modifier = Modifier.size(14.dp),
                     )
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text("Location")
+                    Text(state.service.address)
                 }
-                Spacer(modifier = Modifier.height(12.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(50))
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = RoundedCornerShape(50)
-                        )
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                ) {
-                    categoryWithIcon.icon?.let { icon ->
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = categoryWithIcon.name,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                    }
-                    Text(
-                        text = categoryWithIcon.name,
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium
-                    )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Category
+                state.service.categories.map { category ->
+                    FilterChip(
+                        label = category.name,
+                        icon = category.icon,
+                        isSelected = false,
+                        onClick = {})
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     "รายละเอียด",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(state.service.description)
-                Spacer(modifier = Modifier.height(12.dp))
 
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Package
                 Row(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -228,18 +217,15 @@ fun ServiceDetailScreen () {
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-
-
-                Spacer(modifier = Modifier.height(12.dp))
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.horizontalScroll(rememberScrollState())
                 ) {
                     packageList.forEach { pack ->
-                        PackageItem(
+                        PackageCard(
                             packageData = pack,
                             onClick = { selectedPackage = pack },
-                            isSelected = selectedPackage.name == pack.name
+                            isSelected = selectedPackage!!.name == pack.name
                         )
                     }
                 }
@@ -253,52 +239,41 @@ fun ServiceDetailScreen () {
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Column {
-                    selectedPackage.items.forEach { item ->
-                        Text("• $item", style = MaterialTheme.typography.bodySmall)
+                    selectedPackage!!.items.forEach { item ->
+                        Text("• $item", style = MaterialTheme.typography.bodyMedium)
                     }
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
+                // Review
                 Column {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            "คะแนนการรีวิว",
+                            "รีวิว",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
-                        Text("Link to คะแนนทั้งหมด")
+                        BonBaanButton(
+                            text = "ดูรีวิวทั้งหมด",
+                            onClick = {},
+                            variant = ButtonVariant.TEXT
+                        )
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
                     state.service.reviews.map { review ->
-                        ReviewItem(review)
+                        ReviewCard(review)
                     }
                 }
-
             }
-
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .background(MaterialTheme.colorScheme.primary)
-                .padding(vertical = 16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            BonBaanButton(
-                text = "ซื้อเลย",
-                onClick = { },
-                variant = ButtonVariant.SECONDARY
-            )
         }
     }
 }
-
-
 
 
 @Composable
@@ -338,44 +313,22 @@ fun ChoiceTab(
     }
 }
 
-
-
 @Composable
-fun ReviewItem(review: Review) {
-    Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)) {
-        Row {
-            repeat(5) { index ->
-                Text(
-                    text = if (index < review.rating) "★" else "☆",
-                    color = if (index < review.rating) Color(0xFF8B00FF) else Color.Gray
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(text = review.detail, style = MaterialTheme.typography.bodyMedium)
-        Spacer(modifier = Modifier.height(8.dp))
-        Divider(color = Color.Gray, thickness = 1.dp)
-    }
-}
-
-
-
-@Composable
-fun PackageItem(
+fun PackageCard(
     packageData: Package,
     onClick: () -> Unit,
     isSelected: Boolean
 ) {
-    val textColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onBackground
+    val textColor =
+        if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onBackground
 
     Column(
         modifier = Modifier
+            .clickable { onClick() }
             .clip(RoundedCornerShape(8.dp))
             .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary)
-            .padding(horizontal = 12.dp, vertical = 8.dp)
-            .then(Modifier
-                .padding(end = 4.dp))
-            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Text(text = packageData.name, color = textColor)
         Text(text = packageData.price.toString(), fontWeight = FontWeight.Bold, color = textColor)
