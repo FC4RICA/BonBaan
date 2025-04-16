@@ -1,18 +1,20 @@
 package com.fc4rica.bonbaan.data.repository
 
-import com.fc4rica.bonbaan.data.local.SecurePreferences
+import androidx.datastore.core.DataStore
+import com.fc4rica.bonbaan.data.local.UserPreferences
 import com.fc4rica.bonbaan.data.remote.VowRecordApiService
 import com.fc4rica.bonbaan.data.remote.dto.toVowRecord
 import com.fc4rica.bonbaan.domain.model.VowRecord
 import com.fc4rica.bonbaan.domain.repository.VowRecordRepository
+import kotlinx.coroutines.flow.first
 
 class VowRecordRepositoryImpl(
     private val vowRecordApiService: VowRecordApiService,
-    private val securePreferences: SecurePreferences
+    private val userPreferences: DataStore<UserPreferences>,
 ) : VowRecordRepository {
     override suspend fun getVowRecords(): Result<List<VowRecord>> {
         return try {
-            val userId = securePreferences.getUserData()?.id
+            val userId = userPreferences.data.first().id
                 ?: return Result.failure(Exception("User not logged in"))
 
             val response = vowRecordApiService.getVowRecords(userId)
@@ -43,7 +45,7 @@ class VowRecordRepositoryImpl(
 
     override suspend fun getUnFulfilledVowRecordsByService(serviceId: String): Result<VowRecord> {
         return try {
-            val userId = securePreferences.getUserData()?.id
+            val userId = userPreferences.data.first().id
                 ?: return Result.failure(Exception("User not logged in"))
 
             val response = vowRecordApiService.getVowRecords(userId)

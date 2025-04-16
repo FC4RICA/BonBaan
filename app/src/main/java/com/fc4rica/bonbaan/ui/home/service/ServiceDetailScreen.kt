@@ -50,7 +50,7 @@ import com.fc4rica.bonbaan.ui.components.ReviewCard
 
 import com.fc4rica.bonbaan.utils.CategoryUtils
 
-enum class Choice { Vow, Fullfill }
+enum class Choice { Vow, Fulfill }
 
 data class StateData(
     val service: Service = Service(
@@ -83,7 +83,7 @@ fun ServiceDetailScreen() {
 
     val packageList = when (selectedChoice) {
         Choice.Vow -> state.service.packages.filter { it.orderType.name == "บนบาน" }
-        Choice.Fullfill -> state.service.packages.filter { it.orderType.name == "แก้บน" }
+        Choice.Fulfill -> state.service.packages.filter { it.orderType.name == "แก้บน" }
     }
 
     var selectedPackage by remember { mutableStateOf(packageList.firstOrNull()) }
@@ -202,8 +202,8 @@ fun ServiceDetailScreen() {
                     )
                     ChoiceTab(
                         text = "แก้บน",
-                        isSelected = selectedChoice == Choice.Fullfill,
-                        onClick = { selectedChoice = Choice.Fullfill },
+                        isSelected = selectedChoice == Choice.Fulfill,
+                        onClick = { selectedChoice = Choice.Fulfill },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -289,7 +289,7 @@ fun ChoiceTab(
 
     Box(
         modifier = modifier
-            .clickable {}
+            .clickable(onClick = onClick)
             .padding(bottom = 4.dp)
             .drawBehind {
                 val strokeWidth = 4f

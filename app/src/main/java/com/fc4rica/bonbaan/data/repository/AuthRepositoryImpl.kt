@@ -2,18 +2,19 @@ package com.fc4rica.bonbaan.data.repository
 
 import android.util.Log
 import androidx.datastore.core.DataStore
-import com.fc4rica.bonbaan.data.local.SecurePreferences
 import com.fc4rica.bonbaan.data.local.UserPreferences
+import com.fc4rica.bonbaan.data.local.toUser
+import com.fc4rica.bonbaan.data.local.toUserPreferences
 import com.fc4rica.bonbaan.data.remote.UserApiService
 import com.fc4rica.bonbaan.data.remote.dto.toUser
 import com.fc4rica.bonbaan.domain.model.User
 import com.fc4rica.bonbaan.domain.model.request.LoginRequest
 import com.fc4rica.bonbaan.domain.repository.AuthRepository
+import kotlinx.coroutines.flow.first
 
 class AuthRepositoryImpl(
     private val userApiService: UserApiService,
     private val userPreferences: DataStore<UserPreferences>,
-    private val securePreferences: SecurePreferences
 ) : AuthRepository {
     override suspend fun login(request: LoginRequest): Result<Unit> {
         return try {
@@ -36,8 +37,10 @@ class AuthRepositoryImpl(
             }
             Log.d("AuthRepositoryImpl", "profile-response: $profileResponse")
             val user = profileResponse.data.toUser()
+
             // save user to local storage
-            securePreferences.saveUserData(user)
+            val userPref = user.toUserPreferences()
+            userPreferences.updateData { userPref }
 
             Result.success(Unit)
         } catch (e: Exception) {
@@ -49,8 +52,13 @@ class AuthRepositoryImpl(
     override suspend fun getProfile(): Result<User> {
         return try {
             // fetch user from local storage
-            securePreferences.getUserData()?.let { cachedUser ->
-                return Result.success(cachedUser)
+            var userPref = userPreferences.data.first()
+            if (userPref.token == null) {
+                return Result.failure(Exception("User not found"))
+            }
+            var user = userPref.toUser()
+            if (user != null) {
+                return Result.success(user)
             }
 
             // if not found in local storage, fetch from server
@@ -60,8 +68,10 @@ class AuthRepositoryImpl(
                 return Result.failure(Exception("Invalid or expired token"))
             }
 
-            val user = response.data.toUser()
-            securePreferences.saveUserData(user)
+            user = response.data.toUser()
+            userPref = user.toUserPreferences()
+            userPreferences.updateData { userPref }
+
             Result.success(user)
         } catch (e: Exception) {
             Log.d("AuthRepositoryImpl", "getProfile-error: ${e.message}")
@@ -72,7 +82,6 @@ class AuthRepositoryImpl(
     override suspend fun logout(): Result<Unit> {
         try {
             userPreferences.updateData { UserPreferences() }
-            securePreferences.clearUserData()
             return Result.success(Unit)
         } catch (e: Exception) {
             return Result.failure(e)
