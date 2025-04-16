@@ -1,6 +1,7 @@
 package com.fc4rica.bonbaan.data.local
 
 import androidx.datastore.core.Serializer
+import com.fc4rica.bonbaan.domain.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
@@ -12,7 +13,13 @@ import java.util.Base64
 
 @Serializable
 data class UserPreferences(
-    val token: String? = null
+    val token: String? = null,
+    val id: String? = null,
+    val email: String? = null,
+    val firstname: String? = null,
+    val lastname: String? = null,
+    val username: String? = null,
+    val phone: String? = null
 )
 
 object UserPreferencesSerializer: Serializer<UserPreferences> {
@@ -40,4 +47,31 @@ object UserPreferencesSerializer: Serializer<UserPreferences> {
             }
         }
     }
+}
+
+fun User.toUserPreferences(): UserPreferences {
+    return UserPreferences(
+        id = this.id,
+        email = this.email,
+        firstname = this.firstname,
+        lastname = this.lastname,
+        username = this.username,
+        phone = this.phone
+    )
+}
+
+fun UserPreferences.toUser(): User? {
+    return if (
+        id != null && email != null && firstname != null &&
+        lastname != null && username != null && phone != null
+    ) {
+        User(
+            id = id,
+            email = email,
+            firstname = firstname,
+            lastname = lastname,
+            username = username,
+            phone = phone
+        )
+    } else null
 }

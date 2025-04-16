@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import com.fc4rica.bonbaan.BuildConfig
-import com.fc4rica.bonbaan.data.local.SecurePreferences
 import com.fc4rica.bonbaan.data.local.UserPreferences
 import com.fc4rica.bonbaan.data.local.UserPreferencesSerializer
 import com.fc4rica.bonbaan.data.remote.NotificationApiService
@@ -65,7 +64,6 @@ fun provideVowRecordApiService(retrofit: Retrofit): VowRecordApiService =
     retrofit.create(VowRecordApiService::class.java)
 
 val networkModule = module {
-    singleOf(::SecurePreferences)
     single<DataStore<UserPreferences>> { androidContext().dataStore }
 
     singleOf(::AuthInterceptor)

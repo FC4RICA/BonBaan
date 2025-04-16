@@ -1,6 +1,7 @@
 package com.fc4rica.bonbaan.data.repository
 
-import com.fc4rica.bonbaan.data.local.SecurePreferences
+import androidx.datastore.core.DataStore
+import com.fc4rica.bonbaan.data.local.UserPreferences
 import com.fc4rica.bonbaan.data.remote.OrderApiService
 import com.fc4rica.bonbaan.data.remote.dto.ApiResponse
 import com.fc4rica.bonbaan.data.remote.dto.OrderResponse
@@ -15,11 +16,12 @@ import com.fc4rica.bonbaan.domain.repository.OrderRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 
 class OrderRepositoryImpl(
     private val orderApiService: OrderApiService,
-    private val securePreferences: SecurePreferences
+    private val userPreferences: DataStore<UserPreferences>,
 ) : OrderRepository {
     private val _orderRequest = MutableStateFlow<OrderRequest?>(null)
     override val orderRequest: StateFlow<OrderRequest?> = _orderRequest.asStateFlow()
@@ -76,7 +78,7 @@ class OrderRepositoryImpl(
 
     override suspend fun getOrders(): Result<List<Order>> {
         return try {
-            val userId = securePreferences.getUserData()?.id
+            val userId = userPreferences.data.first().id
                 ?: return Result.failure(Exception("User ID not found"))
 
             val response = orderApiService.getOrders(userId)
@@ -150,7 +152,7 @@ class OrderRepositoryImpl(
 
     override suspend fun getOrdersByStatus(statusId: String): Result<List<Order>> {
         return try {
-            val userId = securePreferences.getUserData()?.id
+            val userId = userPreferences.data.first().id
                 ?: return Result.failure(Exception("User ID not found"))
 
             val response = orderApiService.getOrders(userId, statusId)
@@ -167,7 +169,7 @@ class OrderRepositoryImpl(
 
     override suspend fun getOrdersCountByStatus(): Result<Map<Status, Int>> {
         return try {
-            val userId = securePreferences.getUserData()?.id
+            val userId = userPreferences.data.first().id
                 ?: return Result.failure(Exception("User ID not found"))
 
             val response = orderApiService.getOrders(userId)

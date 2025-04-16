@@ -1,18 +1,20 @@
 package com.fc4rica.bonbaan.data.repository
 
-import com.fc4rica.bonbaan.data.local.SecurePreferences
+import androidx.datastore.core.DataStore
+import com.fc4rica.bonbaan.data.local.UserPreferences
 import com.fc4rica.bonbaan.data.remote.NotificationApiService
 import com.fc4rica.bonbaan.data.remote.dto.toNotification
 import com.fc4rica.bonbaan.domain.model.Notification
 import com.fc4rica.bonbaan.domain.repository.NotificationRepository
+import kotlinx.coroutines.flow.first
 
 class NotificationRepositoryImpl(
     private val notificationApiService: NotificationApiService,
-    private val securePreferences: SecurePreferences
+    private val userPreferences: DataStore<UserPreferences>,
 ) : NotificationRepository {
     override suspend fun getNotifications(): Result<List<Notification>> {
         return try {
-            val userId = securePreferences.getUserData()?.id
+            val userId = userPreferences.data.first().id
                 ?: return Result.failure(Exception("User ID not found"))
 
             val response = notificationApiService.getUnreadNotifications(userId)
