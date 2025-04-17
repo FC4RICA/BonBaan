@@ -49,7 +49,7 @@ import com.fc4rica.bonbaan.ui.home.service.OrderSummaryScreen
 import com.fc4rica.bonbaan.ui.home.service.PaymentScreen
 import com.fc4rica.bonbaan.ui.home.service.ServiceReviewScreen
 import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordDetailScreen
-import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordScreen
+//import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordScreen
 import com.fc4rica.bonbaan.ui.navigation.Screen
 
 @Composable
@@ -96,9 +96,9 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
             onClickService = { navController.navigate(Screen.ServiceDetail.createRoute(it)) }
         )
     }
-    composable(Screen.VowRecord.route) {
-        VowRecordScreen()
-    }
+//    composable(Screen.VowRecord.route) {
+//        VowRecordScreen()
+//    }
     composable(Screen.Notification.route) {
         NotificationScreen()
     }
