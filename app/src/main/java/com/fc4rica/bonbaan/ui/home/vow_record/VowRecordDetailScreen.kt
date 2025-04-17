@@ -116,7 +116,7 @@ fun VowRecordDetailScreen() {
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Text(
-                    text = "สรุปรายการสั่งซื้อ",
+                    text = "บันทึกการบน",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
