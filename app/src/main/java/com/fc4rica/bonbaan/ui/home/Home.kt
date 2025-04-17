@@ -48,7 +48,7 @@ import com.fc4rica.bonbaan.ui.home.service.OrderScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderSummaryScreen
 import com.fc4rica.bonbaan.ui.home.service.PaymentScreen
 import com.fc4rica.bonbaan.ui.home.service.ServiceReviewScreen
-import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordDetailScreen
+//import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordDetailScreen
 //import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordScreen
 import com.fc4rica.bonbaan.ui.navigation.Screen
 
@@ -154,12 +154,12 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     }
 
     // Nested VowRecord Screen
-    composable(
-        route = Screen.VowRecordDetail.route,
-        arguments = listOf(navArgument("vowRecordId") { type = NavType.StringType })
-    ) {
-        VowRecordDetailScreen()
-    }
+//    composable(
+//        route = Screen.VowRecordDetail.route,
+//        arguments = listOf(navArgument("vowRecordId") { type = NavType.StringType })
+//    ) {
+//        VowRecordDetailScreen()
+//    }
 
     // Nested Profile Screens
     composable(Screen.OrdersStatus.route) {
