@@ -49,17 +49,6 @@ object UserPreferencesSerializer: Serializer<UserPreferences> {
     }
 }
 
-fun User.toUserPreferences(): UserPreferences {
-    return UserPreferences(
-        id = this.id,
-        email = this.email,
-        firstname = this.firstname,
-        lastname = this.lastname,
-        username = this.username,
-        phone = this.phone
-    )
-}
-
 fun UserPreferences.toUser(): User? {
     return if (
         id != null && email != null && firstname != null &&

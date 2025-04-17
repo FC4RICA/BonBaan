@@ -52,13 +52,13 @@ fun ImageCarousel(
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(pagerState.pageCount) { iteration ->
-                val color = if (pagerState.currentPage == iteration) Color.White else Color.LightGray
+                val color = if (pagerState.currentPage == iteration) Color.White else Color.Black.copy(alpha = 0.4f)
                 Box(
                     modifier = Modifier
                         .padding(2.dp)
                         .clip(CircleShape)
                         .background(color)
-                        .size(16.dp)
+                        .size(8.dp)
                 ) {}
             }
         }

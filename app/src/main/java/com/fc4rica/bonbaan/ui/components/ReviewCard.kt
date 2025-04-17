@@ -45,7 +45,7 @@ fun ReviewCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = review.user!!.username,
+                    text = review.user?.username ?: "ไม่ระบุชื่อผู้ใช้",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
