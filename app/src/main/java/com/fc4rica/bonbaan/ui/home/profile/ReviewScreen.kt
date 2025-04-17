@@ -45,33 +45,46 @@ import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
 import com.fc4rica.bonbaan.ui.home.service.VowRecordScreen
 
+data class Order(
+    val serviceName: String,
+    val packageName: String,
+    val Date: String,
+    val items: List<String>
+)
+val mockOrder = Order(
+    serviceName = "ศาลเจ้าพ่อเสือ",
+    packageName = "แพ็คเกจกลาง",
+    Date = "9 เมษายน 2567",
+    items = listOf("ธูป 9 ดอก", "พวงมาลัย 1 พวง", "เทียน 2 เล่ม")
+)
+
 @Composable
-fun ReviewsScreen(
+fun ReviewScreen(
     serviceName: String,
     packageName: String,
     Date: String,
-    onSubmit: (rating: Int, comment: String) -> Unit
+    items: List<String>,
+    onSubmitReview: (rating: Int, comment: String) -> Unit
 ) {
     var rating by remember { mutableStateOf(0) }
     var comment by remember { mutableStateOf("") }
 
-
     Column(
-        modifier = Modifier
+        modifier = Modifier.background(Color.Gray)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(start = 30.dp, top = 16.dp, end = 30.dp, bottom = 100.dp)
+            .padding(horizontal = 30.dp, vertical = 16.dp)
     ) {
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp),
+                .height(56.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                onClick = { },
+                onClick = { /* กลับหน้าเดิม */ },
                 modifier = Modifier
-                    .padding(start = 0.dp)
                     .size(40.dp)
                     .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
             ) {
@@ -85,72 +98,48 @@ fun ReviewsScreen(
             Spacer(modifier = Modifier.width(16.dp))
 
             Text(
-                text = "เขียนรีวิว",
+                text = "รีวิว",
                 style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
+                fontWeight = FontWeight.Bold
             )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
 
-        Text(
-            text = "สถานที่ : $serviceName",
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.SemiBold
-        )
+        Text(text = "สถานที่: $serviceName", style = MaterialTheme.typography.titleMedium)
+        Text(text = "แพ็คเกจ: $packageName", style = MaterialTheme.typography.bodyMedium)
+        Text(text = "ขอบเขต: $Date", style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "แพ็คเกจ : $packageName",
-            style = MaterialTheme.typography.bodyMedium
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "ขอบเขต : $Date",
-            style = MaterialTheme.typography.bodyMedium,
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(
-            text = "ให้คะแนน",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        RatingBar(
-            currentRating = rating,
-            onRatingChanged = { rating = it }
-        )
+        Text(text = "รายละเอียดแพ็คเกจ:", fontWeight = FontWeight.SemiBold)
+        items.forEach { item ->
+            Text(text = "- $item", style = MaterialTheme.typography.bodySmall)
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text(
-            text = "แสดงความคิดเห็น",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(text = "ให้คะแนน", fontWeight = FontWeight.Bold)
+        RatingBar(currentRating = rating, onRatingChanged = { rating = it })
+
+        Spacer(modifier = Modifier.height(24.dp))
+
 
         OutlinedTextField(
             value = comment,
             onValueChange = { comment = it },
-            placeholder = { Text("พิมพ์ความคิดเห็นของคุณ...") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp),
-            maxLines = 6,
-            shape = RoundedCornerShape(12.dp)
+            label = { Text("ความคิดเห็น") },
+            placeholder = { Text("เขียนรีวิวของคุณที่นี่...") },
+            modifier = Modifier.fillMaxWidth(),
+            maxLines = 5
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
 
         BonBaanButton(
-            text = "รีวิว",
-            onClick = {
-                onSubmit(rating, comment)
-            },
+            text = "ส่งรีวิว",
+            onClick = { onSubmitReview(rating, comment) },
             variant = ButtonVariant.PRIMARY,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
@@ -175,14 +164,16 @@ fun RatingBar(
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewReviewScreen() {
-    ReviewsScreen(
-        serviceName = "พระตรีมูรติ เซ็นทรัลเวิลด์",
-        packageName = "ขอแฟน แถมความสุข", Date = "9 เมษายน 2567",
-        onSubmit = { rating, comment ->
-
+    ReviewScreen(
+        serviceName = mockOrder.serviceName,
+        packageName = mockOrder.packageName,
+        Date = mockOrder.Date,
+        items = listOf("ธูป 9 ดอก", "พวงมาลัย 1 พวง"),
+        onSubmitReview = { rating, comment ->
             Log.d("Review", "Rating: $rating, Comment: $comment")
         }
     )
