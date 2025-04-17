@@ -2,6 +2,8 @@ package com.fc4rica.bonbaan.ui.home.service
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,9 +39,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.fc4rica.bonbaan.domain.model.Attachment
 import com.fc4rica.bonbaan.domain.model.Category
 import com.fc4rica.bonbaan.domain.model.OrderType
 import com.fc4rica.bonbaan.domain.model.Package
+import com.fc4rica.bonbaan.domain.model.Review
 import com.fc4rica.bonbaan.domain.model.Service
 import com.fc4rica.bonbaan.ui.components.BackButton
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
@@ -49,10 +53,11 @@ import com.fc4rica.bonbaan.ui.components.ImageCarousel
 import com.fc4rica.bonbaan.ui.components.ReviewCard
 
 import com.fc4rica.bonbaan.utils.CategoryUtils
+import java.time.LocalDateTime
 
 enum class Choice { Vow, Fulfill }
 
-data class StateData(
+private data class StateData(
     val service: Service = Service(
         id = "123",
         name = "Service title",
@@ -70,8 +75,30 @@ data class StateData(
                 orderType = OrderType("1", "บนบาน")
             )
         ),
-        attachments = listOf(),
-        reviews = listOf(),
+        attachments = listOf(
+            Attachment(
+                id = "1",
+                url = "https://picsum.photos/"
+            ),
+            Attachment(
+                id = "2",
+                url = "https://picsum.photos/"
+            ),
+            Attachment(
+                id = "3",
+                url = "https://picsum.photos/"
+            )
+        ),
+        reviews = listOf(
+            Review(
+                id = "1",
+                rating = 3.0,
+                user = null,
+                service = null,
+                detail = "so gud na",
+                createdAt = LocalDateTime.now(),
+            )
+        ),
     )
 )
 
@@ -97,6 +124,10 @@ fun ServiceDetailScreen() {
     ) {
         Column(
             modifier = Modifier
+                .scrollable(
+                    rememberScrollState(),
+                    orientation = Orientation.Vertical,
+                )
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(

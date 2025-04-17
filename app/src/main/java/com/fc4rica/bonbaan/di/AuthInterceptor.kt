@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.di
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import com.fc4rica.bonbaan.data.local.UserPreferences
 import kotlinx.coroutines.flow.first
@@ -13,6 +14,7 @@ class AuthInterceptor(private val userPreferences: DataStore<UserPreferences>) :
         val token = runBlocking {
             userPreferences.data.first().token
         }
+        Log.d("AuthInterceptor", "intercept: $token")
 
         val newRequest =
             original.newBuilder().apply {
