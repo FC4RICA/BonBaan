@@ -40,7 +40,7 @@ import com.fc4rica.bonbaan.ui.home.feed.FilteredServiceScreen
 import com.fc4rica.bonbaan.ui.home.feed.SearchScreen
 import com.fc4rica.bonbaan.ui.home.service.ServiceDetailScreen
 import com.fc4rica.bonbaan.ui.home.notification.NotificationScreen
-import com.fc4rica.bonbaan.ui.home.profile.MyReviewsScreen
+//import com.fc4rica.bonbaan.ui.home.profile.MyReviewsScreen
 //import com.fc4rica.bonbaan.ui.home.profile.OrderStatusDetailScreen
 //import com.fc4rica.bonbaan.ui.home.profile.OrdersStatusScreen
 import com.fc4rica.bonbaan.ui.home.profile.ProfileScreen
@@ -171,7 +171,7 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
 //    ) {
 //        OrderStatusDetailScreen()
 //    }
-    composable(Screen.MyReviews.route) { MyReviewsScreen() }
+//    composable(Screen.MyReviews.route) { MyReviewsScreen() }
 }
 
 sealed class HomeSection(
