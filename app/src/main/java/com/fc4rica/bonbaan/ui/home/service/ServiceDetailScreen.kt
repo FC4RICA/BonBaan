@@ -2,8 +2,6 @@ package com.fc4rica.bonbaan.ui.home.service
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Star
@@ -78,15 +77,15 @@ private data class StateData(
         attachments = listOf(
             Attachment(
                 id = "1",
-                url = "https://picsum.photos/"
+                url = "https://picsum.photos/300/200"
             ),
             Attachment(
                 id = "2",
-                url = "https://picsum.photos/"
+                url = "https://picsum.photos/300/200"
             ),
             Attachment(
                 id = "3",
-                url = "https://picsum.photos/"
+                url = "https://picsum.photos/300/200"
             )
         ),
         reviews = listOf(
@@ -118,16 +117,28 @@ fun ServiceDetailScreen() {
 
 
     Scaffold(
+        bottomBar = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primary)
+                    .padding(vertical = 12.dp, horizontal = 24.dp),
+            ) {
+                BonBaanButton(
+                    text = "ซื้อเลย",
+                    onClick = { },
+                    variant = ButtonVariant.SECONDARY,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
         Column(
             modifier = Modifier
-                .scrollable(
-                    rememberScrollState(),
-                    orientation = Orientation.Vertical,
-                )
+                .verticalScroll(rememberScrollState())
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(
