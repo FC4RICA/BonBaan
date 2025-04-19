@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.ui.home.service
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,10 +25,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.fc4rica.bonbaan.R
 
 data class ReviewsItem(
     val profile:String,
@@ -109,9 +114,16 @@ fun ReviewCard(reviewItem: ReviewsItem) {
             .padding(16.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = reviewItem.profile)
+            Image(
+                painter = painterResource(id = R.drawable.logo1),
+                contentDescription = "Profile Image",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = reviewItem.name, style = MaterialTheme.typography.bodyMedium)
+            Text(text = reviewItem.name, style = MaterialTheme.typography.bodyMedium,fontWeight = FontWeight.Bold)
         }
 
         Text(text = reviewItem.packageName, style = MaterialTheme.typography.bodyMedium)
