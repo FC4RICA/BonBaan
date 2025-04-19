@@ -43,7 +43,7 @@ import com.fc4rica.bonbaan.ui.home.notification.NotificationScreen
 //import com.fc4rica.bonbaan.ui.home.profile.MyReviewsScreen
 //import com.fc4rica.bonbaan.ui.home.profile.OrderStatusDetailScreen
 //import com.fc4rica.bonbaan.ui.home.profile.OrdersStatusScreen
-import com.fc4rica.bonbaan.ui.home.profile.ProfileScreen
+//import com.fc4rica.bonbaan.ui.home.profile.ProfileScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderSummaryScreen
 import com.fc4rica.bonbaan.ui.home.service.PaymentScreen
@@ -102,9 +102,9 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     composable(Screen.Notification.route) {
         NotificationScreen()
     }
-    composable(Screen.Profile.route) {
-        ProfileScreen()
-    }
+//    composable(Screen.Profile.route) {
+//        ProfileScreen()
+//    }
 
     //  Nested Feed Screens
     composable(Screen.CategorizeService.route) {
