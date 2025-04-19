@@ -17,7 +17,7 @@ fun BonBaanNavHost(
     val startDestination = when {
         !isAuthenticated -> Screen.Auth.route
         !hasSelectedInterests -> Screen.Onboarding.route
-        else -> Screen.ServiceDetail.createRoute("")
+        else -> Screen.Home.route
     }
 
     NavHost(navController = navController, startDestination = startDestination) {
