@@ -25,7 +25,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,7 +35,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fc4rica.bonbaan.domain.model.Package
 import com.fc4rica.bonbaan.ui.components.BackButton
@@ -46,13 +47,22 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ServiceDetailScreen(
+    onOrderSuccess: () -> Unit,
+    onBack: () -> Unit,
     viewModel: ServiceDetailViewModel = koinViewModel()
 ) {
-    val state = viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsState()
 
-    val packageList = when (state.value.selectedOrderType) {
-        PackageType.Vow -> state.value.service.packages.filter { it.orderType.name == "บนบาน" }
-        PackageType.Fulfill -> state.value.service.packages.filter { it.orderType.name == "แก้บน" }
+    val packageList = when (state.selectedOrderType) {
+        PackageType.Vow -> state.packages.filter { it.orderType.name == PackageType.Vow.displayName }
+        PackageType.Fulfill -> state.packages.filter { it.orderType.name == PackageType.Fulfill.displayName }
+    }
+
+    LaunchedEffect(state.isOrdering) {
+        if (state.isOrdering) {
+            onOrderSuccess()
+            viewModel.resetOrdering()
+        }
     }
 
     Scaffold(
@@ -65,7 +75,7 @@ fun ServiceDetailScreen(
             ) {
                 BonBaanButton(
                     text = "ซื้อเลย",
-                    onClick = { },
+                    onClick = { viewModel.createOrder() },
                     variant = ButtonVariant.SECONDARY,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -93,9 +103,9 @@ fun ServiceDetailScreen(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                ImageCarousel(images = state.value.service.attachments)
+                ImageCarousel(images = state.service.attachments)
                 BackButton(
-                    onClick = { },
+                    onClick = onBack,
                     modifier = Modifier
                         .padding(16.dp)
                         .align(Alignment.TopStart),
@@ -115,7 +125,7 @@ fun ServiceDetailScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = state.value.service.name,
+                        text = state.service.name,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -124,7 +134,7 @@ fun ServiceDetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
-                            text = state.value.service.rate.toString(),
+                            text = state.service.rate.toString(),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold
                         )
@@ -147,12 +157,12 @@ fun ServiceDetailScreen(
                         modifier = Modifier.size(14.dp),
                     )
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text(state.value.service.address)
+                    Text(state.service.address)
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Category
-                state.value.service.categories.map { category ->
+                state.service.categories.map { category ->
                     FilterChip(
                         label = category.name,
                         icon = category.icon,
@@ -167,7 +177,7 @@ fun ServiceDetailScreen(
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(state.value.service.description)
+                Text(state.service.description)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -177,13 +187,13 @@ fun ServiceDetailScreen(
                 ) {
                     ChoiceTab(
                         text = "บนบาน",
-                        isSelected = state.value.selectedOrderType == PackageType.Vow,
+                        isSelected = state.selectedOrderType == PackageType.Vow,
                         onClick = { viewModel.updateSelectedOrderType(PackageType.Vow) },
                         modifier = Modifier.weight(1f)
                     )
                     ChoiceTab(
                         text = "แก้บน",
-                        isSelected = state.value.selectedOrderType == PackageType.Fulfill,
+                        isSelected = state.selectedOrderType == PackageType.Fulfill,
                         onClick = { viewModel.updateSelectedOrderType(PackageType.Fulfill) },
                         modifier = Modifier.weight(1f)
                     )
@@ -206,21 +216,25 @@ fun ServiceDetailScreen(
                         PackageCard(
                             packageData = pack,
                             onClick = { viewModel.updateSelectedPackageId(pack.id) },
-                            isSelected = state.value.selectedPackageId == pack.id
+                            isSelected = state.selectedPackageId == pack.id
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
                     "ข้อมูลรายละเอียดแพ็คเกจ",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Column {
-                    packageList.find { it.id == state.value.selectedPackageId }?.items?.map { item ->
+                    val selectedPackage = packageList.find { pack ->
+                        pack.id == state.selectedPackageId && pack.orderType.name == state.selectedOrderType.displayName
+                    }
+                    Text(selectedPackage?.description ?: "", style = MaterialTheme.typography.bodyMedium)
+                    selectedPackage?.items?.map { item ->
                         Text("• $item", style = MaterialTheme.typography.bodyMedium)
                     }
                 }
@@ -247,7 +261,7 @@ fun ServiceDetailScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    state.value.service.reviews.map { review ->
+                    state.service.reviews.map { review ->
                         ReviewCard(review)
                     }
                 }
@@ -308,18 +322,10 @@ fun PackageCard(
             .clickable { onClick() }
             .clip(RoundedCornerShape(8.dp))
             .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Text(text = packageData.name, color = textColor)
-        Text(text = packageData.price.toString(), fontWeight = FontWeight.Bold, color = textColor)
+        Spacer(Modifier.height(6.dp))
+        Text(text = packageData.price.toString(), color = textColor)
     }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun ServicePreview() {
-    ServiceDetailScreen()
-
 }
