@@ -130,7 +130,10 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         route = Screen.ServiceDetail.route,
         arguments = listOf(navArgument("serviceId") { type = NavType.StringType })
     ) {
-        ServiceDetailScreen()
+        ServiceDetailScreen(
+            onOrderSuccess = { navController.navigate(Screen.OrderSummary.route) },
+            onBack = { navController.popBackStack() }
+        )
     }
     composable(
         route = Screen.ServiceReview.route,

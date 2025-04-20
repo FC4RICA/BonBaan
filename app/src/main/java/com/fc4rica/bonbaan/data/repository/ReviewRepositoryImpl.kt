@@ -1,17 +1,19 @@
 package com.fc4rica.bonbaan.data.repository
 
-import com.fc4rica.bonbaan.data.local.SecurePreferences
+import androidx.datastore.core.DataStore
+import com.fc4rica.bonbaan.data.local.UserPreferences
 import com.fc4rica.bonbaan.data.remote.ReviewApiService
 import com.fc4rica.bonbaan.data.remote.ServiceApiService
 import com.fc4rica.bonbaan.data.remote.dto.toReview
 import com.fc4rica.bonbaan.domain.model.Review
 import com.fc4rica.bonbaan.domain.model.request.ReviewRequest
 import com.fc4rica.bonbaan.domain.repository.ReviewRepository
+import kotlinx.coroutines.flow.first
 
 class ReviewRepositoryImpl(
     private val reviewApiService: ReviewApiService,
     private val serviceApiService: ServiceApiService,
-    private val securePreferences: SecurePreferences
+    private val userPreferences: DataStore<UserPreferences>,
 ) : ReviewRepository {
     override suspend fun getReview(id: String): Result<Review> {
         return try {
@@ -28,7 +30,7 @@ class ReviewRepositoryImpl(
 
     override suspend fun getReviews(): Result<List<Review>> {
         return try {
-            val userId = securePreferences.getUserData()?.id
+            val userId = userPreferences.data.first().id
                 ?: return Result.failure(Exception("User ID not found"))
 
             val response = reviewApiService.getMyReviews(userId)

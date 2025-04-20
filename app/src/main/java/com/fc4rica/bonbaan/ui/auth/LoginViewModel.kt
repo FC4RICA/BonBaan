@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.ui.auth
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fc4rica.bonbaan.domain.model.request.LoginRequest
@@ -49,6 +50,7 @@ class LoginViewModel(
             result.fold(
                 onSuccess = {
                     val interestResult = interestRepository.getInterests()
+                    Log.d("LoginViewModel", "submitLogin: $interestResult")
 
                     interestResult.fold(
                         onSuccess = { interests ->
@@ -61,8 +63,8 @@ class LoginViewModel(
 
                     _state.update { it.copy(errorMessage = null) }
                 },
-                onFailure = { error ->
-                    _state.update { it.copy(errorMessage = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง" + error.message) }
+                onFailure = {
+                    _state.update { it.copy(errorMessage = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง") }
                 }
             )
         }

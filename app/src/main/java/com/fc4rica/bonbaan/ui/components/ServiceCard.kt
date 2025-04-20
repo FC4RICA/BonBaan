@@ -125,7 +125,7 @@ fun ServiceCard(service: Service, onClick: (String) -> Unit) {
                         Icon(
                             imageVector = Icons.Filled.Star,
                             contentDescription = "Rating",
-                            modifier = Modifier.size(16.dp),
+                            modifier = Modifier.size(20.dp),
                             tint = MaterialTheme.colorScheme.secondary
                         )
                     }

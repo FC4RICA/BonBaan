@@ -1,4 +1,4 @@
-package com.fc4rica.bonbaan.ui.home.service
+package com.fc4rica.bonbaan.ui.home.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,10 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material3.Icon
@@ -33,20 +34,56 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fc4rica.bonbaan.R
+import com.fc4rica.bonbaan.domain.model.Review
+import com.fc4rica.bonbaan.domain.model.Service
+import java.time.LocalDateTime
 
 
 @Composable
 fun NyReviewScreen() {
     val reviewItems = listOf(
-        ReviewsItem("Profile", "หมีเนย", "คนคุยมาแน่", 5, "มะกี้เหงามาก อยู่ดีๆก้อมีคนชวรคุย"),
-        ReviewsItem("Profile", "หมูเด้ง", "คนคุยมาแน่", 4, "ก็ดี"),
-        ReviewsItem("Profile", "มาดามจือ", "คนคุยมาแน่", 2, "ขอไป 5 นาทีแร้ว ไหนอะไม่เหรมีคัยมาคุยเรย"),
-        ReviewsItem("Profile", "หมีเนย", "คนคุยมาแน่", 5, "มะกี้เหงามาก อยู่ดีๆก้อมีคนชวรคุย"),
-        ReviewsItem("Profile", "หมูเด้ง", "คนคุยมาแน่", 4, "ก็ดี"),
-        ReviewsItem("Profile", "มาดามจือ", "คนคุยมาแน่", 2, "ขอไป 5 นาทีแร้ว ไหนอะไม่เหรมีคัยมาคุยเรย"),
-        ReviewsItem("Profile", "หมีเนย", "คนคุยมาแน่", 5, "มะกี้เหงามาก อยู่ดีๆก้อมีคนชวรคุย"),
-        ReviewsItem("Profile", "หมูเด้ง", "คนคุยมาแน่", 4, "ก็ดี"),
-        ReviewsItem("Profile", "มาดามจือ", "คนคุยมาแน่", 2, "ขอไป 5 นาทีแร้ว ไหนอะไม่เหรมีคัยมาคุยเรย"),
+        Review(
+            id = "",
+            user = null,
+            service = Service(
+                id = "",
+                name = "service name",
+                description = "service description",
+                rate = 0.0,
+                address = ""
+            ),
+            rating = 5.0,
+            detail = "มะกี้เหงามาก อยู่ดีๆก้อมีคนชวรคุย",
+            createdAt = LocalDateTime.now()
+        ),
+        Review(
+            id = "",
+            user = null,
+            service = Service(
+                id = "",
+                name = "service name",
+                description = "service description",
+                rate = 0.0,
+                address = ""
+            ),
+            rating = 4.0,
+            detail = "ก็ดี",
+            createdAt = LocalDateTime.now()
+        ),
+        Review(
+            id = "",
+            user = null,
+            service = Service(
+                id = "",
+                name = "service name",
+                description = "service description",
+                rate = 0.0,
+                address = ""
+            ),
+            rating = 2.0,
+            detail = "ขอไป 5 นาทีแร้ว ไหนอะไม่เหรมีคัยมาคุยเรย",
+            createdAt = LocalDateTime.now()
+        ),
     )
 
     Column(
@@ -69,7 +106,7 @@ fun NyReviewScreen() {
                     .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
             ) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
                     tint = Color.White
                 )
@@ -90,15 +127,15 @@ fun NyReviewScreen() {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            items(reviewItems.size) { index ->
-                MyReviewCard(reviewItem = reviewItems[index])
+            items(reviewItems) { review ->
+                MyReviewCard(review)
             }
         }
     }
 }
 
 @Composable
-fun MyReviewCard(reviewItem: ReviewsItem) {
+fun MyReviewCard(review: Review) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -116,27 +153,29 @@ fun MyReviewCard(reviewItem: ReviewsItem) {
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = reviewItem.name, style = MaterialTheme.typography.bodyMedium,fontWeight = FontWeight.Bold)
+            Text(
+                text = review.service!!.name,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
+            )
         }
-
-        Text(text = reviewItem.packageName, style = MaterialTheme.typography.bodyMedium)
 
         Row {
             repeat(5) { index ->
                 Icon(
-                    imageVector = if (index < reviewItem.rating)
+                    imageVector = if (index < review.rating)
                         Icons.Rounded.Star
                     else
                         Icons.Rounded.StarBorder,
                     contentDescription = null,
-                    tint = if (index < reviewItem.rating) Color(0xFF8B00FF) else Color.Gray,
+                    tint = if (index < review.rating) Color(0xFF8B00FF) else Color.Gray,
                     modifier = Modifier.size(20.dp)
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = reviewItem.comment, style = MaterialTheme.typography.bodyMedium)
+        Text(text = review.detail, style = MaterialTheme.typography.bodyMedium)
     }
 }
 
