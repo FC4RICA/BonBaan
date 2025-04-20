@@ -1,26 +1,18 @@
 package com.fc4rica.bonbaan.ui.home.notification
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,17 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.fc4rica.bonbaan.ui.MockScreen
-import com.fc4rica.bonbaan.ui.home.service.Review
 
 data class NotiDetailItem(
-    val Title: String,
-    val Date: String,
-    val Info: String
+    val title: String,
+    val date: String,
+    val info: String
 )
 
 @Composable
@@ -112,14 +101,14 @@ fun NotificationItem(notiDetailItem: NotiDetailItem) {
 
         Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
             Text(
-                text = notiDetailItem.Title,
+                text = notiDetailItem.title,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = notiDetailItem.Date, style = MaterialTheme.typography.bodySmall)
+            Text(text = notiDetailItem.date, style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = notiDetailItem.Info, style = MaterialTheme.typography.bodySmall)
+            Text(text = notiDetailItem.info, style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(8.dp))
 
         }
