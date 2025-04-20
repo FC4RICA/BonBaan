@@ -20,10 +20,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-// TODO add category mapping
+enum class PackageType { Vow, Fulfill }
 
 data class ServiceDetailUiState(
-    val service: Service? = null,
+    val service: Service = Service(
+        id = "",
+        name = "",
+        description = "",
+        rate = 0.0,
+        address = "",
+    ),
+    val selectedOrderType: PackageType = PackageType.Vow,
     val selectedPackageId: String? = null,
     val reviews: List<Review> = emptyList(),
     val isReviewsLoading: Boolean = false,
@@ -52,10 +59,19 @@ class ServiceDetailViewModel(
         getReviews()
     }
 
+    fun updateSelectedOrderType(type: PackageType) {
+        _state.update { it.copy(selectedOrderType = type) }
+    }
+
+    fun updateSelectedPackageId(id: String) {
+        _state.update { it.copy(selectedPackageId = id) }
+    }
+
     fun createVowOrderRequest() {
         viewModelScope.launch {
             val orderTypeResult = orderTypeRepository.getOrderTypes()
             val orderTypeId = orderTypeResult.getOrDefault(emptyList()).find { it.name == "บนบาน" }?.id
+            if (orderTypeId.isNullOrEmpty()) return@launch  _state.update { it.copy(errorMessage = "Network problem") }
             val request = OrderRequest.Vow(
                 VowOrderRequest(
                     deadline = "",
@@ -65,7 +81,7 @@ class ServiceDetailViewModel(
                     items = emptyList(),
                     packageId = _state.value.selectedPackageId ?: "",
                     serviceId = _serviceId,
-                    orderTypeID = orderTypeId ?: ""
+                    orderTypeID = orderTypeId
                 )
             )
             orderRepository.setOrderRequest(request)
@@ -75,7 +91,8 @@ class ServiceDetailViewModel(
     fun createFulfillOrderRequest() {
         viewModelScope.launch {
             val orderTypeResult = orderTypeRepository.getOrderTypes()
-            val orderTypeId = orderTypeResult.getOrDefault(emptyList()).find { it.name == "บนบาน" }?.id
+            val orderTypeId = orderTypeResult.getOrDefault(emptyList()).find { it.name == "แก้บน" }?.id
+            if (orderTypeId.isNullOrEmpty()) return@launch  _state.update { it.copy(errorMessage = "Network problem") }
             val request = OrderRequest.Fulfill(
                 FulfillOrderRequest(
                     price = 0.0,
@@ -83,7 +100,7 @@ class ServiceDetailViewModel(
                     packageId = _state.value.selectedPackageId ?: "",
                     serviceId = _serviceId,
                     vowRecordID = _state.value.vowRecord?.id ?: "",
-                    orderTypeID = orderTypeId ?: ""
+                    orderTypeID = orderTypeId
                 )
             )
             orderRepository.setOrderRequest(request)

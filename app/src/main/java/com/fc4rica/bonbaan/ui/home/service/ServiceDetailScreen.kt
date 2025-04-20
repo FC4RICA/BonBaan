@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -27,8 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,83 +35,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.fc4rica.bonbaan.domain.model.Attachment
-import com.fc4rica.bonbaan.domain.model.Category
-import com.fc4rica.bonbaan.domain.model.OrderType
 import com.fc4rica.bonbaan.domain.model.Package
-import com.fc4rica.bonbaan.domain.model.Review
-import com.fc4rica.bonbaan.domain.model.Service
 import com.fc4rica.bonbaan.ui.components.BackButton
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
 import com.fc4rica.bonbaan.ui.components.FilterChip
 import com.fc4rica.bonbaan.ui.components.ImageCarousel
 import com.fc4rica.bonbaan.ui.components.ReviewCard
-
-import com.fc4rica.bonbaan.utils.CategoryUtils
-import java.time.LocalDateTime
-
-enum class Choice { Vow, Fulfill }
-
-private data class StateData(
-    val service: Service = Service(
-        id = "123",
-        name = "Service title",
-        description = "service description",
-        rate = 3.6,
-        address = "KMUTT",
-        categories = CategoryUtils.mapCategoriesIcon(listOf(Category("1", "ความรัก"))),
-        packages = listOf(
-            Package(
-                id = "1",
-                name = "Package 1",
-                description = "Package 1 description",
-                price = 100.0,
-                items = listOf("Item 1", "Item 2"),
-                orderType = OrderType("1", "บนบาน")
-            )
-        ),
-        attachments = listOf(
-            Attachment(
-                id = "1",
-                url = "https://picsum.photos/300/200"
-            ),
-            Attachment(
-                id = "2",
-                url = "https://picsum.photos/300/200"
-            ),
-            Attachment(
-                id = "3",
-                url = "https://picsum.photos/300/200"
-            )
-        ),
-        reviews = listOf(
-            Review(
-                id = "1",
-                rating = 3.0,
-                user = null,
-                service = null,
-                detail = "so gud na",
-                createdAt = LocalDateTime.now(),
-            )
-        ),
-    )
-)
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ServiceDetailScreen() {
-    var selectedChoice by remember { mutableStateOf(Choice.Vow) }
+fun ServiceDetailScreen(
+    viewModel: ServiceDetailViewModel = koinViewModel()
+) {
+    val state = viewModel.state.collectAsState()
 
-    val state = StateData()
-
-    val packageList = when (selectedChoice) {
-        Choice.Vow -> state.service.packages.filter { it.orderType.name == "บนบาน" }
-        Choice.Fulfill -> state.service.packages.filter { it.orderType.name == "แก้บน" }
+    val packageList = when (state.value.selectedOrderType) {
+        PackageType.Vow -> state.value.service.packages.filter { it.orderType.name == "บนบาน" }
+        PackageType.Fulfill -> state.value.service.packages.filter { it.orderType.name == "แก้บน" }
     }
-
-    var selectedPackage by remember { mutableStateOf(packageList.firstOrNull()) }
-
-
 
     Scaffold(
         bottomBar = {
@@ -154,7 +93,7 @@ fun ServiceDetailScreen() {
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                ImageCarousel(images = state.service.attachments)
+                ImageCarousel(images = state.value.service.attachments)
                 BackButton(
                     onClick = { },
                     modifier = Modifier
@@ -176,7 +115,7 @@ fun ServiceDetailScreen() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = state.service.name,
+                        text = state.value.service.name,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -185,7 +124,7 @@ fun ServiceDetailScreen() {
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
-                            text = state.service.rate.toString(),
+                            text = state.value.service.rate.toString(),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold
                         )
@@ -208,12 +147,12 @@ fun ServiceDetailScreen() {
                         modifier = Modifier.size(14.dp),
                     )
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text(state.service.address)
+                    Text(state.value.service.address)
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Category
-                state.service.categories.map { category ->
+                state.value.service.categories.map { category ->
                     FilterChip(
                         label = category.name,
                         icon = category.icon,
@@ -228,7 +167,7 @@ fun ServiceDetailScreen() {
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(state.service.description)
+                Text(state.value.service.description)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -238,14 +177,14 @@ fun ServiceDetailScreen() {
                 ) {
                     ChoiceTab(
                         text = "บนบาน",
-                        isSelected = selectedChoice == Choice.Vow,
-                        onClick = { selectedChoice = Choice.Vow },
+                        isSelected = state.value.selectedOrderType == PackageType.Vow,
+                        onClick = { viewModel.updateSelectedOrderType(PackageType.Vow) },
                         modifier = Modifier.weight(1f)
                     )
                     ChoiceTab(
                         text = "แก้บน",
-                        isSelected = selectedChoice == Choice.Fulfill,
-                        onClick = { selectedChoice = Choice.Fulfill },
+                        isSelected = state.value.selectedOrderType == PackageType.Fulfill,
+                        onClick = { viewModel.updateSelectedOrderType(PackageType.Fulfill) },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -266,8 +205,8 @@ fun ServiceDetailScreen() {
                     packageList.forEach { pack ->
                         PackageCard(
                             packageData = pack,
-                            onClick = { selectedPackage = pack },
-                            isSelected = selectedPackage!!.name == pack.name
+                            onClick = { viewModel.updateSelectedPackageId(pack.id) },
+                            isSelected = state.value.selectedPackageId == pack.id
                         )
                     }
                 }
@@ -281,7 +220,7 @@ fun ServiceDetailScreen() {
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Column {
-                    selectedPackage!!.items.forEach { item ->
+                    packageList.find { it.id == state.value.selectedPackageId }?.items?.map { item ->
                         Text("• $item", style = MaterialTheme.typography.bodyMedium)
                     }
                 }
@@ -308,7 +247,7 @@ fun ServiceDetailScreen() {
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    state.service.reviews.map { review ->
+                    state.value.service.reviews.map { review ->
                         ReviewCard(review)
                     }
                 }
