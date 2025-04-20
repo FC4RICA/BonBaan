@@ -10,31 +10,24 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,14 +35,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
-
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
-import com.fc4rica.bonbaan.ui.components.ButtonVariant
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -68,9 +59,9 @@ fun OrderFormScreen() {
     var vowDetail by remember { mutableStateOf("") }
 
     val packages = listOf(
-        PackageItems("1", "คนคุยทันใจ", 100,"ธูป"),
-        PackageItems("2", "แฟนดีไม่่หนีไม่จ่าย", 200,"เทียน"),
-        PackageItems("3", "อิอิซ่า", 300,"ปลาร้า")
+        PackageItems("1", "คนคุยทันใจ", 100, "ธูป"),
+        PackageItems("2", "แฟนดีไม่่หนีไม่จ่าย", 200, "เทียน"),
+        PackageItems("3", "อิอิซ่า", 300, "ปลาร้า")
     )
 
 
@@ -78,48 +69,67 @@ fun OrderFormScreen() {
         mutableStateOf(packages.find { it.id == initialPackageId })
     }
 
-    Box(
+    Scaffold(
+        topBar = {
+            BackNavBar(
+                onBackClick = { },
+                content = {
+                    Text(
+                        text = "คำสั่งซื้อ",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                }
+            )
+        },
+        bottomBar = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .padding(top = 1.dp)
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(horizontal = 24.dp, vertical = 12.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("ราคาทั้งหมด")
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            text = "฿ ${selectedPackage?.price}",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+
+                    Spacer(Modifier.width(12.dp))
+
+                    BonBaanButton(
+                        text = "ยืนยันคำสั่งซื้อ",
+                        onClick = { },
+                    )
+                }
+            }
+        },
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-    ) {
+    ) { innerPadding ->
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
-                .padding(start = 30.dp, top = 16.dp, end = 30.dp, bottom = 100.dp) // เผื่อปุ่มล่าง
+                .padding(innerPadding)
+                .padding(horizontal = 30.dp, vertical = 16.dp)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = { },
-                    modifier = Modifier
-                        .padding(start = 0.dp)
-                        .size(40.dp)
-                        .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.White
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Text(
-                    text = "คำสั่งซื้อ",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-            }
-
             Text(text = "เลือกชุดแพ็คเกจ", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -158,40 +168,15 @@ fun OrderFormScreen() {
             DatePickerSection()
 
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "บันทึกเพิ่มเติมเพื่อเตือนความจำ", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "บันทึกเพิ่มเติมเพื่อเตือนความจำ",
+                style = MaterialTheme.typography.titleMedium
+            )
             Spacer(modifier = Modifier.height(4.dp))
             BigTextField(value = vowDetail, onValueChange = { vowDetail = it })
 
             Spacer(modifier = Modifier.height(16.dp))
         }
-
-
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.primary)
-                .padding(horizontal = 30.dp, vertical = 16.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = selectedPackage?.let { "฿ ${it.price}" } ?: "",
-                    color = Color.White,
-                    style = MaterialTheme.typography.titleLarge
-                )
-
-                BonBaanButton(modifier = Modifier.width(200.dp),
-                    text = "ยืนยันคำสั่งซื้อ",
-                    onClick = { },
-                    variant = ButtonVariant.SECONDARY
-                )
-            }
-        }
-
     }
 }
 
@@ -313,7 +298,7 @@ fun BigTextField(
 @Preview(showBackground = true)
 @Composable
 fun PreviewFormScreen() {
-        OrderFormScreen(
-        )
+    OrderFormScreen(
+    )
 
 }

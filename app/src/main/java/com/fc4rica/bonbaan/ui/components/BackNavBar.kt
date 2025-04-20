@@ -20,6 +20,8 @@ fun BackNavBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(bottom = 1.dp)
             .background(MaterialTheme.colorScheme.surface)
             .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 24.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
