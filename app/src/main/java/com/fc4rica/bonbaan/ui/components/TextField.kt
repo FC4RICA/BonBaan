@@ -6,9 +6,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -40,6 +43,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import kotlinx.coroutines.delay
@@ -52,7 +56,9 @@ fun BonBaanTextField(
     label: String,
     modifier: Modifier = Modifier,
     isPassword: Boolean = false,
-    leadingIcon: @Composable (() -> Unit)? = null
+    leadingIcon: @Composable (() -> Unit)? = null,
+    enabled: Boolean = true,
+    readOnly: Boolean = false
 ) {
     var passwordVisibility by remember { mutableStateOf(false) }
 
@@ -63,6 +69,8 @@ fun BonBaanTextField(
         shape = RoundedCornerShape(8.dp),
         singleLine = true,
         leadingIcon = leadingIcon,
+        enabled = enabled,
+        readOnly = readOnly,
         trailingIcon = if (isPassword) {
             {
                 IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
@@ -168,12 +176,38 @@ fun OtpInputField(
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun PreviewBonBaanTextField() {
-//    BonBaanTextField(
-//        value = "",
-//        onValueChange = {},
-//        label = "Email",
-//    )
-//}
+@Composable
+fun TextArea(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier,
+    readOnly: Boolean = false
+) {
+    Column {
+        Text(label)
+        Spacer(modifier = Modifier.height(4.dp))
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            readOnly = readOnly
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewTextArea() {
+    Box(
+        modifier = Modifier.padding(16.dp)
+    ) {
+        TextArea(
+            value = "",
+            onValueChange = {},
+            label = "บันทึกเตือนความจำ",
+            readOnly = true
+        )
+    }
+}

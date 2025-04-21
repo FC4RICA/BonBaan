@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,7 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
-import com.fc4rica.bonbaan.ui.components.BonBaanTextField
+import com.fc4rica.bonbaan.ui.components.TextArea
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -114,6 +113,7 @@ fun OrderFormScreen() {
                     BonBaanButton(
                         text = "ยืนยันคำสั่งซื้อ",
                         onClick = { },
+                        modifier = Modifier.width(160.dp)
                     )
                 }
             }
@@ -130,7 +130,7 @@ fun OrderFormScreen() {
                 .padding(innerPadding)
                 .padding(horizontal = 30.dp, vertical = 16.dp)
         ) {
-            Text(text = "เลือกชุดแพ็คเกจ", style = MaterialTheme.typography.titleMedium)
+            Text(text = "แพ็คเกจ", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
 
             PackageOption(
@@ -139,43 +139,39 @@ fun OrderFormScreen() {
                 onPackageSelected = { selectedPackage = it }
             )
 
+            Spacer(modifier = Modifier.height(16.dp))
+
             if (selectedPackage != null) {
-                Spacer(modifier = Modifier.height(8.dp))
-                TextField(
+                TextArea(
                     value = selectedPackage!!.items,
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("รายละเอียดแพ็คเกจ") },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = false
+                    onValueChange = { },
+                    label = "รายการสินค้าในแพ็คเกจ",
+                    readOnly = true
                 )
             }
+
+
+
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(text = "รายละเอียดเพิ่มเติม", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            BonBaanTextField(label = "ชื่อจริง - นามสกุล",
-                value = "Name",
-                onValueChange = { })
-            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = "รายละเอียดเพิ่มเติม", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
 
-            Text(text = "คำขอในการบนบานของคุณ", style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            BigTextField(value = vowDetail,
-                onValueChange = { vowDetail = it })
+            TextArea(
+                value = vowDetail,
+                onValueChange = { vowDetail = it },
+                label = "คำขอในการบนบาน"
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
             DatePickerSection()
 
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "บันทึกเพิ่มเติมเพื่อเตือนความจำ",
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            BigTextField(value = vowDetail, onValueChange = { vowDetail = it })
 
-            Spacer(modifier = Modifier.height(16.dp))
+            TextArea(
+                value = vowDetail,
+                onValueChange = { vowDetail = it },
+                label = "บันทึกเตือนความจำ"
+            )
         }
     }
 }
@@ -251,7 +247,6 @@ fun PackageOption(
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth(),
-            label = { Text("แพ็คเกจ") }
         )
 
         ExposedDropdownMenu(
@@ -268,30 +263,6 @@ fun PackageOption(
                 )
             }
         }
-    }
-}
-
-@Composable
-fun BigTextField(
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    val scrollState = rememberScrollState()
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(120.dp)
-            .border(1.dp, Color.Gray, shape = RoundedCornerShape(8.dp))
-            .padding(12.dp)
-    ) {
-        BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-        )
     }
 }
 
