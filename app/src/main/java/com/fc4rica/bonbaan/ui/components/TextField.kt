@@ -51,20 +51,22 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun BonBaanTextField(
+    modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    label: String,
-    modifier: Modifier = Modifier,
+    label: String? = null,
     isPassword: Boolean = false,
     leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
     readOnly: Boolean = false
 ) {
     var passwordVisibility by remember { mutableStateOf(false) }
 
-    OutlinedTextField(value = value,
+    OutlinedTextField(
+        value = value,
         onValueChange = onValueChange,
-        label = { Text(label) },
+        label = { if (!label.isNullOrEmpty()) Text(label) },
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
         singleLine = true,
@@ -80,13 +82,16 @@ fun BonBaanTextField(
                     )
                 }
             }
+        } else if (trailingIcon != null) {
+            { trailingIcon() }
         } else null,
         visualTransformation = if (isPassword && !passwordVisibility) PasswordVisualTransformation() else VisualTransformation.None,
         keyboardOptions = if (isPassword) {
             KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password)
         } else {
             KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text)
-        })
+        }
+    )
 }
 
 @Composable
@@ -185,7 +190,7 @@ fun TextArea(
     readOnly: Boolean = false
 ) {
     Column {
-        Text(label)
+        Text(text = label, style = MaterialTheme.typography.bodyMedium)
         Spacer(modifier = Modifier.height(4.dp))
         OutlinedTextField(
             value = value,
