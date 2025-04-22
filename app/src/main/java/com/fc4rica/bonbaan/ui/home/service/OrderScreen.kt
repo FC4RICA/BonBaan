@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.ui.home.service
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,15 +14,16 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +39,7 @@ import com.fc4rica.bonbaan.domain.model.OrderType
 import com.fc4rica.bonbaan.domain.model.Package
 import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
+import com.fc4rica.bonbaan.ui.components.BonBaanTextField
 import com.fc4rica.bonbaan.ui.components.DatePickerInputField
 import com.fc4rica.bonbaan.ui.components.TextArea
 
@@ -196,7 +199,7 @@ fun PackageOption(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded }
     ) {
-        TextField(
+        BonBaanTextField(
             readOnly = true,
             value = selectedPackage?.name ?: "เลือกแพ็คเกจ",
             onValueChange = {},
@@ -204,13 +207,16 @@ fun PackageOption(
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
             modifier = Modifier
-                .menuAnchor()
+                .menuAnchor(type = MenuAnchorType.PrimaryEditable)
                 .fillMaxWidth(),
         )
 
         ExposedDropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            shape = RoundedCornerShape(8.dp),
+            containerColor = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceContainer)
         ) {
             packages.forEach { item ->
                 DropdownMenuItem(
@@ -218,7 +224,7 @@ fun PackageOption(
                     onClick = {
                         onPackageSelected(item)
                         expanded = false
-                    }
+                    },
                 )
             }
         }
