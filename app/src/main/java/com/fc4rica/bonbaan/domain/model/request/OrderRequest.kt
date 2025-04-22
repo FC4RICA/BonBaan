@@ -29,7 +29,7 @@ data class FulfillOrderRequest(
     @SerializedName("packageID")
     val packageId: String = "",
     @SerializedName("serviceID")
-    val serviceId: String?,
+    val serviceId: String,
     @SerializedName("order_type_ID")
     val orderTypeID: String,
     @SerializedName("vow_record_id")

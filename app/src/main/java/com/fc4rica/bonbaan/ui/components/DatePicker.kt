@@ -29,16 +29,23 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun DatePickerInputField(
     modifier: Modifier = Modifier,
-    selectedDate: LocalDate? = null,
-    onDateSelected: (LocalDate?) -> Unit,
+    selectedDate: String? = null,
+    onDateSelected: (String?) -> Unit,
     dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
-    var internalDate by remember { mutableStateOf(selectedDate) }
+
+    val initialDate = remember(selectedDate) {
+        selectedDate?.let {
+            runCatching { LocalDate.parse(it, dateFormatter) }.getOrNull()
+        }
+    }
+
+    var internalDate by remember { mutableStateOf(initialDate) }
 
     val formattedDate = internalDate?.format(dateFormatter) ?: ""
 
-    Box{
+    Box {
         OutlinedTextField(
             value = formattedDate,
             onValueChange = {}, // Read-only field
@@ -64,9 +71,10 @@ fun DatePickerInputField(
         DatePickerModal(
             onDateSelected = { date ->
                 internalDate = date
-                onDateSelected(date)
+                onDateSelected(date?.format(dateFormatter))
             },
-            onDismiss = { showDatePicker = false }
+            onDismiss = { showDatePicker = false },
+            initialDate = internalDate
         )
     }
 }
@@ -75,9 +83,11 @@ fun DatePickerInputField(
 @Composable
 fun DatePickerModal(
     onDateSelected: (LocalDate?) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    initialDate: LocalDate? = null
 ) {
-    val datePickerState = rememberDatePickerState()
+    val millis = initialDate?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = millis)
 
     DatePickerDialog(
         onDismissRequest = onDismiss,

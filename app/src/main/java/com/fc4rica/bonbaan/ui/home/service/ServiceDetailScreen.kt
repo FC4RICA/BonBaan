@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.fc4rica.bonbaan.domain.model.Package
+import com.fc4rica.bonbaan.domain.model.PackageType
 import com.fc4rica.bonbaan.ui.components.BackButton
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
@@ -70,13 +71,14 @@ fun ServiceDetailScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.primary)
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .padding(top = 1.dp)
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(vertical = 12.dp, horizontal = 24.dp),
             ) {
                 BonBaanButton(
                     text = "ซื้อเลย",
                     onClick = { viewModel.createOrder() },
-                    variant = ButtonVariant.SECONDARY,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -203,7 +205,7 @@ fun ServiceDetailScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
-                    "แพ็คเกจสินค้า",
+                    "แพ็กเกจสินค้า",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -224,7 +226,7 @@ fun ServiceDetailScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    "ข้อมูลรายละเอียดแพ็คเกจ",
+                    "ข้อมูลรายละเอียดแพ็กเกจ",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
