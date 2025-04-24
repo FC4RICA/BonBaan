@@ -29,7 +29,12 @@ data class OrderUiState(
     val fulfilledVowRecord: VowRecord? = null,
     val vowRecords: List<VowRecord> = emptyList(),
     val isSubmitSuccess: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+
+    val packageError: String? = null,
+    val vowError: String? = null,
+    val deadlineError: String? = null,
+    val vowRecordError: String? = null
 )
 
 private data class PackageContext(
@@ -185,14 +190,27 @@ class OrderViewModel(
     }
 
     fun submitVowOrder() {
+        if (_state.value.selectedPackage == null) return _state.update { it.copy(packageError = "กรุณาเลือกแพ็กเกจ") }
+        if (_state.value.selectedPackage!!.id.isEmpty() && _state.value.customItem.isEmpty()) return _state.update { it.copy(packageError = "กรุณากรอกรายการสินค้า") }
+        if (_state.value.vow.isBlank()) return _state.update { it.copy(vowError = "กรุณากรอกคำบนบาน") }
+        if (_state.value.deadline.isBlank()) return _state.update { it.copy(deadlineError = "กรุณาเลือกวันที่") }
+
         val current = (_orderRequest.value as? OrderRequest.Vow)?.request ?: return
         val wrapped = OrderRequest.Vow(current)
         orderRepository.setOrderRequest(wrapped)
+
+        _state.update { it.copy(isSubmitSuccess = true, packageError = null, vowError = null, deadlineError = null, errorMessage = null) }
     }
 
     fun submitFulfillOrder() {
+        if (_state.value.selectedPackage == null) return _state.update { it.copy(packageError = "กรุณาเลือกแพ็กเกจ") }
+        if (_state.value.selectedPackage!!.id.isEmpty() && _state.value.customItem.isEmpty()) return _state.update { it.copy(packageError = "กรุณากรอกรายการสินค้า") }
+        if (_state.value.fulfilledVowRecord == null) return _state.update { it.copy(vowRecordError = "กรุณาเลือกคำบนบานที่ต้องการแก้") }
+
         val current = (_orderRequest.value as? OrderRequest.Fulfill)?.request ?: return
         val wrapped = OrderRequest.Fulfill(current)
         orderRepository.setOrderRequest(wrapped)
+
+        _state.update { it.copy(isSubmitSuccess = true, packageError = null, vowRecordError = null, errorMessage = null) }
     }
 }

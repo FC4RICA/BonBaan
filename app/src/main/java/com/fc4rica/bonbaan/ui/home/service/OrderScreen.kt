@@ -1,6 +1,5 @@
 package com.fc4rica.bonbaan.ui.home.service
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,34 +12,24 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.fc4rica.bonbaan.domain.model.Package
-import com.fc4rica.bonbaan.domain.model.VowRecord
 import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
-import com.fc4rica.bonbaan.ui.components.BonBaanTextField
 import com.fc4rica.bonbaan.ui.components.DatePickerInputField
+import com.fc4rica.bonbaan.ui.components.DropdownSelector
 import com.fc4rica.bonbaan.ui.components.TextArea
 import org.koin.androidx.compose.koinViewModel
 import java.time.format.DateTimeFormatter
@@ -140,10 +129,12 @@ fun OrderScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
-                PackageOption(
-                    packages = state.packages,
-                    selectedPackage = state.selectedPackage,
-                    onPackageSelected = { viewModel.updateSelectedPackage(it) }
+                DropdownSelector(
+                    label = "เลือกแพ็คเกจ",
+                    options = state.packages,
+                    selectedOption = state.selectedPackage,
+                    onOptionSelected = { viewModel.updateSelectedPackage(it) },
+                    optionToString = { "${it.name} (${it.price} บาท)" }
                 )
 
                 if (state.selectedPackage != null) {
@@ -162,6 +153,17 @@ fun OrderScreen(
                             Modifier.padding(start = 16.dp)
                         )
                     }
+                }
+
+                if (!state.packageError.isNullOrEmpty()) {
+                    (Modifier.height(2.dp))
+                    Text(
+                        text = state.packageError ?: "",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.error,
+                        textAlign = TextAlign.Right,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
 
@@ -188,12 +190,32 @@ fun OrderScreen(
                         onValueChange = { viewModel.updateVow(it) },
                         label = "คำขอในการบนบาน"
                     )
+                    if (!state.vowError.isNullOrEmpty()) {
+                        (Modifier.height(2.dp))
+                        Text(
+                            text = state.vowError ?: "",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.error,
+                            textAlign = TextAlign.Right,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text("ขอบเขตวันที่ที่ต้องการให้คำขอสำเร็จ")
                     Spacer(modifier = Modifier.height(4.dp))
                     DatePickerInputField(onDateSelected = { viewModel.updateDeadline(it ?: "") })
+                    if (!state.deadlineError.isNullOrEmpty()) {
+                        (Modifier.height(2.dp))
+                        Text(
+                            text = state.deadlineError ?: "",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.error,
+                            textAlign = TextAlign.Right,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
                 }
@@ -214,12 +236,24 @@ fun OrderScreen(
                     Spacer(Modifier.height(8.dp))
 
                     if (state.vowRecords.count() > 1) {
-                        VowRecordOption(
-                            vowRecords = state.vowRecords,
-                            selectedVowRecords = state.fulfilledVowRecord,
-                            onVowRecordSelected = {
-                                viewModel.updateFulfillVowRecord(it)
+                        DropdownSelector(
+                            label = "เลือกการบนบาน",
+                            options = state.vowRecords,
+                            selectedOption = state.fulfilledVowRecord,
+                            onOptionSelected = { viewModel.updateFulfillVowRecord(it) },
+                            optionToString = {
+                                "${it.vow} (${it.createdAt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))})"
                             }
+                        )
+                    }
+                    if (!state.vowRecordError.isNullOrEmpty()) {
+                        (Modifier.height(2.dp))
+                        Text(
+                            text = state.vowRecordError ?: "",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.error,
+                            textAlign = TextAlign.Right,
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
 
@@ -262,106 +296,6 @@ fun OrderScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PackageOption(
-    packages: List<Package>,
-    selectedPackage: Package?,
-    onPackageSelected: (Package) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
-    ) {
-        BonBaanTextField(
-            readOnly = true,
-            value = selectedPackage?.name ?: "เลือกแพ็คเกจ",
-            onValueChange = {},
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-            },
-            modifier = Modifier
-                .menuAnchor(type = MenuAnchorType.PrimaryEditable)
-                .fillMaxWidth(),
-        )
-
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            shape = RoundedCornerShape(8.dp),
-            containerColor = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceContainer)
-        ) {
-            packages.forEach { item ->
-                DropdownMenuItem(
-                    text = { Text("${item.name} (${item.price} บาท)") },
-                    onClick = {
-                        onPackageSelected(item)
-                        expanded = false
-                    },
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun VowRecordOption(
-    vowRecords: List<VowRecord>,
-    selectedVowRecords: VowRecord?,
-    onVowRecordSelected: (VowRecord) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
-    ) {
-        BonBaanTextField(
-            readOnly = true,
-            value = selectedVowRecords?.vow ?: "เลือกการบนบาน",
-            onValueChange = {},
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-            },
-            modifier = Modifier
-                .menuAnchor(type = MenuAnchorType.PrimaryEditable)
-                .fillMaxWidth(),
-        )
-
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            shape = RoundedCornerShape(8.dp),
-            containerColor = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceContainer)
-        ) {
-            vowRecords.forEach { item ->
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            "${item.vow} (${
-                                item.createdAt.format(
-                                    DateTimeFormatter.ofPattern(
-                                        "(dd/MM/yyyy)"
-                                    )
-                                )
-                            })"
-                        )
-                    },
-                    onClick = {
-                        onVowRecordSelected(item)
-                        expanded = false
-                    },
-                )
-            }
         }
     }
 }
