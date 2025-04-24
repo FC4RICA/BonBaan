@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.ui.home
 
+import ProfileScreen
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
