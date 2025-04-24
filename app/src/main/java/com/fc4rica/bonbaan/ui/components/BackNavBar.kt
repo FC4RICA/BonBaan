@@ -23,8 +23,8 @@ fun BackNavBar(
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(bottom = 1.dp)
             .background(MaterialTheme.colorScheme.surface)
-            .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 24.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+            .padding(top = 12.dp, bottom = 12.dp, start = 16.dp, end = 24.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         BackButton(onClick = onBackClick)

@@ -197,7 +197,7 @@ fun TextArea(
             onValueChange = onValueChange,
             modifier = modifier.fillMaxWidth(),
             shape = RoundedCornerShape(8.dp),
-            readOnly = readOnly
+            readOnly = readOnly,
         )
     }
 }

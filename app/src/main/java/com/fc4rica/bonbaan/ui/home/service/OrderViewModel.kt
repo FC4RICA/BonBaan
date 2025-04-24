@@ -28,6 +28,7 @@ data class OrderUiState(
     val customItem: String = "",
     val fulfilledVowRecord: VowRecord? = null,
     val vowRecords: List<VowRecord> = emptyList(),
+    val isSubmitSuccess: Boolean = false,
     val errorMessage: String? = null
 )
 
@@ -164,6 +165,11 @@ class OrderViewModel(
             is OrderRequest.Fulfill -> updateFulfillField { copy(items = lines) }
             else -> Unit
         }
+    }
+
+    fun updateFulfillVowRecord(vowRecord: VowRecord) {
+        _state.update { it.copy(fulfilledVowRecord = vowRecord)}
+        updateFulfillField { copy(vowRecordID = vowRecord.id) }
     }
 
     private fun updateVowField(update: VowOrderRequest.() -> VowOrderRequest) {

@@ -65,7 +65,7 @@ fun PackageReviewScreen() {
                 content = {
                     Text(
                         text = "รีวิว",
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
                 }

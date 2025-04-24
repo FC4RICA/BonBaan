@@ -24,6 +24,7 @@ import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,9 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.fc4rica.bonbaan.domain.model.OrderType
 import com.fc4rica.bonbaan.domain.model.Package
 import com.fc4rica.bonbaan.domain.model.VowRecord
 import com.fc4rica.bonbaan.ui.components.BackNavBar
@@ -44,57 +43,21 @@ import com.fc4rica.bonbaan.ui.components.BonBaanTextField
 import com.fc4rica.bonbaan.ui.components.DatePickerInputField
 import com.fc4rica.bonbaan.ui.components.TextArea
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-
-private data class OrderState(
-    val packages: List<Package> = listOf(
-        Package("1", "คนคุยทันใจ", "", 100.0, listOf("ธูป"), OrderType("", "")),
-        Package("2", "แฟนดีไม่่หนีไม่จ่าย", "", 200.0, listOf("เทียน"), OrderType("", "")),
-        Package("3", "อิอิซ่า", "", 300.0, listOf("ปลาร้า"), OrderType("", "")),
-        Package("", "แพ็กเกจบนบานแบบกำหนดเอง", "", 0.0, listOf(""), OrderType("", ""))
-    ),
-    var selectedPackage: Package? = Package(
-        "",
-        "แพ็กเกจบนบานแบบกำหนดเอง",
-        "",
-        0.0,
-        listOf(""),
-        OrderType("", "")
-    ),
-    val isVow: Boolean = true,
-    val isFulfill: Boolean = false,
-    var vow: String = "",
-    var note: String = "",
-    val deadline: String = "",
-    val customItem: String = "",
-    var fulfilledVowRecord: VowRecord? = VowRecord(
-        id = "1",
-        deadline = LocalDateTime.now(),
-        note = "1",
-        vow = "I will donate after exam results pass the 70%",
-        createdAt = LocalDateTime.now(),
-    ),
-    val vowRecords: List<VowRecord> = listOf(
-        VowRecord(
-            id = "1",
-            deadline = LocalDateTime.now(),
-            note = "1",
-            vow = "I will donate after exam results pass the 70%",
-            createdAt = LocalDateTime.now(),
-        )
-    ),
-    val errorMessage: String? = null
-)
 
 @Composable
 fun OrderScreen(
     onSubmitOrder: () -> Unit,
     onBack: () -> Unit,
-//    viewModel: OrderViewModel = koinViewModel()
+    viewModel: OrderViewModel = koinViewModel()
 ) {
-    val state = OrderState()
-//    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(state.isSubmitSuccess) {
+        if (state.isSubmitSuccess) {
+            onSubmitOrder()
+        }
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -104,7 +67,7 @@ fun OrderScreen(
                 content = {
                     Text(
                         text = "คำสั่งซื้อ",
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
@@ -122,7 +85,7 @@ fun OrderScreen(
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(
@@ -131,7 +94,7 @@ fun OrderScreen(
                         Text("ราคาทั้งหมด")
                         Spacer(Modifier.width(4.dp))
                         Text(
-                            text = if (state.selectedPackage != null) "฿ ${state.selectedPackage?.price}" else "฿ ~",
+                            text = if (state.selectedPackage != null && state.selectedPackage?.price!! > 0.0) "฿ ${state.selectedPackage?.price}" else "ยังไม่กำหนด",
                             color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.titleMedium
                         )
@@ -141,7 +104,10 @@ fun OrderScreen(
 
                     BonBaanButton(
                         text = "ยืนยันคำสั่งซื้อ",
-                        onClick = { },
+                        onClick = {
+                            if (state.isVow) viewModel.submitVowOrder()
+                            else if (state.isFulfill) viewModel.submitFulfillOrder()
+                        },
                         modifier = Modifier.width(160.dp)
                     )
                 }
@@ -177,9 +143,7 @@ fun OrderScreen(
                 PackageOption(
                     packages = state.packages,
                     selectedPackage = state.selectedPackage,
-                    onPackageSelected = {
-                        state.selectedPackage = it
-                    } // updateSelectedPackage(it) }
+                    onPackageSelected = { viewModel.updateSelectedPackage(it) }
                 )
 
                 if (state.selectedPackage != null) {
@@ -187,7 +151,7 @@ fun OrderScreen(
                     if (state.selectedPackage?.id!!.isEmpty()) {
                         TextArea(
                             value = state.customItem,
-                            onValueChange = { }, // updateCustomItem(it) },
+                            onValueChange = { viewModel.updateCustomItem(it) },
                             label = "รายการสินค้าที่คุณต้องการให้เราจัดหา",
                         )
                     } else {
@@ -221,7 +185,7 @@ fun OrderScreen(
                 if (state.isVow) {
                     TextArea(
                         value = state.vow,
-                        onValueChange = { state.vow = it }, // updateVow(it) } ,
+                        onValueChange = { viewModel.updateVow(it) },
                         label = "คำขอในการบนบาน"
                     )
 
@@ -229,14 +193,14 @@ fun OrderScreen(
 
                     Text("ขอบเขตวันที่ที่ต้องการให้คำขอสำเร็จ")
                     Spacer(modifier = Modifier.height(4.dp))
-                    DatePickerInputField(onDateSelected = { state.deadline })
+                    DatePickerInputField(onDateSelected = { viewModel.updateDeadline(it ?: "") })
 
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
                 TextArea(
                     value = state.note,
-                    onValueChange = { state.note = it }, // updateNote(it) },
+                    onValueChange = { viewModel.updateNote(it) },
                     label = "บันทึกเตือนความจำ"
                 )
 
@@ -254,8 +218,8 @@ fun OrderScreen(
                             vowRecords = state.vowRecords,
                             selectedVowRecords = state.fulfilledVowRecord,
                             onVowRecordSelected = {
-                                state.fulfilledVowRecord = it
-                            } // updateFulfillVowRecord(it) }
+                                viewModel.updateFulfillVowRecord(it)
+                            }
                         )
                     }
 
@@ -400,11 +364,4 @@ fun VowRecordOption(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewOrderScreen() {
-    OrderScreen({}, {})
-
 }
