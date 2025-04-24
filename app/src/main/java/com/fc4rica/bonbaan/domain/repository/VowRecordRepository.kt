@@ -5,5 +5,5 @@ import com.fc4rica.bonbaan.domain.model.VowRecord
 interface VowRecordRepository {
     suspend fun getVowRecords(): Result<List<VowRecord>>
     suspend fun getVowRecord(id: String): Result<VowRecord>
-    suspend fun getUnFulfilledVowRecordsByService(serviceId: String): Result<VowRecord>
+    suspend fun getUnFulfilledVowRecordsByService(serviceId: String): Result<List<VowRecord>>
 }

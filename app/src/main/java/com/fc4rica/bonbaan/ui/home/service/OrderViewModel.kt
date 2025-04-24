@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.fc4rica.bonbaan.domain.model.OrderType
 import com.fc4rica.bonbaan.domain.model.Package
 import com.fc4rica.bonbaan.domain.model.PackageType
+import com.fc4rica.bonbaan.domain.model.VowRecord
 import com.fc4rica.bonbaan.domain.model.request.FulfillOrderRequest
 import com.fc4rica.bonbaan.domain.model.request.OrderRequest
 import com.fc4rica.bonbaan.domain.model.request.VowOrderRequest
 import com.fc4rica.bonbaan.domain.repository.OrderRepository
 import com.fc4rica.bonbaan.domain.repository.PackageRepository
+import com.fc4rica.bonbaan.domain.repository.VowRecordRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -24,6 +26,8 @@ data class OrderUiState(
     val note: String = "",
     val deadline: String = "",
     val customItem: String = "",
+    val fulfilledVowRecord: VowRecord? = null,
+    val vowRecords: List<VowRecord> = emptyList(),
     val errorMessage: String? = null
 )
 
@@ -36,7 +40,8 @@ private data class PackageContext(
 
 class OrderViewModel(
     private val packageRepository: PackageRepository,
-    private val orderRepository: OrderRepository
+    private val orderRepository: OrderRepository,
+    private val vowRecordRepository: VowRecordRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(OrderUiState())
     val state = _state.asStateFlow()
@@ -56,7 +61,29 @@ class OrderViewModel(
                 isFulfill = orderRequest is OrderRequest.Fulfill
             )
         }
+
+        if (orderRequest is OrderRequest.Fulfill) {
+            viewModelScope.launch {
+                val result =
+                    vowRecordRepository.getUnFulfilledVowRecordsByService(orderRequest.request.serviceId)
+                result.fold(
+                    onSuccess = { records ->
+                        _state.update {
+                            it.copy(
+                                fulfilledVowRecord = records.find { pack -> pack.id == orderRequest.request.vowRecordID },
+                                vowRecords = records
+                            )
+                        }
+                    },
+                    onFailure = { error ->
+                        _state.update { it.copy(errorMessage = error.message) }
+                    }
+                )
+            }
+        }
+
         _orderRequest.update { orderRequest }
+
         return orderRequest
     }
 

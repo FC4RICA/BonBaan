@@ -217,11 +217,11 @@ class ServiceDetailViewModel(
         viewModelScope.launch {
             val result = vowRecordRepository.getUnFulfilledVowRecordsByService(_serviceId)
             result.fold(
-                onSuccess = { vowRecord ->
+                onSuccess = { vowRecords ->
                     _state.update {
                         it.copy(
                             hasUnFulfilledVowRecords = true,
-                            vowRecord = vowRecord
+                            vowRecord = vowRecords.first()
                         )
                     }
                 },

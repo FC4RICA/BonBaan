@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -38,12 +37,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fc4rica.bonbaan.domain.model.OrderType
 import com.fc4rica.bonbaan.domain.model.Package
+import com.fc4rica.bonbaan.domain.model.VowRecord
 import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.BonBaanTextField
 import com.fc4rica.bonbaan.ui.components.DatePickerInputField
 import com.fc4rica.bonbaan.ui.components.TextArea
 import org.koin.androidx.compose.koinViewModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 private data class OrderState(
     val packages: List<Package> = listOf(
@@ -52,13 +54,36 @@ private data class OrderState(
         Package("3", "อิอิซ่า", "", 300.0, listOf("ปลาร้า"), OrderType("", "")),
         Package("", "แพ็กเกจบนบานแบบกำหนดเอง", "", 0.0, listOf(""), OrderType("", ""))
     ),
-    var selectedPackage: Package? = null,
+    var selectedPackage: Package? = Package(
+        "",
+        "แพ็กเกจบนบานแบบกำหนดเอง",
+        "",
+        0.0,
+        listOf(""),
+        OrderType("", "")
+    ),
     val isVow: Boolean = true,
     val isFulfill: Boolean = false,
     var vow: String = "",
     var note: String = "",
     val deadline: String = "",
     val customItem: String = "",
+    var fulfilledVowRecord: VowRecord? = VowRecord(
+        id = "1",
+        deadline = LocalDateTime.now(),
+        note = "1",
+        vow = "I will donate after exam results pass the 70%",
+        createdAt = LocalDateTime.now(),
+    ),
+    val vowRecords: List<VowRecord> = listOf(
+        VowRecord(
+            id = "1",
+            deadline = LocalDateTime.now(),
+            note = "1",
+            vow = "I will donate after exam results pass the 70%",
+            createdAt = LocalDateTime.now(),
+        )
+    ),
     val errorMessage: String? = null
 )
 
@@ -72,6 +97,7 @@ fun OrderScreen(
 //    val state by viewModel.state.collectAsState()
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             BackNavBar(
                 onBackClick = onBack,
@@ -120,84 +146,157 @@ fun OrderScreen(
                     )
                 }
             }
-        },
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+        }
     ) { innerPadding ->
 
+        // Package
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surfaceContainer)
                 .verticalScroll(rememberScrollState())
-                .padding(innerPadding)
-                .padding(horizontal = 30.dp, vertical = 16.dp)
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    bottom = 0.dp
+                )
                 .imePadding()
         ) {
-            Text(
-                text = "แพ็กเกจ",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(start = 24.dp, top = 16.dp, end = 24.dp, bottom = 24.dp)
+            ) {
+                Text(
+                    text = "แพ็กเกจ",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
 
-            PackageOption(
-                packages = state.packages,
-                selectedPackage = state.selectedPackage,
-                onPackageSelected = { state.selectedPackage = it } // updateSelectedPackage(it) }
-            )
+                PackageOption(
+                    packages = state.packages,
+                    selectedPackage = state.selectedPackage,
+                    onPackageSelected = {
+                        state.selectedPackage = it
+                    } // updateSelectedPackage(it) }
+                )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            if (state.selectedPackage != null) {
-                if (state.selectedPackage?.id!!.isEmpty()) {
-                    TextArea(
-                        value = state.customItem,
-                        onValueChange = { }, // updateCustomItem(it) },
-                        label = "รายการสินค้าที่คุณต้องการให้เราจัดหา",
-                    )
-                } else {
-                    Text("รายการสินค้าในแพ็กเกจ")
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        state.selectedPackage!!.items.joinToString("\n"),
-                        Modifier.padding(start = 16.dp)
-                    )
+                if (state.selectedPackage != null) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    if (state.selectedPackage?.id!!.isEmpty()) {
+                        TextArea(
+                            value = state.customItem,
+                            onValueChange = { }, // updateCustomItem(it) },
+                            label = "รายการสินค้าที่คุณต้องการให้เราจัดหา",
+                        )
+                    } else {
+                        Text("รายการสินค้าในแพ็กเกจ")
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            state.selectedPackage!!.items.joinToString("\n"),
+                            Modifier.padding(start = 16.dp)
+                        )
+                    }
                 }
             }
 
-
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                text = "รายละเอียดเพิ่มเติม",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
             Spacer(modifier = Modifier.height(8.dp))
 
-            if (state.isVow) {
+            // Other Detail
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
+            ) {
+                Text(
+                    text = "รายละเอียดเพิ่มเติม",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Vow
+                if (state.isVow) {
+                    TextArea(
+                        value = state.vow,
+                        onValueChange = { state.vow = it }, // updateVow(it) } ,
+                        label = "คำขอในการบนบาน"
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text("ขอบเขตวันที่ที่ต้องการให้คำขอสำเร็จ")
+                    Spacer(modifier = Modifier.height(4.dp))
+                    DatePickerInputField(onDateSelected = { state.deadline })
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+
                 TextArea(
-                    value = state.vow,
-                    onValueChange = { state.vow = it }, // updateVow(it) } ,
-                    label = "คำขอในการบนบาน"
+                    value = state.note,
+                    onValueChange = { state.note = it }, // updateNote(it) },
+                    label = "บันทึกเตือนความจำ"
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                // Fulfill
+                if (state.isFulfill && state.fulfilledVowRecord != null) {
+                    Text(
+                        text = "รายละเอียดการบนบาน",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.height(8.dp))
 
-                Text("ขอบเขตวันที่ที่ต้องการให้คำขอสำเร็จ")
-                Spacer(modifier = Modifier.height(4.dp))
-                DatePickerInputField(onDateSelected = { state.deadline })
+                    if (state.vowRecords.count() > 1) {
+                        VowRecordOption(
+                            vowRecords = state.vowRecords,
+                            selectedVowRecords = state.fulfilledVowRecord,
+                            onVowRecordSelected = {
+                                state.fulfilledVowRecord = it
+                            } // updateFulfillVowRecord(it) }
+                        )
+                    }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(Modifier.height(8.dp))
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            text = "\"${state.fulfilledVowRecord!!.vow}\"",
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                        Text(
+                            text = "บนบานเมื่อ ${
+                                state.fulfilledVowRecord!!.createdAt.format(
+                                    DateTimeFormatter.ofPattern(
+                                        "dd/MM/yyyy"
+                                    )
+                                )
+                            }",
+                            softWrap = false
+                        )
+                        Text(
+                            text = "คุณขอให้สำเร็จภายในวันที่ ${
+                                state.fulfilledVowRecord!!.deadline.format(
+                                    DateTimeFormatter.ofPattern(
+                                        "dd/MM/yyyy"
+                                    )
+                                )
+                            }",
+                            softWrap = false
+                        )
+                    }
+
+                }
             }
 
-            TextArea(
-                value = state.note,
-                onValueChange = { state.note = it }, // updateNote(it) },
-                label = "บันทึกเตือนความจำ"
-            )
+            Spacer(modifier = Modifier.height(8.dp))
 
         }
     }
@@ -240,6 +339,61 @@ fun PackageOption(
                     text = { Text("${item.name} (${item.price} บาท)") },
                     onClick = {
                         onPackageSelected(item)
+                        expanded = false
+                    },
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun VowRecordOption(
+    vowRecords: List<VowRecord>,
+    selectedVowRecords: VowRecord?,
+    onVowRecordSelected: (VowRecord) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        BonBaanTextField(
+            readOnly = true,
+            value = selectedVowRecords?.vow ?: "เลือกการบนบาน",
+            onValueChange = {},
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            modifier = Modifier
+                .menuAnchor(type = MenuAnchorType.PrimaryEditable)
+                .fillMaxWidth(),
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            shape = RoundedCornerShape(8.dp),
+            containerColor = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceContainer)
+        ) {
+            vowRecords.forEach { item ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            "${item.vow} (${
+                                item.createdAt.format(
+                                    DateTimeFormatter.ofPattern(
+                                        "(dd/MM/yyyy)"
+                                    )
+                                )
+                            })"
+                        )
+                    },
+                    onClick = {
+                        onVowRecordSelected(item)
                         expanded = false
                     },
                 )

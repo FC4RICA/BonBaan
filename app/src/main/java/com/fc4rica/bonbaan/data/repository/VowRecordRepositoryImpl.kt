@@ -43,7 +43,7 @@ class VowRecordRepositoryImpl(
         }
     }
 
-    override suspend fun getUnFulfilledVowRecordsByService(serviceId: String): Result<VowRecord> {
+    override suspend fun getUnFulfilledVowRecordsByService(serviceId: String): Result<List<VowRecord>> {
         return try {
             val userId = userPreferences.data.first().id
                 ?: return Result.failure(Exception("User not logged in"))
@@ -55,7 +55,7 @@ class VowRecordRepositoryImpl(
             }
 
             Result.success(response.data.filter { it.service?.id == serviceId && it.fulfillOrder == null }
-                .map { it.toVowRecord() }.first())
+                .map { it.toVowRecord() })
         } catch (e: Exception) {
             Result.failure(e)
         }
