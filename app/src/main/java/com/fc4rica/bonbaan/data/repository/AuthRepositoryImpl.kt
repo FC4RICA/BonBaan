@@ -56,16 +56,18 @@ class AuthRepositoryImpl(
         }
     }
 
-    override suspend fun getProfile(): Result<User> {
+    override suspend fun getProfile(useLocalStorage: Boolean): Result<User> {
         return try {
-            // fetch user from local storage
-            val userPref = userPreferences.data.first()
-            if (userPref.token == null) {
-                return Result.failure(Exception("User not found"))
-            }
-            var user = userPref.toUser()
-            if (user != null) {
-                return Result.success(user)
+            if (useLocalStorage) {
+                // fetch user from local storage
+                val userPref = userPreferences.data.first()
+                if (userPref.token == null) {
+                    return Result.failure(Exception("User not found"))
+                }
+                val user = userPref.toUser()
+                if (user != null) {
+                    return Result.success(user)
+                }
             }
 
             // if not found in local storage, fetch from server
@@ -75,7 +77,7 @@ class AuthRepositoryImpl(
                 return Result.failure(Exception("Invalid or expired token"))
             }
 
-            user = response.data.toUser()
+            val user = response.data.toUser()
             userPreferences.updateData { prefs ->
                 prefs.copy(
                     id = user.id,

@@ -38,7 +38,7 @@ class MainViewModel(
             }
 
             // Validate token by fetching user profile
-            val result = authRepository.getProfile()
+            val result = authRepository.getProfile(false)
             _isAuthenticated.value = result.isSuccess
 
             if (result.isSuccess) {

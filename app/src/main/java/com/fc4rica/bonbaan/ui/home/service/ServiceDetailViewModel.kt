@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fc4rica.bonbaan.domain.model.OrderType
 import com.fc4rica.bonbaan.domain.model.Package
+import com.fc4rica.bonbaan.domain.model.PackageType
 import com.fc4rica.bonbaan.domain.model.Review
 import com.fc4rica.bonbaan.domain.model.Service
 import com.fc4rica.bonbaan.domain.model.VowRecord
@@ -21,8 +22,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-enum class PackageType(val displayName: String) { Vow("บนบาน"), Fulfill("แก้บน") }
 
 data class ServiceDetailUiState(
     val service: Service = Service(
@@ -218,11 +217,11 @@ class ServiceDetailViewModel(
         viewModelScope.launch {
             val result = vowRecordRepository.getUnFulfilledVowRecordsByService(_serviceId)
             result.fold(
-                onSuccess = { vowRecord ->
+                onSuccess = { vowRecords ->
                     _state.update {
                         it.copy(
                             hasUnFulfilledVowRecords = true,
-                            vowRecord = vowRecord
+                            vowRecord = vowRecords.first()
                         )
                     }
                 },

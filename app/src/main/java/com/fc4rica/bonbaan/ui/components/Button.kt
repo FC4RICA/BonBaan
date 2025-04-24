@@ -2,6 +2,7 @@ package com.fc4rica.bonbaan.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -98,12 +99,13 @@ fun BackButton(
 
     IconButton(
         onClick = onClick,
-        modifier = modifier,
-        colors = colors!!
+        colors = colors!!,
+        modifier = modifier.size(32.dp),
     ) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = "back button",
+            modifier = Modifier.size(20.dp),
         )
     }
 }

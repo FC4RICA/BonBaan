@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.ui.home
 
+import ProfileScreen
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -40,16 +41,14 @@ import com.fc4rica.bonbaan.ui.home.feed.FilteredServiceScreen
 import com.fc4rica.bonbaan.ui.home.feed.SearchScreen
 import com.fc4rica.bonbaan.ui.home.service.ServiceDetailScreen
 import com.fc4rica.bonbaan.ui.home.notification.NotificationScreen
-//import com.fc4rica.bonbaan.ui.home.profile.MyReviewsScreen
-//import com.fc4rica.bonbaan.ui.home.profile.OrderStatusDetailScreen
-//import com.fc4rica.bonbaan.ui.home.profile.OrdersStatusScreen
-//import com.fc4rica.bonbaan.ui.home.profile.ProfileScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderScreen
+import com.fc4rica.bonbaan.ui.home.service.OrderStatusDetailScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderSummaryScreen
+import com.fc4rica.bonbaan.ui.home.service.OrdersStatusScreen
 import com.fc4rica.bonbaan.ui.home.service.PaymentScreen
 import com.fc4rica.bonbaan.ui.home.service.ServiceReviewScreen
-//import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordDetailScreen
-//import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordScreen
+import com.fc4rica.bonbaan.ui.home.service.VowRecordDetailScreen
+import com.fc4rica.bonbaan.ui.home.service.VowRecordScreen
 import com.fc4rica.bonbaan.ui.navigation.Screen
 
 @Composable
@@ -96,15 +95,15 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
             onClickService = { navController.navigate(Screen.ServiceDetail.createRoute(it)) }
         )
     }
-//    composable(Screen.VowRecord.route) {
-//        VowRecordScreen()
-//    }
+    composable(Screen.VowRecord.route) {
+        VowRecordScreen()
+    }
     composable(Screen.Notification.route) {
         NotificationScreen()
     }
-//    composable(Screen.Profile.route) {
-//        ProfileScreen()
-//    }
+    composable(Screen.Profile.route) {
+        ProfileScreen()
+    }
 
     //  Nested Feed Screens
     composable(Screen.CategorizeService.route) {
@@ -144,7 +143,10 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
 
     // Order Flow Screens
     composable(Screen.Order.route) {
-        OrderScreen()
+        OrderScreen(
+            onSubmitOrder = { navController.navigate(Screen.OrderSummary.route) },
+            onBack = { navController.popBackStack() }
+        )
     }
     composable(Screen.OrderSummary.route) {
         OrderSummaryScreen()
@@ -157,24 +159,24 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     }
 
     // Nested VowRecord Screen
-//    composable(
-//        route = Screen.VowRecordDetail.route,
-//        arguments = listOf(navArgument("vowRecordId") { type = NavType.StringType })
-//    ) {
-//        VowRecordDetailScreen()
-//    }
+    composable(
+        route = Screen.VowRecordDetail.route,
+        arguments = listOf(navArgument("vowRecordId") { type = NavType.StringType })
+    ) {
+        VowRecordDetailScreen()
+    }
 
     // Nested Profile Screens
-//    composable(Screen.OrdersStatus.route) {
-//        OrdersStatusScreen()
-//    }
-//    composable(
-//        route = Screen.OrderStatusDetail.route,
-//        arguments = listOf(navArgument("orderId") { type = NavType.StringType })
-//    ) {
-//        OrderStatusDetailScreen()
-//    }
-//    composable(Screen.MyReviews.route) { MyReviewsScreen() }
+    composable(Screen.OrdersStatus.route) {
+        OrdersStatusScreen()
+    }
+    composable(
+        route = Screen.OrderStatusDetail.route,
+        arguments = listOf(navArgument("orderId") { type = NavType.StringType })
+    ) {
+        OrderStatusDetailScreen()
+    }
+    // composable(Screen.MyReviews.route) { MyReviewsScreen() }
 }
 
 sealed class HomeSection(
