@@ -27,6 +27,7 @@ data class OrderSummaryUiState(
     val vowRecord: VowRecord? = null,
     val isLoading: Boolean = false,
     val isSuccessful: Boolean = false,
+    val createdOrderId: String? = null,
     val errorMessage: String? = null
 )
 
@@ -57,7 +58,15 @@ class OrderSummaryViewModel(
         viewModelScope.launch {
             val result = orderRepository.sendOrderRequest()
             result.fold(
-                onSuccess = { _state.update { it.copy(isSuccessful = true, isLoading = false) } },
+                onSuccess = { order ->
+                    _state.update {
+                        it.copy(
+                            isSuccessful = true,
+                            createdOrderId = order.id,
+                            isLoading = false
+                        )
+                    }
+                },
                 onFailure = { error ->
                     _state.update {
                         it.copy(

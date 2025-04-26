@@ -26,6 +26,8 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,107 +38,32 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.fc4rica.bonbaan.domain.model.Attachment
-import com.fc4rica.bonbaan.domain.model.Order
-import com.fc4rica.bonbaan.domain.model.OrderType
 import com.fc4rica.bonbaan.domain.model.Package
-import com.fc4rica.bonbaan.domain.model.Service
-import com.fc4rica.bonbaan.domain.model.Status
-import com.fc4rica.bonbaan.domain.model.User
-import com.fc4rica.bonbaan.domain.model.VowRecord
-import com.fc4rica.bonbaan.domain.model.request.FulfillOrderRequest
-import com.fc4rica.bonbaan.domain.model.request.VowOrderRequest
 import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
-import java.time.LocalDateTime
+import org.koin.androidx.compose.koinViewModel
 import java.time.format.DateTimeFormatter
 
-private data class OrderSummaryState(
-    val vowOrderRequest: VowOrderRequest? = // null,
-        VowOrderRequest(
-        serviceId = "1",
-        packageId = "1",
-        vow = "I wish for ...",
-        deadline = "2024/12/19",
-        price = 0.0,
-        note = "service note",
-        items = listOf("item 1"),
-        orderTypeID = "",
-    ),
-    val fulfillOrderRequest: FulfillOrderRequest? = null,
-//        FulfillOrderRequest(
-//        serviceId = "1",
-//        packageId = "1",
-//        price = 0.0,
-//        items = listOf("item 3 unit", "item 10 unit"),
-//        orderTypeID = "",
-//        vowRecordID = "1"
-//    ),
-    val service: Service? = Service(
-        id = "1",
-        name = "service name",
-        address = "location 1",
-        description = "",
-        attachments = listOf(
-            Attachment(
-                id = "",
-                url = "https://picsum.photos/200"
-            )
-        ),
-        rate = 0.0,
-    ),
-    val user: User? = User(
-        id = "",
-        username = "",
-        firstname = "John",
-        lastname = "Doe",
-        phone = "",
-        email = "",
-    ),
-    val packageItem: Package? = //null,
-        Package(
-            id = "1",
-            name = "package name",
-            description = "package description 101",
-            price = 300.0,
-            items = listOf("item 3 unit", "item 10 unit"),
-            orderType = OrderType("", "")
-        ),
-    val vowRecord: VowRecord? = VowRecord(
-        id = "",
-        vow = "qwer wer sdfsefwsdfwsefse4fs dfgsegsfdgarhaerhg erfgerghadfaedfpikjwerionbo",
-        deadline = LocalDateTime.now(),
-        note = "notesefwsdgvsdf fhsuefhsioeuf soeiufjhsoieufhaosdjnvoajsdnv",
-        createdAt = LocalDateTime.now(),
-        vowOrder = Order(
-            id = "2iv73nge-94kdf829-fm39fk3p",
-            price = 0.0,
-            items = emptyList(),
-            packageItem = null,
-            createdAt = LocalDateTime.now(),
-            transaction = null,
-            cancellationReason = null,
-            status = Status("", ""),
-            attachments = emptyList(),
-            service = null,
-        )
-    ),
-    val isLoading: Boolean = false,
-    val isSuccessful: Boolean = false,
-    val errorMessage: String? = null
-)
-
 @Composable
-fun OrderSummaryScreen() {
-    val state = OrderSummaryState()
+fun OrderSummaryScreen(
+    onBackClick: () -> Unit ,
+    onConfirmOrder: (String) -> Unit,
+    viewModel: OrderSummaryViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(state.isSuccessful) {
+        if (state.isSuccessful && !state.createdOrderId.isNullOrEmpty()) {
+            onConfirmOrder(state.createdOrderId!!)
+        }
+    }
 
     Scaffold(
         topBar = {
             BackNavBar(
-                onBackClick = { },
+                onBackClick = onBackClick,
                 content = {
                     Text(
                         text = "สรุปรายการสั่งซื้อ",
@@ -177,7 +104,7 @@ fun OrderSummaryScreen() {
 
                     BonBaanButton(
                         text = "ยืนยันคำสั่งซื้อ",
-                        onClick = {},
+                        onClick = { viewModel.confirmSubmitOrder() },
                         modifier = Modifier.width(160.dp)
                     )
                 }
@@ -266,7 +193,7 @@ fun OrderSummaryScreen() {
 
 
                     Text(
-                        text = state.vowOrderRequest.vow,
+                        text = state.vowOrderRequest?.vow ?: "",
                         style = MaterialTheme.typography.bodyMedium
                     )
 
@@ -281,12 +208,12 @@ fun OrderSummaryScreen() {
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         Text(
-                            text = state.vowOrderRequest.deadline,
+                            text = state.vowOrderRequest?.deadline ?: "",
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
 
-                    if (state.vowOrderRequest.note.isNotEmpty()) {
+                    if (!state.vowOrderRequest?.note.isNullOrEmpty()) {
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Text(
@@ -296,7 +223,7 @@ fun OrderSummaryScreen() {
                         )
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            text = state.vowOrderRequest.note,
+                            text = state.vowOrderRequest?.note ?: "",
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
@@ -312,7 +239,7 @@ fun OrderSummaryScreen() {
                     Spacer(Modifier.height(8.dp))
                     Text(
                         text = "เมื่อวันที่ ${
-                            state.vowRecord.createdAt.format(
+                            state.vowRecord?.createdAt?.format(
                                 DateTimeFormatter.ofPattern(
                                     "dd/MM/yyyy"
                                 )
@@ -322,13 +249,13 @@ fun OrderSummaryScreen() {
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        text = state.vowRecord.vow,
+                        text = state.vowRecord?.vow ?: "",
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
                         text = "ขอให้สำเร็จภายในวันที่ ${
-                            state.vowRecord.deadline.format(
+                            state.vowRecord?.deadline?.format(
                                 DateTimeFormatter.ofPattern("dd/MM/yyyy")
                             )
                         }",
@@ -348,7 +275,7 @@ fun OrderSummaryScreen() {
                         .background(MaterialTheme.colorScheme.surface)
                         .padding(vertical = 16.dp, horizontal = 24.dp)
                 ) {
-                    PackageCard(state.packageItem)
+                    PackageCard(state.packageItem!!)
                 }
 
                 Spacer(Modifier.height(8.dp))
@@ -484,13 +411,4 @@ fun PackageCard(
 
 
     }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewSummaryScreen() {
-    OrderSummaryScreen(
-    )
-
 }

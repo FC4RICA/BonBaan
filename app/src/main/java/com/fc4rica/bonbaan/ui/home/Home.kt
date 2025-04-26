@@ -145,11 +145,14 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     composable(Screen.Order.route) {
         OrderScreen(
             onSubmitOrder = { navController.navigate(Screen.OrderSummary.route) },
-            onBack = { navController.popBackStack() }
+            onBackClick = { navController.popBackStack() }
         )
     }
     composable(Screen.OrderSummary.route) {
-        OrderSummaryScreen()
+        OrderSummaryScreen(
+            onBackClick = { navController.popBackStack() },
+            onConfirmOrder = { navController.navigate(Screen.Payment.createRoute(it)) }
+        )
     }
     composable(
         route = Screen.Payment.route,

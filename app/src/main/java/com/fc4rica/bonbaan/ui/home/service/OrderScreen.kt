@@ -37,7 +37,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun OrderScreen(
     onSubmitOrder: () -> Unit,
-    onBack: () -> Unit,
+    onBackClick: () -> Unit,
     viewModel: OrderViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -52,7 +52,7 @@ fun OrderScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             BackNavBar(
-                onBackClick = onBack,
+                onBackClick = onBackClick,
                 content = {
                     Text(
                         text = "คำสั่งซื้อ",
