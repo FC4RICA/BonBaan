@@ -37,7 +37,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun OrderScreen(
     onSubmitOrder: () -> Unit,
-    onBack: () -> Unit,
+    onBackClick: () -> Unit,
     viewModel: OrderViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -52,7 +52,7 @@ fun OrderScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             BackNavBar(
-                onBackClick = onBack,
+                onBackClick = onBackClick,
                 content = {
                     Text(
                         text = "คำสั่งซื้อ",
@@ -103,8 +103,6 @@ fun OrderScreen(
             }
         }
     ) { innerPadding ->
-
-        // Package
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -116,6 +114,7 @@ fun OrderScreen(
                 )
                 .imePadding()
         ) {
+            // Package
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -218,13 +217,13 @@ fun OrderScreen(
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-                }
 
-                TextArea(
-                    value = state.note,
-                    onValueChange = { viewModel.updateNote(it) },
-                    label = "บันทึกเตือนความจำ"
-                )
+                    TextArea(
+                        value = state.note,
+                        onValueChange = { viewModel.updateNote(it) },
+                        label = "บันทึกเตือนความจำ"
+                    )
+                }
 
                 // Fulfill
                 if (state.isFulfill && state.fulfilledVowRecord != null) {
@@ -290,7 +289,6 @@ fun OrderScreen(
                             softWrap = false
                         )
                     }
-
                 }
             }
 
