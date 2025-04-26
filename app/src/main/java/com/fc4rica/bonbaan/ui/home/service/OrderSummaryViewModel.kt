@@ -4,11 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fc4rica.bonbaan.domain.model.Package
 import com.fc4rica.bonbaan.domain.model.Service
+import com.fc4rica.bonbaan.domain.model.User
+import com.fc4rica.bonbaan.domain.model.VowRecord
 import com.fc4rica.bonbaan.domain.model.request.FulfillOrderRequest
 import com.fc4rica.bonbaan.domain.model.request.OrderRequest
 import com.fc4rica.bonbaan.domain.model.request.VowOrderRequest
+import com.fc4rica.bonbaan.domain.repository.AuthRepository
 import com.fc4rica.bonbaan.domain.repository.OrderRepository
 import com.fc4rica.bonbaan.domain.repository.ServiceRepository
+import com.fc4rica.bonbaan.domain.repository.VowRecordRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -19,6 +23,8 @@ data class OrderSummaryUiState(
     val fulfillOrderRequest: FulfillOrderRequest? = null,
     val service: Service? = null,
     val packageItem: Package? = null,
+    val user: User? = null,
+    val vowRecord: VowRecord? = null,
     val isLoading: Boolean = false,
     val isSuccessful: Boolean = false,
     val errorMessage: String? = null
@@ -26,7 +32,9 @@ data class OrderSummaryUiState(
 
 class OrderSummaryViewModel(
     private val orderRepository: OrderRepository,
-    private val serviceRepository: ServiceRepository
+    private val serviceRepository: ServiceRepository,
+    private val authRepository: AuthRepository,
+    private val vowRecordRepository: VowRecordRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(OrderSummaryUiState())
     val state = _state.asStateFlow()
@@ -34,6 +42,7 @@ class OrderSummaryViewModel(
     init {
         val serviceId = getOrderRequest()
         getServiceAndPackage(serviceId)
+        getUser()
     }
 
     fun confirmSubmitOrder() {
@@ -68,6 +77,26 @@ class OrderSummaryViewModel(
             is OrderRequest.Vow -> OrderSummaryUiState(vowOrderRequest = orderRequest.request)
             is OrderRequest.Fulfill -> OrderSummaryUiState(fulfillOrderRequest = orderRequest.request)
             else -> OrderSummaryUiState(errorMessage = "Invalid order request", isLoading = false)
+        }
+
+        if (_state.value.fulfillOrderRequest != null) {
+            viewModelScope.launch {
+                val result =
+                    vowRecordRepository.getVowRecord(_state.value.fulfillOrderRequest?.vowRecordID!!)
+                result.fold(
+                    onSuccess = { vowRecord ->
+                        _state.update { it.copy(vowRecord = vowRecord) }
+                    },
+                    onFailure = { error ->
+                        _state.update {
+                            it.copy(
+                                errorMessage = error.message,
+                                isLoading = false
+                            )
+                        }
+                    }
+                )
+            }
         }
 
         return _state.value.vowOrderRequest?.serviceId
@@ -106,5 +135,14 @@ class OrderSummaryViewModel(
             )
         }
         _state.update { it.copy(isLoading = false) }
+    }
+
+    private fun getUser() {
+        viewModelScope.launch {
+            val result = authRepository.getProfile()
+            result.onSuccess {
+                _state.update { it.copy(user = it.user) }
+            }
+        }
     }
 }
