@@ -151,14 +151,18 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     composable(Screen.OrderSummary.route) {
         OrderSummaryScreen(
             onBackClick = { navController.popBackStack() },
-            onConfirmOrder = { navController.navigate(Screen.Payment.createRoute(it)) }
+            onPayingOrder = { navController.navigate(Screen.Payment.createRoute(it)) },
+            onCustomOrder = { navController.navigate(Screen.OrderStatusDetail.createRoute(it)) }
         )
     }
     composable(
         route = Screen.Payment.route,
         arguments = listOf(navArgument("orderId") { type = NavType.StringType })
     ) {
-        PaymentScreen()
+        PaymentScreen(
+            onBackClick = { navController.navigate(Screen.Feed.route) },
+            onCompleted = { navController.navigate(Screen.OrderStatusDetail.createRoute(it)) }
+        )
     }
 
     // Nested VowRecord Screen
