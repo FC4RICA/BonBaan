@@ -4,14 +4,20 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fc4rica.bonbaan.domain.model.Order
+import com.fc4rica.bonbaan.domain.model.OrderStatus
+import com.fc4rica.bonbaan.domain.model.Status
 import com.fc4rica.bonbaan.domain.repository.OrderRepository
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 data class PaymentUiState(
     val order: Order? = null,
+    val paymentStatus: Status? = null,
     val isPaid: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null
@@ -27,6 +33,7 @@ class PaymentViewModel(
     init {
         getOrder()
     }
+
     private fun getOrder() {
         _state.update { it.copy(isLoading = true) }
         val orderId = savedStateHandle.get<String>("orderId") ?: ""
@@ -42,4 +49,27 @@ class PaymentViewModel(
             )
         }
     }
+
+    private var pollingJob: Job? = null
+
+    fun startPollingPaymentStatus() {
+        pollingJob?.cancel()
+        pollingJob = viewModelScope.launch {
+            while (isActive) {
+                if (_state.value.order != null) {
+                    val response = orderRepository.getOrderStatus(_state.value.order!!.id)
+                    val status = response.getOrNull() ?: continue
+
+                    _state.update { it.copy(paymentStatus = status) }
+
+                    if (status.name != OrderStatus.Pending.engName) {
+                        break
+                    }
+                }
+
+                delay(10000)
+            }
+        }
+    }
+
 }
