@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.ui.home.service
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,14 +18,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
+import com.fc4rica.bonbaan.ui.utils.saveImageToGallery
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import java.time.format.DateTimeFormatter
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun PaymentScreen(
     onBackClick: () -> Unit,
@@ -33,6 +40,8 @@ fun PaymentScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
+    val context = LocalContext.current
+
     LaunchedEffect(Unit) {
         viewModel.startPollingPaymentStatus()
     }
@@ -40,6 +49,15 @@ fun PaymentScreen(
     LaunchedEffect(state.isPaid) {
         if (state.isPaid && state.order != null)
             onCompleted(state.order!!.id)
+    }
+
+    fun downloadQRImage() {
+        CoroutineScope(Dispatchers.IO).launch {
+            saveImageToGallery(
+                context,
+                state.order?.transaction?.charge?.metadata!!
+            )
+        }
     }
 
     Scaffold(
@@ -67,16 +85,21 @@ fun PaymentScreen(
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
-            Spacer(Modifier.height(8.dp))
-            if (state.order?.transaction?.charge?.expiresAt != null)
-            Text(
-                text = "ภายในวันที่ ${state.order?.transaction?.charge?.expiresAt?.format(
-                    DateTimeFormatter.ofPattern("dd/MM/yyyy"))}",
-                style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.Bold,
-                color = Color.Gray,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+            if (state.order?.transaction?.charge?.expiresAt != null) {
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = "ภายในวันที่ ${
+                        state.order?.transaction?.charge?.expiresAt?.format(
+                            DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                        )
+                    }",
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Gray,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
+
             Spacer(Modifier.height(16.dp))
 
             // QR
@@ -91,7 +114,7 @@ fun PaymentScreen(
             Spacer(Modifier.height(16.dp))
             BonBaanButton(
                 text = "บันทึกคิวอาร์โค้ด",
-                onClick = { },
+                onClick = { downloadQRImage() },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Spacer(Modifier.height(16.dp))
