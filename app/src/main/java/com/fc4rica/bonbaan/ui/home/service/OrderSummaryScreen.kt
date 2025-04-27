@@ -49,14 +49,20 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun OrderSummaryScreen(
     onBackClick: () -> Unit ,
-    onConfirmOrder: (String) -> Unit,
+    onPayingOrder: (String) -> Unit,
+    onCustomOrder: (String) -> Unit,
     viewModel: OrderSummaryViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(state.isSuccessful) {
         if (state.isSuccessful && !state.createdOrderId.isNullOrEmpty()) {
-            onConfirmOrder(state.createdOrderId!!)
+            if (state.packageItem != null) {
+                onPayingOrder(state.createdOrderId!!)
+            } else {
+                onCustomOrder(state.createdOrderId!!)
+            }
+
         }
     }
 

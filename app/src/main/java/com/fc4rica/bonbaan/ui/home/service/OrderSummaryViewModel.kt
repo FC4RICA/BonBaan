@@ -123,12 +123,16 @@ class OrderSummaryViewModel(
             val result = serviceRepository.getService(id)
             result.fold(
                 onSuccess = { service ->
+                    val packageId = _state.value.vowOrderRequest?.packageId
+                        ?: _state.value.fulfillOrderRequest?.packageId
+
+                    if (packageId.isNullOrEmpty()) return@fold
+
                     _state.update {
                         it.copy(
                             service = service,
                             packageItem = service.packages.find { pack ->
-                                pack.id == (_state.value.vowOrderRequest?.packageId
-                                    ?: _state.value.fulfillOrderRequest?.packageId)
+                                pack.id == packageId
                             }
                         )
                     }
