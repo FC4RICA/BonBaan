@@ -11,28 +11,47 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
+import org.koin.androidx.compose.koinViewModel
+import java.time.format.DateTimeFormatter
 
 @Composable
-fun PaymentScreen() {
-    val imageUrl =
-        "https://www.blognone.com/sites/default/files/externals/255750d05125fccbe1d06e2b2ac1fa23.jpg"
+fun PaymentScreen(
+    onBackClick: () -> Unit,
+    onCompleted: (String) -> Unit,
+    viewModel: PaymentViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.startPollingPaymentStatus()
+    }
+
+    LaunchedEffect(state.isPaid) {
+        if (state.isPaid && state.order != null)
+            onCompleted(state.order!!.id)
+    }
 
     Scaffold(
         topBar = {
             BackNavBar(
-                onBackClick = {},
-                content = { Text(
-                    text = "รอการชำระเงิน",
-                    style = MaterialTheme.typography.titleLarge,
-                    ) }
+                onBackClick = onBackClick,
+                content = {
+                    Text(
+                        text = "รอการชำระเงิน",
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                }
             )
         }
     ) { innerPadding ->
@@ -41,10 +60,28 @@ fun PaymentScreen() {
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
-                .padding(16.dp),
+                .padding(horizontal = 24.dp, vertical = 16.dp),
         ) {
+            Text(
+                text = "฿ ${state.order!!.price} บาท",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+            Spacer(Modifier.height(8.dp))
+            if (state.order?.transaction?.charge?.expiresAt != null)
+            Text(
+                text = "ภายในวันที่ ${state.order?.transaction?.charge?.expiresAt?.format(
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy"))}",
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Bold,
+                color = Color.Gray,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+            Spacer(Modifier.height(16.dp))
+
+            // QR
             AsyncImage(
-                model = imageUrl,
+                model = state.order?.transaction?.charge?.metadata,
                 contentDescription = "Promptpay QR code",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -72,10 +109,4 @@ fun PaymentScreen() {
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PaymentScreenPreview() {
-    PaymentScreen()
 }

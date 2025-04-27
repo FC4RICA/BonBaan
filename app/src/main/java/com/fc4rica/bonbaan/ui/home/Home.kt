@@ -159,7 +159,10 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         route = Screen.Payment.route,
         arguments = listOf(navArgument("orderId") { type = NavType.StringType })
     ) {
-        PaymentScreen()
+        PaymentScreen(
+            onBackClick = { navController.navigate(Screen.Feed.route) },
+            onCompleted = { navController.navigate(Screen.OrderStatusDetail.createRoute(it)) }
+        )
     }
 
     // Nested VowRecord Screen

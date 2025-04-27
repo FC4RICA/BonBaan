@@ -63,6 +63,7 @@ class PaymentViewModel(
                     _state.update { it.copy(paymentStatus = status) }
 
                     if (status.name != OrderStatus.Pending.engName) {
+                        _state.update { it.copy(isPaid = true) }
                         break
                     }
                 }
