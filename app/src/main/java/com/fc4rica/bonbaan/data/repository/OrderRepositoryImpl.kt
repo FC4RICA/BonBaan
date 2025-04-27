@@ -107,6 +107,20 @@ class OrderRepositoryImpl(
         }
     }
 
+    override suspend fun getOrderStatus(id: String): Result<Status>  {
+        return try {
+            val response = orderApiService.getOrder(id)
+            if (response.error != null || response.data == null) {
+                return Result.failure(Exception(response.error))
+            }
+
+            val orders = response.data.toOrder()
+            Result.success(orders.status)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     override suspend fun approveOrder(id: String): Result<Unit> {
         TODO("Not yet implemented")
     }

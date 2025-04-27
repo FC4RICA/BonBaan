@@ -18,6 +18,7 @@ interface OrderRepository {
 
     suspend fun getOrders(): Result<List<Order>>
     suspend fun getOrder(id: String): Result<Order>
+    suspend fun getOrderStatus(id: String): Result<Status>
 
     suspend fun approveOrder(id: String): Result<Unit>
     suspend fun cancelOrder(id: String): Result<Unit>
