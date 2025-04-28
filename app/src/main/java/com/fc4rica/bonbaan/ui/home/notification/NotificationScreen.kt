@@ -53,7 +53,55 @@ fun NotificationScreen() {
             false,
             LocalDateTime.now(),
             ""
-        )
+        ),
+        Notification(
+            "1",
+            "คำสั่งของคุณได้รับการยืนยันแล้ว",
+            "คำสั่งซื้อหมายเลข 35261728384 อยู่ในขั้นตอนการจัดเตรียม",
+            false,
+            LocalDateTime.now(),
+            ""
+        ),
+        Notification(
+            "2",
+            "คำสั่งของคุณกำลังดำเนินการ",
+            "คำสั่งซื้อหมายเลข 35261728384 กำลังจัดเตรียม",
+            false,
+            LocalDateTime.now(),
+            ""
+        ),
+        Notification(
+            "3",
+            "คำสั่งของคุณจัดส่งแล้ว",
+            "คำสั่งซื้อหมายเลข 35261728384 จัดส่งเรียบร้อย",
+            false,
+            LocalDateTime.now(),
+            ""
+        ),
+        Notification(
+            "1",
+            "คำสั่งของคุณได้รับการยืนยันแล้ว",
+            "คำสั่งซื้อหมายเลข 35261728384 อยู่ในขั้นตอนการจัดเตรียม",
+            false,
+            LocalDateTime.now(),
+            ""
+        ),
+        Notification(
+            "2",
+            "คำสั่งของคุณกำลังดำเนินการ",
+            "คำสั่งซื้อหมายเลข 35261728384 กำลังจัดเตรียม",
+            false,
+            LocalDateTime.now(),
+            ""
+        ),
+        Notification(
+            "3",
+            "คำสั่งของคุณจัดส่งแล้ว",
+            "คำสั่งซื้อหมายเลข 35261728384 จัดส่งเรียบร้อย",
+            false,
+            LocalDateTime.now(),
+            ""
+        ), 
     )
 
     Scaffold(
@@ -80,12 +128,14 @@ fun NotificationScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = innerPadding.calculateTopPadding())
-                .padding(16.dp),
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            item { Spacer(Modifier.height(0.dp)) }
             items(notificationList) { notification ->
                 NotificationItem(notification = notification, onClick = {})
             }
+            item { Spacer(Modifier.height(0.dp)) }
         }
     }
 }

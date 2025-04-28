@@ -2,27 +2,27 @@ package com.fc4rica.bonbaan.ui.home
 
 import ProfileScreen
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.StickyNote2
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,13 +39,13 @@ import com.fc4rica.bonbaan.ui.home.feed.CategorizeServiceScreen
 import com.fc4rica.bonbaan.ui.home.feed.FeedScreen
 import com.fc4rica.bonbaan.ui.home.feed.FilteredServiceScreen
 import com.fc4rica.bonbaan.ui.home.feed.SearchScreen
-import com.fc4rica.bonbaan.ui.home.service.ServiceDetailScreen
 import com.fc4rica.bonbaan.ui.home.notification.NotificationScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderStatusDetailScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderSummaryScreen
 import com.fc4rica.bonbaan.ui.home.service.OrdersStatusScreen
 import com.fc4rica.bonbaan.ui.home.service.PaymentScreen
+import com.fc4rica.bonbaan.ui.home.service.ServiceDetailScreen
 import com.fc4rica.bonbaan.ui.home.service.ServiceReviewScreen
 import com.fc4rica.bonbaan.ui.home.service.VowRecordDetailScreen
 import com.fc4rica.bonbaan.ui.home.service.VowRecordScreen
@@ -214,45 +214,50 @@ fun BonBaanBottomNavBar(
     currentRoute: String,
     navigateToRoute: (String) -> Unit
 ) {
-    Box(
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primary)
+            .height(76.dp)
     ) {
-        NavigationBar(
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            HomeSection.sections.forEach { section ->
-                val selected = currentRoute == section.screen.route
+        HomeSection.sections.forEach { section ->
+            val selected = currentRoute == section.screen.route
 
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            imageVector = section.icon,
-                            contentDescription = stringResource(section.title),
-                            modifier = Modifier.size(28.dp)
-                        )
-                    },
-                    label = { Text(stringResource(section.title)) },
-                    selected = selected,
-                    onClick = { navigateToRoute(section.screen.route) },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.secondary,
-                        unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                        selectedTextColor = MaterialTheme.colorScheme.secondary,
-                        unselectedTextColor = MaterialTheme.colorScheme.onPrimary,
-                        indicatorColor = Color.Transparent
+            NavigationBarItem(
+                modifier = Modifier.fillMaxHeight(),
+                icon = {
+                    Icon(
+                        imageVector = section.icon,
+                        contentDescription = stringResource(section.title),
+                        modifier = Modifier.size(22.dp)
                     )
+                },
+                label = {
+                    Text(
+                        text = stringResource(section.title),
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                },
+                selected = selected,
+                onClick = { navigateToRoute(section.screen.route) },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.secondary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    selectedTextColor = MaterialTheme.colorScheme.secondary,
+                    unselectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    indicatorColor = Color.Transparent
                 )
-            }
+            )
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun HomeScreenPreview() {
-    HomeScreen()
+fun BonBaanBottomNavBarPreview() {
+    BonBaanBottomNavBar(
+        currentRoute = Screen.Feed.route,
+        navigateToRoute = {}
+    )
 }

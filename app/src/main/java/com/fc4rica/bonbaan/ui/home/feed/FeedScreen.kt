@@ -51,7 +51,7 @@ fun FeedScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.primary)
-                    .padding(vertical = 20.dp, horizontal = 24.dp),
+                    .padding(vertical = 16.dp, horizontal = 24.dp),
             ) {
                 SearchBarPlaceholder(onClick = onClickSearch)
             }
@@ -98,7 +98,7 @@ fun CategoryRow(categories: List<Category> = listOf(), onClick: (String) -> Unit
                 .padding(vertical = 8.dp, horizontal = 16.dp)
         ) {
             LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(categories) { category ->
                     CategoryButton(category, onClick)
@@ -115,7 +115,7 @@ fun CategoryButton(category: Category, onClick: (String) -> Unit) {
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
             .clickable(onClick = { onClick(category.id) })
-            .padding(4.dp),
+            .padding(horizontal = 8.dp, vertical = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
@@ -126,19 +126,19 @@ fun CategoryButton(category: Category, onClick: (String) -> Unit) {
                     color = MaterialTheme.colorScheme.surfaceContainer,
                     shape = RoundedCornerShape(100)
                 )
-                .padding(12.dp),
+                .padding(8.dp),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = category.icon ?: Icons.Filled.Error,
                 contentDescription = "Briefcase",
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(28.dp)
             )
         }
         Text(
             text = category.name,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.labelMedium,
             textAlign = TextAlign.Center
         )
     }
