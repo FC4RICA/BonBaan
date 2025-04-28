@@ -1,19 +1,19 @@
 package com.fc4rica.bonbaan.ui.home.notification
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,99 +23,98 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
-data class NotiDetailItem(
-    val title: String,
-    val date: String,
-    val info: String
-)
+import com.fc4rica.bonbaan.domain.model.Notification
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun NotificationScreen() {
     val notificationList = listOf(
-        NotiDetailItem(
+        Notification(
+            "1",
             "คำสั่งของคุณได้รับการยืนยันแล้ว",
-            "12/02/2568",
-            "คำสั่งซื้อหมายเลข 35261728384 อยู่ในขั้นตอนการจัดเตรียม"
+            "คำสั่งซื้อหมายเลข 35261728384 อยู่ในขั้นตอนการจัดเตรียม",
+            false,
+            LocalDateTime.now(),
+            ""
         ),
-        NotiDetailItem(
+        Notification(
+            "2",
             "คำสั่งของคุณกำลังดำเนินการ",
-            "13/02/2568",
-            "คำสั่งซื้อหมายเลข 35261728384 กำลังจัดเตรียม"
+            "คำสั่งซื้อหมายเลข 35261728384 กำลังจัดเตรียม",
+            false,
+            LocalDateTime.now(),
+            ""
         ),
-        NotiDetailItem(
+        Notification(
+            "3",
             "คำสั่งของคุณจัดส่งแล้ว",
-            "14/02/2568",
-            "คำสั่งซื้อหมายเลข 35261728384 จัดส่งเรียบร้อย"
+            "คำสั่งซื้อหมายเลข 35261728384 จัดส่งเรียบร้อย",
+            false,
+            LocalDateTime.now(),
+            ""
         )
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Row(
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        topBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .padding(bottom = 1.dp)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(vertical = 16.dp, horizontal = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "การแจ้งเตือน",
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+        }
+    ) { innerPadding ->
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp)
-                .background(MaterialTheme.colorScheme.surface),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(top = innerPadding.calculateTopPadding())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Spacer(modifier = Modifier.width(20.dp))
-            Text(
-                text = "การแจ้งเตือน",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-        }
-
-        Column(modifier = Modifier.fillMaxWidth().padding(top = 12.dp).background(MaterialTheme.colorScheme.surface)) {
-            notificationList.forEach { notiItem ->
-                NotificationItem(notiDetailItem = notiItem)
+            items(notificationList) { notification ->
+                NotificationItem(notification = notification, onClick = {})
             }
         }
     }
 }
 
 @Composable
-fun NotificationItem(notiDetailItem: NotiDetailItem) {
-    Spacer(modifier = Modifier.height(12.dp))
-    Row(modifier = Modifier.padding(start = 20.dp,end = 20.dp)) {
-        Box(
+fun NotificationItem(notification: Notification, onClick: (String) -> Unit) {
+    Column(
         modifier = Modifier
-            .size(48.dp)
-            .clip(RoundedCornerShape(4.dp))
-            .background(Color.LightGray)
-    )
-//        AsyncImage(
-//            model = url,
-//            contentDescription = "service image",
-//            modifier = Modifier
-//                .fillMaxHeight()
-//                .aspectRatio(1f)
-//                .clip(RoundedCornerShape(4.dp)),
-//            contentScale = ContentScale.Crop
-//        )
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .clickable { onClick(notification.id) }
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(16.dp)
+    ) {
 
-        Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
-            Text(
-                text = notiDetailItem.title,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = notiDetailItem.date, style = MaterialTheme.typography.bodySmall)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = notiDetailItem.info, style = MaterialTheme.typography.bodySmall)
-            Spacer(modifier = Modifier.height(8.dp))
-
-        }
+        Text(
+            text = notification.header,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = notification.createdAt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.Gray
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = notification.body, style = MaterialTheme.typography.bodyMedium)
     }
-
-    Spacer(modifier = Modifier.width(12.dp))
-    HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
 }
 
 
@@ -124,27 +123,3 @@ fun NotificationItem(notiDetailItem: NotiDetailItem) {
 fun NotificationPreview() {
     NotificationScreen()
 }
-
-
-
-//@Composable
-//fun SearchHistory() {
-//    Column(
-//        modifier = Modifier
-//            .padding(top = 12.dp)
-//            .fillMaxWidth()
-//            .background(color = MaterialTheme.colorScheme.surface)
-//    ) {
-//        Text(
-//            text = "ประวัติการค้นหา",
-//            modifier = Modifier.padding(16.dp),
-//            style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary,
-//            fontWeight = FontWeight.Bold
-//        )
-//        HistoryItem("วัดฟ้าประทาน")
-//        HistoryItem("วัดดอยคำ ยำอาฟเตอร์ยู")
-//        HistoryItem("วัดดูยูมีน ไอดอนโน บัดไอเลิฟยู")
-//    }
-//
-//}
-//
