@@ -99,7 +99,9 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         VowRecordScreen()
     }
     composable(Screen.Notification.route) {
-        NotificationScreen()
+        NotificationScreen(
+            onClickNotification = { navController.navigate(Screen.OrderStatusDetail.createRoute(it)) }
+        )
     }
     composable(Screen.Profile.route) {
         ProfileScreen()

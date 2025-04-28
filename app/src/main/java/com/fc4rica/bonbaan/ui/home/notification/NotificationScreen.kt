@@ -16,93 +16,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fc4rica.bonbaan.domain.model.Notification
-import java.time.LocalDateTime
+import org.koin.androidx.compose.koinViewModel
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun NotificationScreen() {
-    val notificationList = listOf(
-        Notification(
-            "1",
-            "คำสั่งของคุณได้รับการยืนยันแล้ว",
-            "คำสั่งซื้อหมายเลข 35261728384 อยู่ในขั้นตอนการจัดเตรียม",
-            false,
-            LocalDateTime.now(),
-            ""
-        ),
-        Notification(
-            "2",
-            "คำสั่งของคุณกำลังดำเนินการ",
-            "คำสั่งซื้อหมายเลข 35261728384 กำลังจัดเตรียม",
-            false,
-            LocalDateTime.now(),
-            ""
-        ),
-        Notification(
-            "3",
-            "คำสั่งของคุณจัดส่งแล้ว",
-            "คำสั่งซื้อหมายเลข 35261728384 จัดส่งเรียบร้อย",
-            false,
-            LocalDateTime.now(),
-            ""
-        ),
-        Notification(
-            "1",
-            "คำสั่งของคุณได้รับการยืนยันแล้ว",
-            "คำสั่งซื้อหมายเลข 35261728384 อยู่ในขั้นตอนการจัดเตรียม",
-            false,
-            LocalDateTime.now(),
-            ""
-        ),
-        Notification(
-            "2",
-            "คำสั่งของคุณกำลังดำเนินการ",
-            "คำสั่งซื้อหมายเลข 35261728384 กำลังจัดเตรียม",
-            false,
-            LocalDateTime.now(),
-            ""
-        ),
-        Notification(
-            "3",
-            "คำสั่งของคุณจัดส่งแล้ว",
-            "คำสั่งซื้อหมายเลข 35261728384 จัดส่งเรียบร้อย",
-            false,
-            LocalDateTime.now(),
-            ""
-        ),
-        Notification(
-            "1",
-            "คำสั่งของคุณได้รับการยืนยันแล้ว",
-            "คำสั่งซื้อหมายเลข 35261728384 อยู่ในขั้นตอนการจัดเตรียม",
-            false,
-            LocalDateTime.now(),
-            ""
-        ),
-        Notification(
-            "2",
-            "คำสั่งของคุณกำลังดำเนินการ",
-            "คำสั่งซื้อหมายเลข 35261728384 กำลังจัดเตรียม",
-            false,
-            LocalDateTime.now(),
-            ""
-        ),
-        Notification(
-            "3",
-            "คำสั่งของคุณจัดส่งแล้ว",
-            "คำสั่งซื้อหมายเลข 35261728384 จัดส่งเรียบร้อย",
-            false,
-            LocalDateTime.now(),
-            ""
-        ), 
-    )
+fun NotificationScreen(
+    onClickNotification: (String) -> Unit,
+    viewModel: NotificationViewModel = koinViewModel()
+) {
+   val state by viewModel.state.collectAsState()
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -132,8 +63,14 @@ fun NotificationScreen() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             item { Spacer(Modifier.height(0.dp)) }
-            items(notificationList) { notification ->
-                NotificationItem(notification = notification, onClick = {})
+            items(state.notifications) { notification ->
+                NotificationItem(
+                    notification = notification,
+                    onClick = {
+                        viewModel.markAsRead(it)
+                        onClickNotification(it)
+                    }
+                )
             }
             item { Spacer(Modifier.height(0.dp)) }
         }
@@ -146,7 +83,7 @@ fun NotificationItem(notification: Notification, onClick: (String) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .clickable { onClick(notification.id) }
+            .clickable { onClick(notification.orderId) }
             .background(MaterialTheme.colorScheme.surface)
             .padding(16.dp)
     ) {
@@ -165,11 +102,4 @@ fun NotificationItem(notification: Notification, onClick: (String) -> Unit) {
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = notification.body, style = MaterialTheme.typography.bodyMedium)
     }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun NotificationPreview() {
-    NotificationScreen()
 }
