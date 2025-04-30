@@ -104,7 +104,12 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         )
     }
     composable(Screen.Profile.route) {
-        ProfileScreen()
+        ProfileScreen(
+            onClickProfile = { navController.navigate(Screen.OrdersStatus.route) },
+            onClickOrderStatuses = { navController.navigate(Screen.OrdersStatus.route) },
+            onClickOrderStatus = { navController.navigate(Screen.OrderStatusDetail.createRoute(it)) },
+            onClickReviews = { navController.navigate(Screen.MyReviews.route) }
+        )
     }
 
     //  Nested Feed Screens
