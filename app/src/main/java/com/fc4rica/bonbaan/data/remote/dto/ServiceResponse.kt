@@ -20,15 +20,18 @@ data class ServicesResponse(
     val pagination: Pagination
 )
 
-fun ServiceResponse.toService(): Service {
+fun ServiceResponse.toService(
+    mapCategoryId: Boolean = true,
+    mapPackage: Boolean = true,
+): Service {
     return Service(
         id = id,
         name = name,
         description = description,
         rate = rate,
         address = address,
-        categories = categories.map { it.toCategory() },
-        packages = packages.map { it.toPackage() },
+        categories = categories.map { it.toCategory(mapCategoryId) },
+        packages = if (mapPackage) packages.map { it.toPackage() } else emptyList(),
         attachments = attachments.map { it.toAttachment() },
     )
 }
