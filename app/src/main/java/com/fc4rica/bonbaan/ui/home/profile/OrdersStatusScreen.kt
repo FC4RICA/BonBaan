@@ -1,39 +1,41 @@
 package com.fc4rica.bonbaan.ui.home.service
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,33 +45,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fc4rica.bonbaan.R
+import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
 
-//data class OrderDetails(
-//    val serviceName: String,
-//    val location: String,
-//    val nameSurname: String,
-//    val wish: String,
-//    val dueDate: String,
-//    val packageName: String,
-//    val price: Int,
-//    val items: List<String>,
-//    val status: String
-//)
-
-
-//สี status
-//fun getStatusColor(status: String): Color = when (status) {
-//    "รอรับออเดอร์", "ที่ต้องชำระ", "กำลังดำเนินการ", "ที่ต้องยืนยัน","ที่ต้องรีวิว" -> Color(0xFFFFC107)
-//    "ดำเนินการสำเร็จ" -> Color(0xFF4CAF50)
-//    "คืนเงิน", "ยกเลิก" -> Color(0xFFF44336)
-//    else -> Color.Gray
-//}
-
 @Composable
-fun  OrdersStatusScreen() {
-    val allStatuses = listOf("ทั้งหมด", "รอรับออเดอร์", "ที่ต้องชำระ", "กำลังดำเนินการ", "ที่ต้องยืนยัน", "ที่ต้องรีวิว", "ดำเนินการสำเร็จ", "คืนเงิน", "ยกเลิก")
+fun OrdersStatusScreen() {
+    val allStatuses = listOf(
+        "ทั้งหมด",
+        "รอรับออเดอร์",
+        "ที่ต้องชำระ",
+        "กำลังดำเนินการ",
+        "ที่ต้องยืนยัน",
+        "ที่ต้องรีวิว",
+        "ดำเนินการสำเร็จ",
+        "คืนเงิน",
+        "ยกเลิก"
+    )
     var selectedStatus by remember { mutableStateOf("ทั้งหมด") }
     var expanded by remember { mutableStateOf(false) }
 
@@ -164,86 +156,42 @@ fun  OrdersStatusScreen() {
         )
     )
 
-    val filteredOrders = if (selectedStatus == "ทั้งหมด") allOrders else allOrders.filter { it.status == selectedStatus }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Column(
+    val filteredOrders =
+        if (selectedStatus == "ทั้งหมด") allOrders else allOrders.filter { it.status == selectedStatus }
+    Scaffold(
+        topBar = {
+            BackNavBar(
+                onBackClick = { },
+                content = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "รายการสั่งซื้อ",
+                            style = MaterialTheme.typography.titleLarge,
+                        )
+                        StatusSelector(
+                            options = allStatuses,
+                            selectedOption = selectedStatus,
+                            onOptionSelected = { selectedStatus = it },
+                            optionToString = { it }
+                        )
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        LazyColumn(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(start = 30.dp, top = 16.dp, end = 30.dp, bottom = 120.dp)
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .padding(top = innerPadding.calculateTopPadding())
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = { },
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.White
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Text(
-                    text = "รายการสั่งซื้อ",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .width(180.dp)
-                            .background(Color.LightGray, RoundedCornerShape(8.dp))
-                            .clickable { expanded = true }
-                            .padding(12.dp),
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(text = selectedStatus)
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
-                        }
-                    }
-
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                        modifier = Modifier.width(180.dp)
-                    ) {
-                        allStatuses.forEach { status ->
-                            DropdownMenuItem(
-                                text = { Text(text = status) },
-                                onClick = {
-                                    selectedStatus = status
-                                    expanded = false
-                                }
-                            )
-                        }
-                    }
-                }
-            }
-            filteredOrders.forEach { order ->
+            item { Spacer(Modifier.height(0.dp)) }
+            items(filteredOrders) { order ->
                 PackageDetailCard(
                     name = order.packageName,
                     price = order.price,
@@ -255,11 +203,62 @@ fun  OrdersStatusScreen() {
                     onClickDetail = { }
                 )
             }
+            item { Spacer(Modifier.height(0.dp)) }
         }
-
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun StatusSelector(
+    options: List<String>,
+    selectedOption: String?,
+    onOptionSelected: (String) -> Unit,
+    optionToString: (String) -> String
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .menuAnchor(type = MenuAnchorType.PrimaryEditable)
+                .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(8.dp))
+        ) {
+            Box(modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp)) {
+                Text(
+                    text = selectedOption?.let(optionToString) ?: "ทั้งหมด",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            Box(modifier = Modifier.padding(12.dp)) {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            }
+        }
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            shape = RoundedCornerShape(8.dp),
+            containerColor = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceContainer)
+        ) {
+            options.forEach { item ->
+                DropdownMenuItem(
+                    text = { Text(optionToString(item)) },
+                    onClick = {
+                        onOptionSelected(item)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun PackageDetailCard(
@@ -277,7 +276,6 @@ fun PackageDetailCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
             .background(
                 color = MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(12.dp)
@@ -391,9 +389,13 @@ fun PackageDetailCard(
                                 .background(Color.LightGray, RoundedCornerShape(12.dp))
                                 .padding(horizontal = 24.dp, vertical = 12.dp)
                         ) {
-                            Text(text = "คุณจะได้รับการตรวจสอบภายใน 24 ชั่วโมง", color = Color.DarkGray)
+                            Text(
+                                text = "คุณจะได้รับการตรวจสอบภายใน 24 ชั่วโมง",
+                                color = Color.DarkGray
+                            )
                         }
                     }
+
                     "ที่ต้องชำระ" -> {
                         BonBaanButton(
                             text = "ชำระเงิน",
@@ -401,6 +403,7 @@ fun PackageDetailCard(
                             variant = ButtonVariant.PRIMARY
                         )
                     }
+
                     "กำลังดำเนินการ" -> {
                         BonBaanButton(
                             text = "ดูสถานะการทำงาน",
@@ -408,6 +411,7 @@ fun PackageDetailCard(
                             variant = ButtonVariant.OUTLINED
                         )
                     }
+
                     "ที่ต้องยืนยัน" -> {
                         BonBaanButton(
                             text = "ดูหลักฐานการทำงาน",
@@ -415,6 +419,7 @@ fun PackageDetailCard(
                             variant = ButtonVariant.OUTLINED
                         )
                     }
+
                     "ที่ต้องรีวิว" -> {
                         BonBaanButton(
                             text = "รีวิวบริการ",
@@ -422,6 +427,7 @@ fun PackageDetailCard(
                             variant = ButtonVariant.OUTLINED
                         )
                     }
+
                     "ดำเนินการสำเร็จ", "คืนเงิน" -> {
                         BonBaanButton(
                             text = "ซื้ออีกครั้ง",
@@ -429,6 +435,7 @@ fun PackageDetailCard(
                             variant = ButtonVariant.OUTLINED
                         )
                     }
+
                     "ยกเลิก" -> {
                         BonBaanButton(
                             text = "ดูคำขอการยกเลิก",
@@ -441,7 +448,6 @@ fun PackageDetailCard(
         }
     }
 }
-
 
 
 @Preview(showBackground = true)
