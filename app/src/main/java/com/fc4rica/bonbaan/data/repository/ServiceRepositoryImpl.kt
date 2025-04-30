@@ -21,7 +21,7 @@ class ServiceRepositoryImpl(
                 return Result.failure(Exception(response.error))
             }
 
-            Result.success(response.data.services.map { it.toService() })
+            Result.success(response.data.services.map { it.toService(false, false) })
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -51,7 +51,8 @@ class ServiceRepositoryImpl(
             if (response.error != null || response.data == null) {
                 return Result.failure(Exception(response.error))
             }
-            Result.success(response.data.services.map { it.toService() })
+            val mappedService = response.data.services.map { it.toService(false, false) }
+            Result.success(mappedService)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -68,7 +69,7 @@ class ServiceRepositoryImpl(
             if (response.error != null || response.data == null) {
                 return Result.failure(Exception(response.error))
             }
-            Result.success(response.data.services.map { it.toService() })
+            Result.success(response.data.services.map { it.toService(false, false) })
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -80,7 +81,7 @@ class ServiceRepositoryImpl(
             if (response.error != null || response.data == null) {
                 return Result.failure(Exception(response.error))
             }
-            Result.success(response.data.map { it.toService() })
+            Result.success(response.data.map { it.toService(false, false) })
         } catch (e: Exception) {
             Result.failure(e)
         }

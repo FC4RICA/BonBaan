@@ -54,7 +54,10 @@ fun FilteredServiceScreen(
                 val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
 
                 // Trigger when user scrolls within 3 items of the end
-                if (lastVisibleItem >= totalItems - 3) {
+                if (lastVisibleItem >= totalItems - 3 &&
+                    !state.isPaginating &&
+                    !state.isEndReached
+                ) {
                     viewModel.getMoreService()
                 }
             }
@@ -100,6 +103,7 @@ fun FilteredServiceScreen(
                 LoadingIndicator()
             } else {
                 LazyVerticalGrid(
+                    state = gridState,
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.fillMaxSize(),
                 ) {
