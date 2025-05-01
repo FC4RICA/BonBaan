@@ -38,7 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.fc4rica.bonbaan.domain.model.Order
@@ -52,7 +51,12 @@ import com.fc4rica.bonbaan.ui.components.ButtonVariant
 import java.time.LocalDateTime
 
 @Composable
-fun OrdersStatusScreen() {
+fun OrdersStatusScreen(
+    onClickOrderDetail: (String) -> Unit,
+    onClickServiceDetail: (String) -> Unit,
+    onClickPayment: (String) -> Unit,
+    onClickReview: (String) -> Unit
+) {
     val allStatuses = listOf(
         Status("", "ทั้งหมด"),
         Status("1", "รอรับออเดอร์"),
@@ -143,7 +147,13 @@ fun OrdersStatusScreen() {
         ) {
             item { Spacer(Modifier.height(0.dp)) }
             items(orders) { order ->
-                OrderCard(order, { })
+                OrderCard(
+                    order = order,
+                    onClickDetail = onClickOrderDetail,
+                    onClickPayment = onClickPayment,
+                    onClickServiceDetail = onClickServiceDetail,
+                    onClickReview = onClickReview,
+                )
             }
             item { Spacer(Modifier.height(0.dp)) }
         }
@@ -210,7 +220,10 @@ fun StatusSelector(
 @Composable
 fun OrderCard(
     order: Order,
-    onClickDetail: (String) -> Unit
+    onClickDetail: (String) -> Unit,
+    onClickPayment: (String) -> Unit,
+    onClickServiceDetail: (String) -> Unit,
+    onClickReview: (String) -> Unit
 ) {
     val status = order.status.toOrderStatus()
 
@@ -304,7 +317,7 @@ fun OrderCard(
                 OrderStatus.Unpaid -> {
                     BonBaanButton(
                         text = "ชำระเงิน",
-                        onClick = { },
+                        onClick = { onClickPayment(order.id) },
                         variant = ButtonVariant.PRIMARY
                     )
                 }
@@ -312,7 +325,7 @@ fun OrderCard(
                 OrderStatus.Processing -> {
                     BonBaanButton(
                         text = "ดูสถานะการทำงาน",
-                        onClick = { },
+                        onClick = { onClickDetail(order.id) },
                         variant = ButtonVariant.OUTLINED
                     )
                 }
@@ -320,7 +333,7 @@ fun OrderCard(
                 OrderStatus.Confirm, OrderStatus.Approve -> {
                     BonBaanButton(
                         text = "ดูหลักฐานการทำงาน",
-                        onClick = { },
+                        onClick = { onClickDetail(order.id) },
                         variant = ButtonVariant.OUTLINED
                     )
                 }
@@ -328,7 +341,7 @@ fun OrderCard(
                 OrderStatus.Review -> {
                     BonBaanButton(
                         text = "รีวิวบริการ",
-                        onClick = { },
+                        onClick = { onClickReview(order.id) },
                         variant = ButtonVariant.OUTLINED
                     )
                 }
@@ -336,7 +349,7 @@ fun OrderCard(
                 OrderStatus.Completed, OrderStatus.Refund, OrderStatus.Cancel -> {
                     BonBaanButton(
                         text = "ซื้ออีกครั้ง",
-                        onClick = { },
+                        onClick = { onClickServiceDetail(order.id) },
                         variant = ButtonVariant.OUTLINED
                     )
                 }
@@ -346,11 +359,4 @@ fun OrderCard(
         }
     }
 
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewOrderStatusScreen() {
-    OrdersStatusScreen()
 }
