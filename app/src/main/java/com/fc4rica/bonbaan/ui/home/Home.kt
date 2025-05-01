@@ -182,7 +182,12 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
 
     // Nested Profile Screens
     composable(Screen.OrdersStatus.route) {
-        OrdersStatusScreen()
+        OrdersStatusScreen(
+            onClickOrderDetail = { navController.navigate(Screen.OrderStatusDetail.createRoute(it)) },
+            onClickServiceDetail = { navController.navigate(Screen.ServiceDetail.createRoute(it)) },
+            onClickPayment = { navController.navigate(Screen.Payment.createRoute(it)) },
+            onClickReview = { navController.navigate(Screen.ServiceReview.createRoute(it)) }
+        )
     }
     composable(
         route = Screen.OrderStatusDetail.route,
