@@ -122,14 +122,15 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     ) {
         FilteredServiceScreen(
             onBackClick = { navController.popBackStack() },
-            onServiceClick = { navController.navigate(Screen.ServiceDetail.createRoute(it)) },
+            onClickService = { navController.navigate(Screen.ServiceDetail.createRoute(it)) },
             onSearching = { navController.navigate(Screen.Search.createRoute(it)) }
         )
     }
     composable(Screen.Search.route) {
         SearchScreen(
             onBackClick = { navController.popBackStack() },
-            onSearching = { navController.navigate(Screen.FilteredService.createRoute(it)) }
+            onSearching = { navController.navigate(Screen.FilteredService.createRoute(it)) },
+            onClickService = { navController.navigate(Screen.ServiceDetail.createRoute(it)) }
         )
     }
     composable(
