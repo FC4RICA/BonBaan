@@ -2,7 +2,7 @@ package com.fc4rica.bonbaan.ui.home.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fc4rica.bonbaan.domain.model.Status
+import com.fc4rica.bonbaan.domain.model.OrderStatus
 import com.fc4rica.bonbaan.domain.model.User
 import com.fc4rica.bonbaan.domain.repository.AuthRepository
 import com.fc4rica.bonbaan.domain.repository.OrderRepository
@@ -14,9 +14,23 @@ import kotlinx.coroutines.launch
 
 data class ProfileUiState(
     val user: User? = null,
-    val ordersCountByStatus: Map<Status, Int> = emptyMap(),
+    val statusDisplayItems: List<StatusDisplayItem> = emptyList(),
     val errorMessage: String? = null,
     val isLoading: Boolean = false
+)
+
+enum class OrderStatusUI(val orderStatus: OrderStatus) {
+    Pending(OrderStatus.Pending),
+    Unpaid(OrderStatus.Unpaid),
+    Processing(OrderStatus.Processing),
+    Confirm(OrderStatus.Confirm),
+    Review(OrderStatus.Review)
+}
+
+data class StatusDisplayItem(
+    val orderStatus: OrderStatus,
+    val id: String,
+    val count: Int
 )
 
 class ProfileViewModel(
@@ -64,8 +78,22 @@ class ProfileViewModel(
             val result = orderRepository.getOrdersCountByStatus()
             result.fold(
                 onSuccess = { ordersCountByStatus ->
+                    val statusDisplayItems = OrderStatusUI.entries.map { orderStatusUI ->
+                        val matched = ordersCountByStatus.entries
+                            .firstOrNull {
+                                it.key.name.equals(
+                                    orderStatusUI.orderStatus.engName,
+                                    true
+                                )
+                            }
 
-                    _state.update { it.copy(ordersCountByStatus = ordersCountByStatus) }
+                        StatusDisplayItem(
+                            orderStatus = orderStatusUI.orderStatus,
+                            id = matched?.key?.id ?: "",
+                            count = matched?.value ?: 0
+                        )
+                    }
+                    _state.update { it.copy(statusDisplayItems = statusDisplayItems) }
                 },
                 onFailure = { error ->
                     _state.update { it.copy(errorMessage = error.message) }

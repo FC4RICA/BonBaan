@@ -153,41 +153,46 @@ fun ProfileScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    val pending = state.ordersCountByStatus.entries.first { it.key.name == OrderStatus.Pending.engName }
-                    StatusIconButton(
-                        icon = Icons.AutoMirrored.Outlined.ReceiptLong,
-                        label = "รอรับออเดอร์",
-                        onClick = { onClickOrderStatus(pending.key.id) },
-                        count = pending.value
-                    )
-                    val unpaid = state.ordersCountByStatus.entries.first { it.key.name == OrderStatus.Unpaid.engName }
-                    StatusIconButton(
-                        icon = Icons.Outlined.AccountBalanceWallet,
-                        label = "ที่ต้องชำระ",
-                        onClick = { onClickOrderStatus(unpaid.key.id) },
-                        count = unpaid.value
-                    )
-                    val processing = state.ordersCountByStatus.entries.first { it.key.name == OrderStatus.Processing.engName }
-                    StatusIconButton(
-                        icon = Icons.Outlined.HourglassEmpty,
-                        label = "กำลังดำเนินการ",
-                        onClick = { onClickOrderStatus(processing.key.id) },
-                        count = processing.value
-                    )
-                    val confirm = state.ordersCountByStatus.entries.first { it.key.name == OrderStatus.Confirm.engName}
-                    StatusIconButton(
-                        icon = Icons.Outlined.CheckCircle,
-                        label = "ที่ต้องยืนยัน",
-                        onClick = { onClickOrderStatus(confirm.key.id) },
-                        count = confirm.value
-                    )
-                    val review = state.ordersCountByStatus.entries.first { it.key.name == OrderStatus.Review.engName }
-                    StatusIconButton(
-                        icon = Icons.Outlined.RateReview,
-                        label = "ที่ต้องรีวิว",
-                        onClick = { onClickOrderStatus(review.key.id) },
-                        count = review.value
-                    )
+                    state.statusDisplayItems.map { status ->
+                        when (status.orderStatus) {
+                            OrderStatus.Pending -> StatusIconButton(
+                                icon = Icons.AutoMirrored.Outlined.ReceiptLong,
+                                label = "รอรับออเดอร์",
+                                onClick = { onClickOrderStatus(status.id) },
+                                count = status.count
+                            )
+
+                            OrderStatus.Unpaid -> StatusIconButton(
+                                icon = Icons.Outlined.AccountBalanceWallet,
+                                label = "ที่ต้องชำระ",
+                                onClick = { onClickOrderStatus(status.id) },
+                                count = status.count
+                            )
+
+                            OrderStatus.Processing -> StatusIconButton(
+                                icon = Icons.Outlined.HourglassEmpty,
+                                label = "กำลังดำเนินการ",
+                                onClick = { onClickOrderStatus(status.id) },
+                                count = status.count
+                            )
+
+                            OrderStatus.Confirm -> StatusIconButton(
+                                icon = Icons.Outlined.CheckCircle,
+                                label = "ที่ต้องยืนยัน",
+                                onClick = { onClickOrderStatus(status.id) },
+                                count = status.count
+                            )
+
+                            OrderStatus.Review -> StatusIconButton(
+                                icon = Icons.Outlined.RateReview,
+                                label = "ที่ต้องรีวิว",
+                                onClick = { onClickOrderStatus(status.id) },
+                                count = status.count
+                            )
+
+                            else -> {}
+                        }
+                    }
                 }
             }
 
