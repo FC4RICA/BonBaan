@@ -36,6 +36,7 @@ class OrdersStatusViewModel(
     init {
         getOrders()
         getStatuses()
+        filterOrdersByStatus(_statusId)
 
         viewModelScope.launch {
             combine(_isOrderLoading, _isStatusLoading) { profileLoading, serviceLoading ->

@@ -106,7 +106,7 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     composable(Screen.Profile.route) {
         ProfileScreen(
             onClickProfile = { navController.navigate(Screen.OrdersStatus.route) },
-            onClickOrderStatuses = { navController.navigate(Screen.OrdersStatus.route) },
+            onClickOrderStatuses = { navController.navigate(Screen.OrdersStatus.createRoute("")) },
             onClickOrderStatus = { navController.navigate(Screen.OrdersStatus.createRoute(it)) },
             onClickReviews = { navController.navigate(Screen.MyReviews.route) }
         )

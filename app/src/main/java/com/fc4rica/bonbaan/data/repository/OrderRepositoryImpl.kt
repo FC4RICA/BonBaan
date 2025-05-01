@@ -86,7 +86,7 @@ class OrderRepositoryImpl(
                 return Result.failure(Exception(response.error))
             }
 
-            val orders = response.data.orders.map { it.toOrder() }
+            val orders = response.data.orders.map { it.toOrder(mapTransaction = false, mapAttachments = false) }
             Result.success(orders)
         } catch (e: Exception) {
             Result.failure(e)
@@ -122,7 +122,15 @@ class OrderRepositoryImpl(
     }
 
     override suspend fun approveOrder(id: String): Result<Unit> {
-        TODO("Not yet implemented")
+        return try {
+            val response = orderApiService.approveOrder(id)
+            if (response.error != null) {
+                return Result.failure(Exception(response.error))
+            }
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun cancelOrder(id: String): Result<Unit> {
