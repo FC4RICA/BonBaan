@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.ui.home.service
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -148,10 +149,12 @@ class ServiceDetailViewModel(
     }
 
     private fun getServiceDetail() {
+        Log.d("ServiceDetailViewModel", "getServiceDetail: $_serviceId")
         _state.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
             val result = serviceRepository.getService(_serviceId)
+            Log.d("ServiceDetailViewModel", "getServiceDetail: $result")
             result.fold(
                 onSuccess = { service ->
                     val mappedService =
@@ -160,6 +163,7 @@ class ServiceDetailViewModel(
                         it.copy(
                             service = mappedService,
                             packages = mappedService.packages,
+                            selectedPackageId = mappedService.packages.first().id,
                             isLoading = false
                         )
                     }
@@ -168,23 +172,25 @@ class ServiceDetailViewModel(
                     _state.update { it.copy(errorMessage = error.message, isLoading = false) }
                 }
             )
-        }
-
-        // insert custom package
-        PackageType.entries.map { packageType ->
-            val customPackage = Package(
-                id = "",
-                name = "แพ็กเกจ${packageType.displayName}แบบกำหนดเอง",
-                description = "คุณสามารถกำหนดรายการสินค้าที่ต้องการให้เราจัดหาให้ได้เอง จากนั้นเราจึงจะส่งค่าใช้จ่ายให้คุณภายหลัง",
-                price = 0.0,
-                orderType = OrderType(id = "", name = packageType.displayName),
-                items = emptyList(),
-            )
-            _state.update {
-                it.copy(
-                    packages = it.packages + customPackage
+            Log.d("ServiceDetailViewModel", "getServiceDetail: ${_state.value.packages}")
+            // insert custom package
+            val customPackages = PackageType.entries.map { packageType ->
+                Package(
+                    id = "",
+                    name = "แพ็กเกจ${packageType.displayName}แบบกำหนดเอง",
+                    description = "คุณสามารถกำหนดรายการสินค้าที่ต้องการให้เราจัดหาให้ได้เอง จากนั้นเราจึงจะส่งค่าใช้จ่ายให้คุณภายหลัง",
+                    price = 0.0,
+                    orderType = OrderType(id = "", name = packageType.displayName),
+                    items = emptyList(),
                 )
             }
+            Log.d("ServiceDetailViewModel", "getServiceDetail: $customPackages")
+            _state.update {
+                it.copy(
+                    packages = it.packages + customPackages
+                )
+            }
+            Log.d("ServiceDetailViewModel", "getServiceDetail: ${_state.value.packages}")
             _state.update {
                 it.copy(
                     selectedPackageId = it.packages.first().id

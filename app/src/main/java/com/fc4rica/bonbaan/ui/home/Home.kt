@@ -138,7 +138,7 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         arguments = listOf(navArgument("serviceId") { type = NavType.StringType })
     ) {
         ServiceDetailScreen(
-            onOrderSuccess = { navController.navigate(Screen.OrderSummary.route) },
+            onOrderSuccess = { navController.navigate(Screen.Order.route) },
             onBack = { navController.popBackStack() }
         )
     }
