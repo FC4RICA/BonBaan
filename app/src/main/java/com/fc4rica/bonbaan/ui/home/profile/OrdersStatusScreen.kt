@@ -1,7 +1,6 @@
 package com.fc4rica.bonbaan.ui.home.service
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,8 +18,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,124 +37,78 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.fc4rica.bonbaan.R
+import coil3.compose.AsyncImage
+import com.fc4rica.bonbaan.domain.model.Order
+import com.fc4rica.bonbaan.domain.model.OrderStatus
+import com.fc4rica.bonbaan.domain.model.Service
+import com.fc4rica.bonbaan.domain.model.Status
+import com.fc4rica.bonbaan.domain.model.toOrderStatus
 import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
+import java.time.LocalDateTime
 
 @Composable
 fun OrdersStatusScreen() {
     val allStatuses = listOf(
-        "ทั้งหมด",
-        "รอรับออเดอร์",
-        "ที่ต้องชำระ",
-        "กำลังดำเนินการ",
-        "ที่ต้องยืนยัน",
-        "ที่ต้องรีวิว",
-        "ดำเนินการสำเร็จ",
-        "คืนเงิน",
-        "ยกเลิก"
+        Status("", "ทั้งหมด"),
+        Status("1", "รอรับออเดอร์"),
+        Status("2", "ที่ต้องชำระ"),
+        Status("3", "กำลังดำเนินการ"),
+        Status("4", "ที่ต้องยืนยัน"),
+        Status("5", "ที่ต้องรีวิว"),
+        Status("6", "ดำเนินการสำเร็จ"),
+        Status("7", "คืนเงิน"),
+        Status("8", "ยกเลิก")
     )
-    var selectedStatus by remember { mutableStateOf("ทั้งหมด") }
-    var expanded by remember { mutableStateOf(false) }
+    var selectedStatus by remember { mutableStateOf<Status?>(null) }
 
-    val allOrders = listOf(
-        OrderDetails(
-            serviceName = "พระตรีมูรติ",
-            location = "หน้าเซ็นทรัลเวิลด์",
-            nameSurname = "อาบิตคำ ชาตรี",
-            wish = "อยากให้แฟนรักมากกว่านี้",
-            dueDate = "09 เมษายน 2568",
-            packageName = "แฟนไม่หนี แถมฟรีความสุข",
-            price = 89,
-            items = listOf("ธูป", "เทียน", "น้ำแดง"),
-            status = "รอรับออเดอร์"
+    val service = Service(
+        id = "",
+        name = "พระตรีมูรติ",
+        description = "",
+        rate = 0.0,
+        address = "หน้าเซ็นทรัลเวิลด์",
+    )
+    val orders = listOf(
+        Order(
+            id = "1",
+            price = 100.0,
+            items = listOf("Item 1", "Item 2"),
+            packageItem = null,
+            createdAt = LocalDateTime.now(),
+            transaction = null,
+            cancellationReason = null,
+            status = Status("1", "pending"),
+            service = service,
         ),
-        OrderDetails(
-            serviceName = "พระตรีมูรติ",
-            location = "หน้าเซ็นทรัลเวิลด์",
-            nameSurname = "อาบิตคำ ชาตรี",
-            wish = "อยากให้แฟนรักมากกว่านี้",
-            dueDate = "09 เมษายน 2568",
-            packageName = "แฟนไม่หนี แถมฟรีความสุข",
-            price = 89,
-            items = listOf("ธูป", "เทียน", "น้ำแดง"),
-            status = "ที่ต้องชำระ"
+        Order(
+            id = "1",
+            price = 100.0,
+            items = listOf("Item 1", "Item 2"),
+            packageItem = null,
+            createdAt = LocalDateTime.now(),
+            transaction = null,
+            cancellationReason = null,
+            status = Status("1", "in progress"),
+            service = service,
         ),
-        OrderDetails(
-            serviceName = "พระตรีมูรติ",
-            location = "หน้าเซ็นทรัลเวิลด์",
-            nameSurname = "อาบิตคำ ชาตรี",
-            wish = "อยากให้แฟนรักมากกว่านี้",
-            dueDate = "09 เมษายน 2568",
-            packageName = "แฟนไม่หนี แถมฟรีความสุข",
-            price = 89,
-            items = listOf("ธูป", "เทียน", "น้ำแดง"),
-            status = "กำลังดำเนินการ"
-        ),
-        OrderDetails(
-            serviceName = "พระตรีมูรติ",
-            location = "หน้าเซ็นทรัลเวิลด์",
-            nameSurname = "อาบิตคำ ชาตรี",
-            wish = "อยากให้แฟนรักมากกว่านี้",
-            dueDate = "09 เมษายน 2568",
-            packageName = "แฟนไม่หนี แถมฟรีความสุข",
-            price = 89,
-            items = listOf("ธูป", "เทียน", "น้ำแดง"),
-            status = "ที่ต้องยืนยัน"
-        ),
-        OrderDetails(
-            serviceName = "พระตรีมูรติ",
-            location = "หน้าเซ็นทรัลเวิลด์",
-            nameSurname = "อาบิตคำ ชาตรี",
-            wish = "อยากให้แฟนรักมากกว่านี้",
-            dueDate = "09 เมษายน 2568",
-            packageName = "แฟนไม่หนี แถมฟรีความสุข",
-            price = 89,
-            items = listOf("ธูป", "เทียน", "น้ำแดง"),
-            status = "ที่ต้องรีวิว"
-        ),
-        OrderDetails(
-            serviceName = "พระตรีมูรติ",
-            location = "หน้าเซ็นทรัลเวิลด์",
-            nameSurname = "อาบิตคำ ชาตรี",
-            wish = "อยากให้แฟนรักมากกว่านี้",
-            dueDate = "09 เมษายน 2568",
-            packageName = "แฟนไม่หนี แถมฟรีความสุข",
-            price = 89,
-            items = listOf("ธูป", "เทียน", "น้ำแดง"),
-            status = "ดำเนินการสำเร็จ"
-        ),
-        OrderDetails(
-            serviceName = "พระตรีมูรติ",
-            location = "หน้าเซ็นทรัลเวิลด์",
-            nameSurname = "อาบิตคำ ชาตรี",
-            wish = "อยากให้แฟนรักมากกว่านี้",
-            dueDate = "09 เมษายน 2568",
-            packageName = "แฟนไม่หนี แถมฟรีความสุข",
-            price = 89,
-            items = listOf("ธูป", "เทียน", "น้ำแดง"),
-            status = "คืนเงิน"
-        ),
-        OrderDetails(
-            serviceName = "พระตรีมูรติ",
-            location = "หน้าเซ็นทรัลเวิลด์",
-            nameSurname = "อาบิตคำ ชาตรี",
-            wish = "อยากให้แฟนรักมากกว่านี้",
-            dueDate = "09 เมษายน 2568",
-            packageName = "แฟนไม่หนี แถมฟรีความสุข",
-            price = 89,
-            items = listOf("ธูป", "เทียน", "น้ำแดง"),
-            status = "ยกเลิก"
+        Order(
+            id = "1",
+            price = 100.0,
+            items = listOf("Item 1", "Item 2"),
+            packageItem = null,
+            createdAt = LocalDateTime.now(),
+            transaction = null,
+            cancellationReason = null,
+            status = Status("1", "cancelled"),
+            service = service,
         )
     )
 
-    val filteredOrders =
-        if (selectedStatus == "ทั้งหมด") allOrders else allOrders.filter { it.status == selectedStatus }
     Scaffold(
         topBar = {
             BackNavBar(
@@ -176,7 +127,7 @@ fun OrdersStatusScreen() {
                             options = allStatuses,
                             selectedOption = selectedStatus,
                             onOptionSelected = { selectedStatus = it },
-                            optionToString = { it }
+                            optionToString = { it.name }
                         )
                     }
                 }
@@ -191,17 +142,8 @@ fun OrdersStatusScreen() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             item { Spacer(Modifier.height(0.dp)) }
-            items(filteredOrders) { order ->
-                PackageDetailCard(
-                    name = order.packageName,
-                    price = order.price,
-                    items = order.items,
-                    location = order.location,
-                    serviceName = order.serviceName,
-                    status = order.status,
-                    statusColor = getStatusColor(order.status),
-                    onClickDetail = { }
-                )
+            items(orders) { order ->
+                OrderCard(order, { })
             }
             item { Spacer(Modifier.height(0.dp)) }
         }
@@ -211,10 +153,10 @@ fun OrdersStatusScreen() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatusSelector(
-    options: List<String>,
-    selectedOption: String?,
-    onOptionSelected: (String) -> Unit,
-    optionToString: (String) -> String
+    options: List<Status>,
+    selectedOption: Status?,
+    onOptionSelected: (Status) -> Unit,
+    optionToString: (Status) -> String
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -229,13 +171,13 @@ fun StatusSelector(
                 .menuAnchor(type = MenuAnchorType.PrimaryEditable)
                 .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(8.dp))
         ) {
-            Box(modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp)) {
+            Box(modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)) {
                 Text(
                     text = selectedOption?.let(optionToString) ?: "ทั้งหมด",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
-            Box(modifier = Modifier.padding(12.dp)) {
+            Box(modifier = Modifier.padding(8.dp)) {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             }
         }
@@ -249,7 +191,12 @@ fun StatusSelector(
         ) {
             options.forEach { item ->
                 DropdownMenuItem(
-                    text = { Text(optionToString(item)) },
+                    text = {
+                        Text(
+                            text = optionToString(item),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    },
                     onClick = {
                         onOptionSelected(item)
                         expanded = false
@@ -261,192 +208,144 @@ fun StatusSelector(
 }
 
 @Composable
-fun PackageDetailCard(
-    name: String,
-    price: Int,
-    items: List<String>,
-    location: String,
-    serviceName: String,
-    status: String,
-    statusColor: Color,
-    onClickDetail: () -> Unit
+fun OrderCard(
+    order: Order,
+    onClickDetail: (String) -> Unit
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
+    val status = order.status.toOrderStatus()
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(12.dp)
-            )
-            .padding(16.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .clickable { onClickDetail(order.id) }
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(vertical = 12.dp, horizontal = 16.dp)
     ) {
-        Column {
-            Row(
-                modifier = Modifier.fillMaxWidth()
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            AsyncImage(
+                model = order.attachments.firstOrNull(),
+                contentDescription = "service image",
+                modifier = Modifier
+                    .size(82.dp)
+                    .clip(RoundedCornerShape(8.dp))
+
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(4.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.logo1),
-                    contentDescription = "Logo",
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(7.dp))
-                        .height(100.dp)
-                        .width(100.dp)
-                )
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(4.dp)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = serviceName,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = status,
-                            color = statusColor,
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.LocationOn,
-                            contentDescription = "Location",
-                            modifier = Modifier.size(14.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = location,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(text = "ราคา", style = MaterialTheme.typography.bodyMedium)
-                        Text(text = "฿ $price", fontWeight = FontWeight.Medium)
-                    }
+                    Text(
+                        text = order.service?.name ?: "",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = status?.displayName ?: "",
+                        color = status?.color ?: Color.Gray,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
                 }
-            }
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        isExpanded = !isExpanded
-                        onClickDetail()
-                    },
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "รายละเอียด",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Icon(
-                    imageVector = if (isExpanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
-                    contentDescription = null
-                )
-            }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.LocationOn,
+                        contentDescription = "Location",
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = order.service?.address ?: "",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
 
-            if (isExpanded) {
                 Spacer(modifier = Modifier.height(8.dp))
-                items.forEach { item ->
-                    Text(text = "- $item", style = MaterialTheme.typography.bodySmall)
-                }
-            }
-
-            Box(
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(top = 16.dp)
-            ) {
-                when (status) {
-                    "รอรับออเดอร์" -> {
-                        Box(
-                            modifier = Modifier
-                                .background(Color.LightGray, RoundedCornerShape(12.dp))
-                                .padding(horizontal = 24.dp, vertical = 12.dp)
-                        ) {
-                            Text(
-                                text = "คุณจะได้รับการตรวจสอบภายใน 24 ชั่วโมง",
-                                color = Color.DarkGray
-                            )
-                        }
-                    }
-
-                    "ที่ต้องชำระ" -> {
-                        BonBaanButton(
-                            text = "ชำระเงิน",
-                            onClick = { },
-                            variant = ButtonVariant.PRIMARY
-                        )
-                    }
-
-                    "กำลังดำเนินการ" -> {
-                        BonBaanButton(
-                            text = "ดูสถานะการทำงาน",
-                            onClick = { },
-                            variant = ButtonVariant.OUTLINED
-                        )
-                    }
-
-                    "ที่ต้องยืนยัน" -> {
-                        BonBaanButton(
-                            text = "ดูหลักฐานการทำงาน",
-                            onClick = { },
-                            variant = ButtonVariant.OUTLINED
-                        )
-                    }
-
-                    "ที่ต้องรีวิว" -> {
-                        BonBaanButton(
-                            text = "รีวิวบริการ",
-                            onClick = { },
-                            variant = ButtonVariant.OUTLINED
-                        )
-                    }
-
-                    "ดำเนินการสำเร็จ", "คืนเงิน" -> {
-                        BonBaanButton(
-                            text = "ซื้ออีกครั้ง",
-                            onClick = { },
-                            variant = ButtonVariant.OUTLINED
-                        )
-                    }
-
-                    "ยกเลิก" -> {
-                        BonBaanButton(
-                            text = "ดูคำขอการยกเลิก",
-                            onClick = { },
-                            variant = ButtonVariant.OUTLINED
-                        )
-                    }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(text = "ราคา", style = MaterialTheme.typography.bodyMedium)
+                    Text(text = "฿ ${order.price} บาท", fontWeight = FontWeight.Medium)
                 }
             }
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.End)
+        ) {
+            when (status) {
+                OrderStatus.Pending -> {
+                    BonBaanButton(
+                        text = "คุณจะได้รับการตรวจสอบภายใน 24 ชั่วโมง",
+                        onClick = { },
+                        isEnabled = false
+                    )
+                }
+
+                OrderStatus.Unpaid -> {
+                    BonBaanButton(
+                        text = "ชำระเงิน",
+                        onClick = { },
+                        variant = ButtonVariant.PRIMARY
+                    )
+                }
+
+                OrderStatus.Processing -> {
+                    BonBaanButton(
+                        text = "ดูสถานะการทำงาน",
+                        onClick = { },
+                        variant = ButtonVariant.OUTLINED
+                    )
+                }
+
+                OrderStatus.Confirm, OrderStatus.Approve -> {
+                    BonBaanButton(
+                        text = "ดูหลักฐานการทำงาน",
+                        onClick = { },
+                        variant = ButtonVariant.OUTLINED
+                    )
+                }
+
+                OrderStatus.Review -> {
+                    BonBaanButton(
+                        text = "รีวิวบริการ",
+                        onClick = { },
+                        variant = ButtonVariant.OUTLINED
+                    )
+                }
+
+                OrderStatus.Completed, OrderStatus.Refund, OrderStatus.Cancel -> {
+                    BonBaanButton(
+                        text = "ซื้ออีกครั้ง",
+                        onClick = { },
+                        variant = ButtonVariant.OUTLINED
+                    )
+                }
+
+                else -> {}
+            }
+        }
     }
+
 }
 
 
