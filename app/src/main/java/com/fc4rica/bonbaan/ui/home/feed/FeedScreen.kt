@@ -26,7 +26,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -34,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fc4rica.bonbaan.domain.model.Category
 import com.fc4rica.bonbaan.ui.components.SearchBarPlaceholder
 import com.fc4rica.bonbaan.ui.components.ServiceCard
@@ -46,7 +46,7 @@ fun FeedScreen(
     onClickService: (String) -> Unit,
     viewModel: FeedViewModel = koinViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     val gridState = rememberLazyGridState()
     LaunchedEffect(gridState) {

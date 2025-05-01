@@ -86,7 +86,7 @@ class OrderRepositoryImpl(
                 return Result.failure(Exception(response.error))
             }
 
-            val orders = response.data.map { it.toOrder() }
+            val orders = response.data.orders.map { it.toOrder() }
             Result.success(orders)
         } catch (e: Exception) {
             Result.failure(e)
@@ -174,7 +174,7 @@ class OrderRepositoryImpl(
                 return Result.failure(Exception(response.error))
             }
 
-            val orders = response.data.map { it.toOrder() }
+            val orders = response.data.orders.map { it.toOrder() }
             Result.success(orders)
         } catch (e: Exception) {
             Result.failure(e)
@@ -186,12 +186,12 @@ class OrderRepositoryImpl(
             val userId = userPreferences.data.first().id
                 ?: return Result.failure(Exception("User ID not found"))
 
-            val response = orderApiService.getOrders(userId)
-            if (response.error != null || response.data == null) {
-                return Result.failure(Exception(response.error))
+            val orderResponse = orderApiService.getOrders(userId)
+            if (orderResponse.error != null || orderResponse.data == null) {
+                return Result.failure(Exception(orderResponse.error))
             }
 
-            val orders = response.data.map {
+            val orders = orderResponse.data.orders.map {
                 it.toOrder(
                     mapPackage = false,
                     mapTransaction = false,
@@ -199,8 +199,19 @@ class OrderRepositoryImpl(
                     mapAttachments = false
                 )
             }
-            val ordersCountByStatus = orders.groupBy { it.status }.mapValues { it.value.size }
-            Result.success(ordersCountByStatus)
+
+            val statusResponse = orderApiService.getOrderStatuses()
+            if (statusResponse.error != null || statusResponse.data == null) {
+                return Result.failure(Exception(statusResponse.error))
+            }
+            val statuses = statusResponse.data.map { it.toStatus() }
+
+            val ordersCountByStatus = orders.groupingBy { it.status }.eachCount()
+
+            val statusCountMap = statuses.associateWith { status ->
+                ordersCountByStatus[status] ?: 0
+            }
+            Result.success(statusCountMap)
         } catch (e: Exception) {
             Result.failure(e)
         }

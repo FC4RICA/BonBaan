@@ -2,7 +2,8 @@ package com.fc4rica.bonbaan.data.remote.dto
 
 import com.fc4rica.bonbaan.domain.model.Order
 import com.google.gson.annotations.SerializedName
-import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneId
 
 data class OrderResponse(
     @SerializedName("ID")
@@ -37,7 +38,7 @@ fun OrderResponse.toOrder(
         price = price,
         items = items,
         packageItem = if (mapPackage) packageItem?.toPackage() else null,
-        createdAt = LocalDateTime.parse(createdAt),
+        createdAt = OffsetDateTime.parse(createdAt).atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime(),
         transaction = if (mapTransaction) transaction?.toTransaction() else null,
         cancellationReason = cancellationReason,
         status = status.toStatus(),

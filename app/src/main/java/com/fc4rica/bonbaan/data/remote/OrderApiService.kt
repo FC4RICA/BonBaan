@@ -3,6 +3,7 @@ package com.fc4rica.bonbaan.data.remote
 import com.fc4rica.bonbaan.data.remote.dto.ApiResponse
 import com.fc4rica.bonbaan.data.remote.dto.OrderResponse
 import com.fc4rica.bonbaan.data.remote.dto.OrderTypeResponse
+import com.fc4rica.bonbaan.data.remote.dto.OrdersResponse
 import com.fc4rica.bonbaan.data.remote.dto.StatusResponse
 import com.fc4rica.bonbaan.domain.model.request.FulfillOrderRequest
 import com.fc4rica.bonbaan.domain.model.request.VowOrderRequest
@@ -14,7 +15,7 @@ import retrofit2.http.Query
 
 interface OrderApiService {
     @GET("users/{id}/orders")
-    suspend fun getOrders(@Path("id") userId: String, @Query("status") statusID: String? = null): ApiResponse<List<OrderResponse>>
+    suspend fun getOrders(@Path("id") userId: String, @Query("status") statusID: String? = null): ApiResponse<OrdersResponse>
 
     @GET("orders/{id}")
     suspend fun getOrder(@Path("id") orderId: String): ApiResponse<OrderResponse>
@@ -41,7 +42,7 @@ interface OrderApiService {
     suspend fun completeOrder(@Path("id") orderId: String): ApiResponse<Unit>
 
     // Status
-    @GET("status")
+    @GET("statuses")
     suspend fun getOrderStatuses(): ApiResponse<List<StatusResponse>>
 
     // Order Type
