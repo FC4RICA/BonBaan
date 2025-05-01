@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.ui.home.service
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -46,6 +47,7 @@ import com.fc4rica.bonbaan.ui.components.ImageCarousel
 import com.fc4rica.bonbaan.ui.components.ReviewCard
 import org.koin.androidx.compose.koinViewModel
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun ServiceDetailScreen(
     onOrderSuccess: () -> Unit,
@@ -101,7 +103,7 @@ fun ServiceDetailScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        MaterialTheme.colorScheme.primary
+                        MaterialTheme.colorScheme.surfaceContainer
                     ),
                 contentAlignment = Alignment.Center
             ) {
@@ -136,7 +138,7 @@ fun ServiceDetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
-                            text = state.service.rate.toString(),
+                            text = String.format("%.1f", state.service.rate),
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold
                         )
@@ -159,7 +161,7 @@ fun ServiceDetailScreen(
                         modifier = Modifier.size(14.dp),
                     )
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text(state.service.address)
+                    Text(text = state.service.address, style = MaterialTheme.typography.bodyMedium)
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -174,12 +176,12 @@ fun ServiceDetailScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    "รายละเอียด",
+                    text = "รายละเอียด",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(state.service.description)
+                Text(text = state.service.description, style = MaterialTheme.typography.bodyMedium)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -235,7 +237,10 @@ fun ServiceDetailScreen(
                     val selectedPackage = packageList.find { pack ->
                         pack.id == state.selectedPackageId && pack.orderType.name == state.selectedOrderType.displayName
                     }
-                    Text(selectedPackage?.description ?: "", style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        selectedPackage?.description ?: "",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                     selectedPackage?.items?.map { item ->
                         Text("• $item", style = MaterialTheme.typography.bodyMedium)
                     }
@@ -323,11 +328,19 @@ fun PackageCard(
         modifier = Modifier
             .clickable { onClick() }
             .clip(RoundedCornerShape(8.dp))
-            .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary)
+            .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.LightGray)
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        Text(text = packageData.name, color = textColor)
+        Text(
+            text = packageData.name,
+            color = textColor,
+            style = MaterialTheme.typography.bodyMedium
+        )
         Spacer(Modifier.height(6.dp))
-        Text(text = packageData.price.toString(), color = textColor)
+        Text(
+            text = "฿ ${packageData.price}",
+            color = textColor,
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
 }
