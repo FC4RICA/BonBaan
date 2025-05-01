@@ -1,14 +1,16 @@
 package com.fc4rica.bonbaan.ui.home.feed
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
@@ -34,7 +36,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun FilteredServiceScreen(
     onBackClick: () -> Unit,
-    onServiceClick: (String) -> Unit,
+    onClickService: (String) -> Unit,
     onSearching: (String) -> Unit,
     viewModel: FilteredServiceViewModel = koinViewModel()
 ) {
@@ -46,9 +48,9 @@ fun FilteredServiceScreen(
         SortType.Rating -> 2
     }
 
-    val gridState = rememberLazyGridState()
-    LaunchedEffect(gridState) {
-        snapshotFlow { gridState.layoutInfo }
+    val listState = rememberLazyListState()
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo }
             .collect { layoutInfo ->
                 val totalItems = layoutInfo.totalItemsCount
                 val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
@@ -102,14 +104,20 @@ fun FilteredServiceScreen(
             if (state.isLoading && state.services.isEmpty()) {
                 LoadingIndicator()
             } else {
-                LazyVerticalGrid(
-                    state = gridState,
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier.fillMaxSize(),
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.surfaceContainer),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    item { Spacer(Modifier.height(0.dp)) }
                     items(state.services) { service ->
-                        ServiceCard(service, onServiceClick)
+                        Box(Modifier.padding(horizontal = 8.dp)){
+                            ServiceCard(service, onClickService)
+                        }
                     }
+                    item { Spacer(Modifier.height(0.dp)) }
                 }
             }
         }
