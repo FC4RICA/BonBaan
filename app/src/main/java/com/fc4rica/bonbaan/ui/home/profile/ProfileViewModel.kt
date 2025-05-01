@@ -64,6 +64,7 @@ class ProfileViewModel(
             val result = orderRepository.getOrdersCountByStatus()
             result.fold(
                 onSuccess = { ordersCountByStatus ->
+
                     _state.update { it.copy(ordersCountByStatus = ordersCountByStatus) }
                 },
                 onFailure = { error ->

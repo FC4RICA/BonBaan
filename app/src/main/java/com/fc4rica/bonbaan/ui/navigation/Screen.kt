@@ -57,7 +57,9 @@ sealed class Screen(val route: String) {
     }
 
     // Nested Screens (Inside Profile)
-    data object OrdersStatus : Screen("ordersStatus")
+    data object OrdersStatus : Screen("ordersStatus/{statusId}") {
+        fun createRoute(statusId: String) = "ordersStatus/$statusId"
+    }
     data object OrderStatusDetail : Screen("orderStatusDetail/{orderId}") {
         fun createRoute(orderId: String) = "orderStatusDetail/$orderId"
     }
