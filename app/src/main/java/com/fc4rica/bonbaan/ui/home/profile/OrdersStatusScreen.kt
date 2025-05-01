@@ -1,4 +1,4 @@
-package com.fc4rica.bonbaan.ui.home.service
+package com.fc4rica.bonbaan.ui.home.profile
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -29,6 +29,7 @@ import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,81 +43,28 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.fc4rica.bonbaan.domain.model.Order
 import com.fc4rica.bonbaan.domain.model.OrderStatus
-import com.fc4rica.bonbaan.domain.model.Service
 import com.fc4rica.bonbaan.domain.model.Status
 import com.fc4rica.bonbaan.domain.model.toOrderStatus
 import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
-import java.time.LocalDateTime
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun OrdersStatusScreen(
+    onBackClick: () -> Unit,
     onClickOrderDetail: (String) -> Unit,
     onClickServiceDetail: (String) -> Unit,
     onClickPayment: (String) -> Unit,
-    onClickReview: (String) -> Unit
+    onClickReview: (String) -> Unit,
+    viewModel: OrdersStatusViewModel = koinViewModel()
 ) {
-    val allStatuses = listOf(
-        Status("", "ทั้งหมด"),
-        Status("1", "รอรับออเดอร์"),
-        Status("2", "ที่ต้องชำระ"),
-        Status("3", "กำลังดำเนินการ"),
-        Status("4", "ที่ต้องยืนยัน"),
-        Status("5", "ที่ต้องรีวิว"),
-        Status("6", "ดำเนินการสำเร็จ"),
-        Status("7", "คืนเงิน"),
-        Status("8", "ยกเลิก")
-    )
-    var selectedStatus by remember { mutableStateOf<Status?>(null) }
-
-    val service = Service(
-        id = "",
-        name = "พระตรีมูรติ",
-        description = "",
-        rate = 0.0,
-        address = "หน้าเซ็นทรัลเวิลด์",
-    )
-    val orders = listOf(
-        Order(
-            id = "1",
-            price = 100.0,
-            items = listOf("Item 1", "Item 2"),
-            packageItem = null,
-            createdAt = LocalDateTime.now(),
-            transaction = null,
-            cancellationReason = null,
-            status = Status("1", "pending"),
-            service = service,
-        ),
-        Order(
-            id = "1",
-            price = 100.0,
-            items = listOf("Item 1", "Item 2"),
-            packageItem = null,
-            createdAt = LocalDateTime.now(),
-            transaction = null,
-            cancellationReason = null,
-            status = Status("1", "in progress"),
-            service = service,
-        ),
-        Order(
-            id = "1",
-            price = 100.0,
-            items = listOf("Item 1", "Item 2"),
-            packageItem = null,
-            createdAt = LocalDateTime.now(),
-            transaction = null,
-            cancellationReason = null,
-            status = Status("1", "cancelled"),
-            service = service,
-        )
-    )
+    val state by viewModel.state.collectAsState()
 
     Scaffold(
         topBar = {
             BackNavBar(
-                onBackClick = { },
+                onBackClick = onBackClick,
                 content = {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -128,10 +76,10 @@ fun OrdersStatusScreen(
                             style = MaterialTheme.typography.titleLarge,
                         )
                         StatusSelector(
-                            options = allStatuses,
-                            selectedOption = selectedStatus,
-                            onOptionSelected = { selectedStatus = it },
-                            optionToString = { it.name }
+                            options = state.status,
+                            selectedOption = state.selectedStatus,
+                            onOptionSelected = { viewModel.filterOrdersByStatus(it.id) },
+                            optionToString = { it.toOrderStatus()?.displayName ?: it.name }
                         )
                     }
                 }
@@ -146,7 +94,7 @@ fun OrdersStatusScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             item { Spacer(Modifier.height(0.dp)) }
-            items(orders) { order ->
+            items(state.orders) { order ->
                 OrderCard(
                     order = order,
                     onClickDetail = onClickOrderDetail,
@@ -358,5 +306,4 @@ fun OrderCard(
             }
         }
     }
-
 }
