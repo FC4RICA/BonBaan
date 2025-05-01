@@ -1,6 +1,5 @@
 package com.fc4rica.bonbaan.data.repository
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import com.fc4rica.bonbaan.data.local.UserPreferences
 import com.fc4rica.bonbaan.data.remote.OrderApiService
@@ -81,16 +80,13 @@ class OrderRepositoryImpl(
         return try {
             val userId = userPreferences.data.first().id
                 ?: return Result.failure(Exception("User ID not found"))
-            Log.d("OrderRepositoryImpl", "getOrders: $userId")
 
             val response = orderApiService.getOrders(userId)
             if (response.error != null || response.data == null) {
                 return Result.failure(Exception(response.error))
             }
-            Log.d("OrderRepositoryImpl", "getOrders: ${response.data.orders}")
 
             val orders = response.data.orders.map { it.toOrder(mapTransaction = false, mapAttachments = false) }
-            Log.d("OrderRepositoryImpl", "getOrders: $orders")
             Result.success(orders)
         } catch (e: Exception) {
             Result.failure(e)
@@ -126,7 +122,15 @@ class OrderRepositoryImpl(
     }
 
     override suspend fun approveOrder(id: String): Result<Unit> {
-        TODO("Not yet implemented")
+        return try {
+            val response = orderApiService.approveOrder(id)
+            if (response.error != null) {
+                return Result.failure(Exception(response.error))
+            }
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     override suspend fun cancelOrder(id: String): Result<Unit> {
