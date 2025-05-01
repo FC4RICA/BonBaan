@@ -40,10 +40,10 @@ import com.fc4rica.bonbaan.ui.home.feed.FeedScreen
 import com.fc4rica.bonbaan.ui.home.feed.FilteredServiceScreen
 import com.fc4rica.bonbaan.ui.home.feed.SearchScreen
 import com.fc4rica.bonbaan.ui.home.notification.NotificationScreen
+import com.fc4rica.bonbaan.ui.home.profile.OrdersStatusScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderStatusDetailScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderSummaryScreen
-import com.fc4rica.bonbaan.ui.home.service.OrdersStatusScreen
 import com.fc4rica.bonbaan.ui.home.service.PaymentScreen
 import com.fc4rica.bonbaan.ui.home.service.ServiceDetailScreen
 import com.fc4rica.bonbaan.ui.home.service.ServiceReviewScreen
@@ -183,6 +183,7 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     // Nested Profile Screens
     composable(Screen.OrdersStatus.route) {
         OrdersStatusScreen(
+            onBackClick = { navController.popBackStack() },
             onClickOrderDetail = { navController.navigate(Screen.OrderStatusDetail.createRoute(it)) },
             onClickServiceDetail = { navController.navigate(Screen.ServiceDetail.createRoute(it)) },
             onClickPayment = { navController.navigate(Screen.Payment.createRoute(it)) },
