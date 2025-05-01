@@ -23,7 +23,7 @@ class OrderStatusDetailViewModel(
     private val _state = MutableStateFlow(OrderStatusDetailUiState())
     val state = _state.asStateFlow()
 
-    private val orderId: String = checkNotNull(savedStateHandle["orderId"])
+    private val _orderId = savedStateHandle.get<String>("orderId") ?: ""
 
     init {
         getOrderDetail()
@@ -32,7 +32,7 @@ class OrderStatusDetailViewModel(
     fun cancelOrder() {
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            val result = orderRepository.cancelOrder(orderId)
+            val result = orderRepository.cancelOrder(_orderId)
             result.fold(
                 onSuccess = {
                     _state.update { it.copy(isLoading = false) }
@@ -47,7 +47,7 @@ class OrderStatusDetailViewModel(
     fun confirmOrder() {
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            val result = orderRepository.approveOrder(orderId)
+            val result = orderRepository.approveOrder(_orderId)
             result.fold(
                 onSuccess = {
                     _state.update { it.copy(isLoading = false) }
@@ -62,7 +62,7 @@ class OrderStatusDetailViewModel(
     private fun getOrderDetail() {
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            val result = orderRepository.getOrder(orderId)
+            val result = orderRepository.getOrder(_orderId)
 
             result.fold(
                 onSuccess = { order ->

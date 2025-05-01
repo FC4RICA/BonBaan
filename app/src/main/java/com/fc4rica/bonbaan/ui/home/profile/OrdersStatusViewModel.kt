@@ -1,5 +1,6 @@
 package com.fc4rica.bonbaan.ui.home.profile
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fc4rica.bonbaan.domain.model.Order
@@ -14,13 +15,14 @@ import kotlinx.coroutines.launch
 data class OrdersStatusUiState(
     val orders: List<Order> = emptyList(),
     val status: List<Status> = emptyList(),
-    val selectedStatusId: String? = null,
+    val selectedStatus: Status? = null,
     val errorMessage: String? = null,
     val isLoading: Boolean = false
 )
 
 class OrdersStatusViewModel(
-    private val orderRepository: OrderRepository
+    private val orderRepository: OrderRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _orders = MutableStateFlow<List<Order>>(emptyList())
     private val _state = MutableStateFlow(OrdersStatusUiState())
@@ -28,6 +30,8 @@ class OrdersStatusViewModel(
 
     private val _isOrderLoading = MutableStateFlow(false)
     private val _isStatusLoading = MutableStateFlow(false)
+
+    private val _statusId = savedStateHandle.get<String>("statusId") ?: ""
 
     init {
         getOrders()
@@ -65,7 +69,10 @@ class OrdersStatusViewModel(
             val result = orderRepository.getOrderStatuses()
             result.fold(
                 onSuccess = { statuses ->
-                    _state.update { it.copy(status = statuses, isLoading = false) }
+                    _state.update { it.copy(
+                        status = listOf(Status(id = "", name = "ทั้งหมด")) + statuses,
+                        selectedStatus = statuses.find { status -> status.id == _statusId },
+                        isLoading = false) }
                 },
                 onFailure = { error ->
                     _state.update { it.copy(errorMessage = error.message, isLoading = false) }
@@ -76,7 +83,8 @@ class OrdersStatusViewModel(
     }
 
     fun filterOrdersByStatus(statusId: String?) {
-        _state.update { it.copy(isLoading = true) }
+        val selectedStatus = _state.value.status.find { it.id == statusId }
+        _state.update { it.copy(isLoading = true, selectedStatus = selectedStatus) }
         val filteredList = if (statusId.isNullOrEmpty()) {
             _orders.value
         } else {

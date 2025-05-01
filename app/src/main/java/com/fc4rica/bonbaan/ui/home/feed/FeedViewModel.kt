@@ -56,7 +56,7 @@ class FeedViewModel(
 
         viewModelScope.launch {
             val result = serviceRepository.getRecommendedServices(PaginationRequest(
-                page = currentPage, pageSize = pageSize
+                page = currentPage + 1, pageSize = pageSize
             ))
             result.fold(
                 onSuccess = { newServices ->

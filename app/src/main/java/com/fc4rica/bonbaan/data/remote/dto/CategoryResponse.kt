@@ -9,9 +9,11 @@ data class CategoryResponse(
     val name: String
 )
 
-fun CategoryResponse.toCategory(): Category {
+fun CategoryResponse.toCategory(
+    mapCategoryId: Boolean = true,
+): Category {
     return Category(
-        id = id,
+        id = if (mapCategoryId) id else "",
         name = name
     )
 }

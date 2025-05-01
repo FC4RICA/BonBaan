@@ -18,13 +18,13 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.LoadingIndicator
 import com.fc4rica.bonbaan.ui.components.SearchBarPlaceholder
@@ -38,7 +38,7 @@ fun FilteredServiceScreen(
     onSearching: (String) -> Unit,
     viewModel: FilteredServiceViewModel = koinViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     val selectedTabIndex = when (state.sortType) {
         SortType.Recommend -> 0
@@ -54,7 +54,10 @@ fun FilteredServiceScreen(
                 val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
 
                 // Trigger when user scrolls within 3 items of the end
-                if (lastVisibleItem >= totalItems - 3) {
+                if (lastVisibleItem >= totalItems - 3 &&
+                    !state.isPaginating &&
+                    !state.isEndReached
+                ) {
                     viewModel.getMoreService()
                 }
             }
@@ -100,6 +103,7 @@ fun FilteredServiceScreen(
                 LoadingIndicator()
             } else {
                 LazyVerticalGrid(
+                    state = gridState,
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.fillMaxSize(),
                 ) {
