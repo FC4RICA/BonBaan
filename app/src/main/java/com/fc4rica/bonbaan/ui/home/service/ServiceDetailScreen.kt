@@ -52,6 +52,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ServiceDetailScreen(
     onOrderSuccess: () -> Unit,
     onBack: () -> Unit,
+    onClickServiceReviews: (String) -> Unit,
     viewModel: ServiceDetailViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -263,7 +264,7 @@ fun ServiceDetailScreen(
                         )
                         BonBaanButton(
                             text = "ดูรีวิวทั้งหมด",
-                            onClick = {},
+                            onClick = { onClickServiceReviews(state.service.id) },
                             variant = ButtonVariant.TEXT
                         )
                     }

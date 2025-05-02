@@ -1,4 +1,4 @@
-package com.fc4rica.bonbaan.ui.home.feed
+package com.fc4rica.bonbaan.ui.home.service
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,14 +19,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.LoadingIndicator
-import com.fc4rica.bonbaan.ui.components.ServiceCard
+import com.fc4rica.bonbaan.ui.components.ReviewCard
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CategorizeServiceScreen(
+fun ServiceReviewsScreen(
     onClickBack: () -> Unit,
-    onClickService: (String) -> Unit,
-    viewModel: CategorizeServiceViewModel = koinViewModel()
+    viewModel: ServiceReviewsViewModel = koinViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -37,7 +36,7 @@ fun CategorizeServiceScreen(
                 onBackClick = onClickBack,
                 content = {
                     Text(
-                        text = state.category?.name ?: "",
+                        text = "รีวิว",
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
@@ -66,8 +65,8 @@ fun CategorizeServiceScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     item { Spacer(Modifier.height(0.dp)) }
-                    items(state.services) { service ->
-                        ServiceCard(service, onClickService)
+                    items(state.reviews) { review ->
+                        ReviewCard(review)
                     }
                     item { Spacer(Modifier.height(0.dp)) }
                 }

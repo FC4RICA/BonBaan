@@ -1,6 +1,5 @@
 package com.fc4rica.bonbaan.ui.home.service
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -149,12 +148,10 @@ class ServiceDetailViewModel(
     }
 
     private fun getServiceDetail() {
-        Log.d("ServiceDetailViewModel", "getServiceDetail: $_serviceId")
         _state.update { it.copy(isLoading = true) }
 
         viewModelScope.launch {
             val result = serviceRepository.getService(_serviceId)
-            Log.d("ServiceDetailViewModel", "getServiceDetail: $result")
             result.fold(
                 onSuccess = { service ->
                     val mappedService =
@@ -172,7 +169,6 @@ class ServiceDetailViewModel(
                     _state.update { it.copy(errorMessage = error.message, isLoading = false) }
                 }
             )
-            Log.d("ServiceDetailViewModel", "getServiceDetail: ${_state.value.packages}")
             // insert custom package
             val customPackages = PackageType.entries.map { packageType ->
                 Package(
@@ -184,13 +180,11 @@ class ServiceDetailViewModel(
                     items = emptyList(),
                 )
             }
-            Log.d("ServiceDetailViewModel", "getServiceDetail: $customPackages")
             _state.update {
                 it.copy(
                     packages = it.packages + customPackages
                 )
             }
-            Log.d("ServiceDetailViewModel", "getServiceDetail: ${_state.value.packages}")
             _state.update {
                 it.copy(
                     selectedPackageId = it.packages.first().id
