@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class ReviewUiState(
+data class ReviewOrderUiState(
     val rating: Int = 0,
     val detail: String = "",
     val service: Service? = null,
@@ -29,7 +29,7 @@ class ReviewOrderViewModel(
     private val reviewRepository: ReviewRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val _state = MutableStateFlow(ReviewUiState())
+    private val _state = MutableStateFlow(ReviewOrderUiState())
     val state = _state.asStateFlow()
 
     init {

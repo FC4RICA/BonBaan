@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,63 +31,67 @@ fun ReviewCard(
     review: Review,
     modifier: Modifier = Modifier
 ) {
-    Card(
+    Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(8.dp),
-        shape = RoundedCornerShape(8.dp),
+            .background(
+                MaterialTheme.colorScheme.surface,
+                RoundedCornerShape(8.dp)
+            )
+            .padding(16.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = review.user?.username ?: "ไม่ระบุชื่อผู้ใช้",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Row {
-                    repeat(5) {
-                        val color = if (it < review.rating) MaterialTheme.colorScheme.secondary else Color.LightGray
-                        Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = "Star",
-                            tint = color,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = review.user?.username ?: "ไม่ระบุชื่อผู้ใช้",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Row {
+                repeat(5) {
+                    val color =
+                        if (it < review.rating) MaterialTheme.colorScheme.secondary else Color.LightGray
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Star",
+                        tint = color,
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = review.detail,
-                style = MaterialTheme.typography.bodyMedium,
-                lineHeight = 20.sp
-            )
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = review.detail,
+            style = MaterialTheme.typography.bodyMedium,
+            lineHeight = 20.sp
+        )
     }
+
 }
 
 @Preview(showBackground = true)
 @Composable
 fun ReviewCardPreview() {
-    ReviewCard(review = Review(
-        id = "1",
-        user = User(
+    ReviewCard(
+        review = Review(
             id = "1",
-            username = "john_doe",
-            firstname = "william",
-            lastname = "harrison",
-            email = "william.henry.harrison@example.com",
-            phone = "0812345678",
-        ),
-        service = null,
-        rating = 3.0,
-        detail = "review description",
-        createdAt = LocalDateTime.now()
-    ))
+            user = User(
+                id = "1",
+                username = "john_doe",
+                firstname = "william",
+                lastname = "harrison",
+                email = "william.henry.harrison@example.com",
+                phone = "0812345678",
+            ),
+            service = null,
+            rating = 3.0,
+            detail = "review description",
+            createdAt = LocalDateTime.now()
+        )
+    )
 }

@@ -46,7 +46,7 @@ import com.fc4rica.bonbaan.ui.home.service.OrderStatusDetailScreen
 import com.fc4rica.bonbaan.ui.home.service.OrderSummaryScreen
 import com.fc4rica.bonbaan.ui.home.service.PaymentScreen
 import com.fc4rica.bonbaan.ui.home.service.ServiceDetailScreen
-import com.fc4rica.bonbaan.ui.home.service.ServiceReviewScreen
+import com.fc4rica.bonbaan.ui.home.service.ServiceReviewsScreen
 import com.fc4rica.bonbaan.ui.home.service.VowRecordDetailScreen
 import com.fc4rica.bonbaan.ui.home.service.VowRecordScreen
 import com.fc4rica.bonbaan.ui.navigation.Screen
@@ -142,14 +142,17 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
     ) {
         ServiceDetailScreen(
             onOrderSuccess = { navController.navigate(Screen.Order.route) },
-            onBack = { navController.popBackStack() }
+            onBack = { navController.popBackStack() },
+            onClickServiceReviews = { navController.navigate(Screen.ServiceReview.createRoute(it)) }
         )
     }
     composable(
         route = Screen.ServiceReview.route,
         arguments = listOf(navArgument("serviceId") { type = NavType.StringType })
     ) {
-        ServiceReviewScreen()
+        ServiceReviewsScreen(
+            onClickBack = { navController.popBackStack() }
+        )
     }
 
     // Order Flow Screens
@@ -174,6 +177,12 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
             onBackClick = { navController.navigate(Screen.Feed.route) },
             onCompleted = { navController.navigate(Screen.OrderStatusDetail.createRoute(it)) }
         )
+    }
+    composable(
+        route = Screen.Review.route,
+        arguments = listOf(navArgument("orderId") { type = NavType.StringType })
+    ) {
+        // ReviewScreen()
     }
 
     // Nested VowRecord Screen
