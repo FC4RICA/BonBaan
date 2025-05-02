@@ -114,7 +114,10 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
 
     //  Nested Feed Screens
     composable(Screen.CategorizeService.route) {
-        CategorizeServiceScreen()
+        CategorizeServiceScreen(
+            onClickBack = { navController.popBackStack() },
+            onClickService = { navController.navigate(Screen.ServiceDetail.createRoute(it)) }
+        )
     }
     composable(
         route = Screen.FilteredService.route,
