@@ -7,6 +7,7 @@ import com.fc4rica.bonbaan.data.repository.InterestRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.NotificationRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.OrderRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.OrderTypeRepositoryImpl
+import com.fc4rica.bonbaan.data.repository.PackageRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.ReviewRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.ServiceRepositoryImpl
 import com.fc4rica.bonbaan.data.repository.VowRecordRepositoryImpl
@@ -16,6 +17,7 @@ import com.fc4rica.bonbaan.domain.repository.InterestRepository
 import com.fc4rica.bonbaan.domain.repository.NotificationRepository
 import com.fc4rica.bonbaan.domain.repository.OrderRepository
 import com.fc4rica.bonbaan.domain.repository.OrderTypeRepository
+import com.fc4rica.bonbaan.domain.repository.PackageRepository
 import com.fc4rica.bonbaan.domain.repository.RegisterRepository
 import com.fc4rica.bonbaan.domain.repository.ReviewRepository
 import com.fc4rica.bonbaan.domain.repository.ServiceRepository
@@ -59,7 +61,7 @@ val appModule = module {
     singleOf(::ServiceRepositoryImpl) bind ServiceRepository::class
     singleOf(::VowRecordRepositoryImpl) bind VowRecordRepository::class
     singleOf(::OrderTypeRepositoryImpl) bind OrderTypeRepository::class
-
+    singleOf(::PackageRepositoryImpl) bind PackageRepository::class
 
     viewModelOf(::MainViewModel)
     viewModelOf(::LoginViewModel)

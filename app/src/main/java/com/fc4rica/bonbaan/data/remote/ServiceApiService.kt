@@ -50,7 +50,7 @@ interface ServiceApiService {
 
     // Packages
     @GET("services/{id}/packages")
-    suspend fun getPackages(@Path("id") userId: String): ApiResponse<List<PackageResponse>>
+    suspend fun getPackages(@Path("id") serviceId: String): ApiResponse<List<PackageResponse>>
 
     @GET("packages/{id}")
     suspend fun getPackage(@Path("id") packageId: String): ApiResponse<PackageResponse>

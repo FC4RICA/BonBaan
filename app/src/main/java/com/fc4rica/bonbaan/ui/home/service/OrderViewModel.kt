@@ -122,24 +122,24 @@ class OrderViewModel(
                     _state.update { it.copy(errorMessage = error.message) }
                 }
             )
-        }
 
-        val customPackage = Package(
-            id = "",
-            name = "แพ็กเกจ${packageContext.orderTypeName}แบบกำหนดเอง",
-            description = "คุณสามารถกำหนดรายการสินค้าที่ต้องการให้เราจัดหาให้ได้เอง จากนั้นเราจึงจะส่งค่าใช้จ่ายให้คุณภายหลัง",
-            price = 0.0,
-            items = listOf(""),
-            orderType = OrderType(
-                id = packageContext.orderTypeId,
-                name = packageContext.orderTypeName
-            ),
-        )
+            val customPackage = Package(
+                id = "",
+                name = "แพ็กเกจ${packageContext.orderTypeName}แบบกำหนดเอง",
+                description = "คุณสามารถกำหนดรายการสินค้าที่ต้องการให้เราจัดหาให้ได้เอง จากนั้นเราจึงจะส่งค่าใช้จ่ายให้คุณภายหลัง",
+                price = 0.0,
+                items = listOf(""),
+                orderType = OrderType(
+                    id = packageContext.orderTypeId,
+                    name = packageContext.orderTypeName
+                ),
+            )
 
-        _state.update {
-            it.copy(
-                packages = it.packages + customPackage,
-                selectedPackage = it.packages.find { pack -> pack.id == packageContext.selectedPackageId })
+            _state.update {
+                it.copy(
+                    packages = it.packages + customPackage,
+                    selectedPackage = it.packages.find { pack -> pack.id == packageContext.selectedPackageId })
+            }
         }
     }
 
