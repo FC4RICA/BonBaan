@@ -124,10 +124,7 @@ fun OrderSummaryScreen(
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .verticalScroll(rememberScrollState())
-                .padding(
-                    top = innerPadding.calculateTopPadding(),
-                    bottom = 0.dp
-                )
+                .padding(innerPadding)
                 .imePadding()
         ) {
             // Service

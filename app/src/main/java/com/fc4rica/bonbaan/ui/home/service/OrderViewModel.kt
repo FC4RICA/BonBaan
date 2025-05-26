@@ -98,14 +98,14 @@ class OrderViewModel(
             is OrderRequest.Vow -> PackageContext(
                 orderRequest.request.serviceId,
                 orderRequest.request.orderTypeID,
-                PackageType.Vow.name,
+                PackageType.Vow.displayName,
                 orderRequest.request.packageId
             )
 
             is OrderRequest.Fulfill -> PackageContext(
                 orderRequest.request.serviceId,
                 orderRequest.request.orderTypeID,
-                PackageType.Fulfill.name,
+                PackageType.Fulfill.displayName,
                 orderRequest.request.packageId
             )
 

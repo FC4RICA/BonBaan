@@ -329,7 +329,7 @@ fun PackageCard(
         modifier = Modifier
             .clickable { onClick() }
             .clip(RoundedCornerShape(8.dp))
-            .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.LightGray)
+            .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainer)
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Text(

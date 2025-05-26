@@ -91,8 +91,8 @@ class ServiceRepositoryImpl(
                 return Result.failure(Exception(serviceResponse.error))
             }
 
-            Result.success(serviceResponse.data.services.filter { it.categories.first().name == categoryName }
-                .map { it.toService(false, false) })
+            Result.success(serviceResponse.data.services.filter { it.categories.firstOrNull()?.name == categoryName }
+                .map { it.toService(mapCategoryId = false, mapPackage = false) })
         } catch (e: Exception) {
             Result.failure(e)
         }

@@ -139,7 +139,7 @@ fun OtpInputField(
         )
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
         ) {
@@ -149,6 +149,7 @@ fun OtpInputField(
 
                 Box(
                     modifier = Modifier
+                        .padding(2.dp)
                         .border(
                             width = if (isActive) 2.dp
                             else 1.dp,
