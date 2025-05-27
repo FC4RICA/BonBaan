@@ -1,13 +1,11 @@
-package com.fc4rica.bonbaan.ui.home.service
+package com.fc4rica.bonbaan.ui.home.vow_record
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,215 +16,251 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.fc4rica.bonbaan.domain.model.*
-import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
 import com.fc4rica.bonbaan.ui.components.ButtonVariant
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
-
-
-@Composable
-fun VowRecordScreen() {
-    val records = listOf(
-        VowRecord(
-            id = "",
-            service = Service("123", "วัดหลวงพ่อโสธร", "อิอิอิอิ", 0.0, "หน้าเซนทรัลเวิลด์"),
-            createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
-            vow = "ขอ A นะนะนะ...",
-            deadline = LocalDateTime.of(2025, 5, 12, 0, 0),
-            note = "แฟนคนที่ 24",
-            vowOrder = Order(
-                id = "12345678",
+val records = listOf(
+    VowRecord(
+        id = "",
+        service = Service("123", "วัดหลวงพ่อโสธร", "อิอิอิอิ", 0.0, "หน้าเซนทรัลเวิลด์"),
+        createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
+        vow = "ขอ A นะนะนะ...",
+        deadline = LocalDateTime.of(2025, 6, 12, 0, 0),
+        note = "",
+        vowOrder = Order(
+            id = "12345678",
+            price = 899.0,
+            createdAt = LocalDateTime.of(2025, 6, 12, 0, 0),
+            status = Status(id = "1", name = "ยังไม่ได้แก้บน"),
+            packageItem = Package(
+                id = "123ไอดีแพ้คเก็จ",
+                name = "ชุดไหว้พระตรีมูรติ",
+                description = "แพ็คเกจประกอบด้วยดอกไม้ ธูป เทียน",
                 price = 899.0,
-                createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
-                status = Status(id = "1", name = "ยังไม่ได้แก้บน"),
-                packageItem = Package(
-                    id = "123ไอดีแพ้คเก็จ",
-                    name = "ชุดไหว้พระตรีมูรติ",
-                    description = "แพ็คเกจประกอบด้วยดอกไม้ ธูป เทียน",
-                    price = 899.0,
-                    items = listOf("ธูป 9 ดอก", "เทียนสีแดง", "ดอกกุหลาบแดง 9 ดอก"),
-                    orderType = OrderType(id = "1", name = "บนบาน"),
-                    service = Service("srv-001", "พระตรีมูรติ", "อิอิอิอิ", 0.0, "หน้าเซนทรัลเวิลด์")
-                ),
-                transaction = null,
-                cancellationReason = null,
-                service = null
+                items = listOf("ธูป 9 ดอก", "เทียนสีแดง", "ดอกกุหลาบแดง 9 ดอก"),
+                orderType = OrderType(id = "1", name = "บนบาน"),
+                service = Service("srv-001", "พระตรีมูรติ", "อิอิอิอิ", 0.0, "หน้าเซนทรัลเวิลด์")
             ),
-            fulfillOrder = null
+            transaction = null,
+            cancellationReason = null,
+            service = null
         ),
-        VowRecord(
-            id = "",
-            service = Service("123", "พระตรีมูรติ", "อิอิอิอิ", 0.0, "หน้าเซนทรัลเวิลด์"),
-            createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
-            vow = "ผมขอให้คนไทยยิ้มได้",
-            deadline = LocalDateTime.of(2025, 4, 20, 0, 0),
-            note = "แฟนคนที่ 24",
-            vowOrder = Order(
-                id = "12345678",
-                price = 899.0,
-                createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
-                status = Status(id = "2", name = "หมดเวลา"),
-                packageItem = Package(
-                    id = "123ไอดีแพ้คเก็จ",
-                    name = "ชุดไหว้พระตรีมูรติ",
-                    description = "แพ็คเกจประกอบด้วยดอกไม้ ธูป เทียน",
-                    price = 899.0,
-                    items = listOf("ธูป 9 ดอก", "เทียนสีแดง", "ดอกกุหลาบแดง 9 ดอก"),
-                    orderType = OrderType(id = "1", name = "บนบาน"),
-                    service = Service("srv-001", "พระตรีมูรติ", "อิอิอิอิ", 0.0, "หน้าเซนทรัลเวิลด์")
-                ),
-                transaction = null,
-                cancellationReason = null,
-                service = null
-            ),
-            fulfillOrder = null
+        fulfillOrder = null
+    ),
+    VowRecord(
+        id = "",
+        service = Service(
+            id = "8590d2a2-fc88-47f0-98f0-25fff89a8e31",
+            name = "พระตรีมูรติ",
+            description = "พระตรีมูรติ เป็นเทพเจ้าสามองค์ในศาสนาฮินดู ได้แก่ พระพรหมม พระวิษณุ และพระชิวามหาเทพ ซึ่งเป็นที่เคารพบูชาในการขอพรเรื่องความรักและโชคลาภ โดยเฉพาะในเรื่อง ความรักที่สมหวัง การงาน  และความสัมพันธ์ที่ยั่งยืน",
+            rate = 4.0,
+            address = "เซ็นทรัลเวิลด์ กรุงเทพฯ",
         ),
-        VowRecord(
-            id = "",
-            service = Service("123", "พระตรีมูรติ2", "อิอิอิอิ", 0.0, "หน้าเซนทรัลเวิลด์"),
+        createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
+        vow = "ขอให้ได้คบกับคนคุย",
+        deadline = LocalDateTime.of(2025, 4, 20, 0, 0),
+        note = "แฟนคนที่ 24",
+        vowOrder = Order(
+            id = "12345678",
+            price = 899.0,
             createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
-            vow = "ผมขอให้คนไทยยิ้มได้2",
-            deadline = LocalDateTime.of(2025, 4, 10, 0, 0),
-            note = "แฟนคนที่ 24",
-            vowOrder = Order(
-                id = "12345678",
+            status = Status(id = "2", name = "หมดเวลา"),
+            packageItem = Package(
+                id = "123ไอดีแพ้คเก็จ",
+                name = "ชุดไหว้พระตรีมูรติ",
+                description = "แพ็คเกจประกอบด้วยดอกไม้ ธูป เทียน",
                 price = 899.0,
-                createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
-                status = Status(id = "3", name = "แก้บนแล้ว"),
-                packageItem = Package(
-                    id = "123ไอดีแพ้คเก็จ",
-                    name = "ชุดไหว้พระตรีมูรติ",
-                    description = "แพ็คเกจประกอบด้วยดอกไม้ ธูป เทียน",
-                    price = 899.0,
-                    items = listOf("ธูป 9 ดอก", "เทียนสีแดง", "ดอกกุหลาบแดง 9 ดอก"),
-                    orderType = OrderType(id = "1", name = "บนบาน"),
-                    service = Service("srv-001", "พระตรีมูรติ", "อิอิอิอิ", 0.0, "หน้าเซนทรัลเวิลด์")
-                ),
-                transaction = null,
-                cancellationReason = null,
-                service = null
+                items = listOf("ธูป 9 ดอก", "เทียนสีแดง", "ดอกกุหลาบแดง 9 ดอก"),
+                orderType = OrderType(id = "1", name = "บนบาน"),
+                service = Service("srv-001", "พระตรีมูรติ", "อิอิอิอิ", 0.0, "หน้าเซนทรัลเวิลด์")
             ),
-            fulfillOrder = null
+            transaction = null,
+            cancellationReason = null,
+            service = null
+        ),
+        fulfillOrder = null
+    ),
+    VowRecord(
+        id = "",
+        service = Service(
+            id = "8590d2a2-fc88-47f0-98f0-25fff89a8e31",
+            name = "พระตรีมูรติ",
+            description = "พระตรีมูรติ เป็นเทพเจ้าสามองค์ในศาสนาฮินดู ได้แก่ พระพรหมม พระวิษณุ และพระชิวามหาเทพ ซึ่งเป็นที่เคารพบูชาในการขอพรเรื่องความรักและโชคลาภ โดยเฉพาะในเรื่อง ความรักที่สมหวัง การงาน  และความสัมพันธ์ที่ยั่งยืน",
+            rate = 4.0,
+            address = "เซ็นทรัลเวิลด์ กรุงเทพฯ",
+        ),
+        createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
+        vow = "ขอให้ได้คุยกับคนที่แอบชอบ",
+        deadline = LocalDateTime.of(2025, 4, 10, 0, 0),
+        note = "แฟนคนที่ 24",
+        vowOrder = Order(
+            id = "12345678",
+            price = 899.0,
+            createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
+            status = Status(id = "3", name = "แก้บนแล้ว"),
+            packageItem = Package(
+                id = "123ไอดีแพ้คเก็จ",
+                name = "ชุดไหว้พระตรีมูรติ",
+                description = "แพ็คเกจประกอบด้วยดอกไม้ ธูป เทียน",
+                price = 899.0,
+                items = listOf("ธูป 9 ดอก", "เทียนสีแดง", "ดอกกุหลาบแดง 9 ดอก"),
+                orderType = OrderType(id = "1", name = "บนบาน"),
+                service = Service("srv-001", "พระตรีมูรติ", "อิอิอิอิ", 0.0, "หน้าเซนทรัลเวิลด์")
+            ),
+            transaction = null,
+            cancellationReason = null,
+            service = null
+        ),
+        fulfillOrder = Order(
+            id = "12345678",
+            price = 899.0,
+            createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
+            status = Status(id = "3", name = "แก้บนแล้ว"),
+            packageItem = Package(
+                id = "123ไอดีแพ้คเก็จ",
+                name = "ชุดไหว้พระตรีมูรติ",
+                description = "แพ็คเกจประกอบด้วยดอกไม้ ธูป เทียน",
+                price = 899.0,
+                items = listOf("ธูป 9 ดอก", "เทียนสีแดง", "ดอกกุหลาบแดง 9 ดอก"),
+                orderType = OrderType(id = "1", name = "บนบาน"),
+                service = Service("srv-001", "พระตรีมูรติ", "อิอิอิอิ", 0.0, "หน้าเซนทรัลเวิลด์")
+            ),
+            transaction = null,
+            cancellationReason = null,
+            service = null
         )
     )
+)
 
+@Composable
+fun VowRecordScreen(
+    onClickVowRecord: (String) -> Unit,
+    onClickService: (String) -> Unit
+) {
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
-            BackNavBar(
-                onBackClick = {},
-                content = {
-                    Text(
-                        text = "บันทึกการบน",
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                }
-            )
-        },
-        content = { innerPadding ->
-            Box(
+            Row(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-                    .padding(innerPadding)
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .padding(bottom = 1.dp)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(vertical = 16.dp, horizontal = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(
-                            start = 18.dp,
-                            top = 20.dp,
-                            end = 18.dp,
-                        )
-                ) {
-
-                    records.forEach { record ->
-                        OrderStatusCard(
-                            name = record.service?.name?: "ไม่ทราบชื่อ",
-                            status = record.vowOrder?.status?.name?: "ไม่ทราบสถานะ",
-                            vow = record.vow,
-                            dueDate = record.deadline.toLocalDate().toString(),
-                            onClick = { }
-                        )
-                    }
-                }
+                Text(
+                    text = "บันทึกการบน",
+                    style = MaterialTheme.typography.titleLarge,
+                )
             }
         }
-    )
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = innerPadding.calculateTopPadding())
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            item { }
+            items(records) { record ->
+                OrderStatusCard(
+                    record = record,
+                    onClick = onClickVowRecord,
+                    onClickService = onClickService
+                )
+            }
+            item { }
+        }
+    }
 }
 
 @Composable
 fun OrderStatusCard(
-    name: String,
-    status: String,
-    vow: String,
-    dueDate: String,
-    onClick: () -> Unit
+    record: VowRecord,
+    onClick: (String) -> Unit,
+    onClickService: (String) -> Unit
 ) {
-    Card(
+    val status = if (record.fulfillOrder != null) {
+        "แก้บนแล้ว"
+    } else if (record.deadline <= LocalDateTime.now()) {
+        "เกินเวลาที่ขอแล้ว"
+    } else {
+        "ยังไม่แก้บน"
+    }
+
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+            .clickable { onClick(record.id) }
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
+            .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = status,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = record.service?.name ?: "",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = status,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
 
-            Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = vow,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = record.vow,
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
 
+            if (record.deadline > LocalDateTime.now()) {
                 Text(
-                    text = dueDate,
+                    text = record.deadline.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                     style = MaterialTheme.typography.bodySmall
                 )
             }
+        }
 
-            if (status == "ยังไม่ได้แก้บน" || status == "หมดเวลา") {
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    BonBaanButton(
-                        text = "แก้บน",
-                        onClick = onClick,
-                        variant = ButtonVariant.PRIMARY
-                    )
-                }
+        Spacer(modifier = Modifier.height(8.dp))
+
+        if (record.fulfillOrder == null) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "คำขอของคุณสำเร็จภายในเวลาหรือไม่?",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+                BonBaanButton(
+                    text = "แก้บน",
+                    onClick = { record.service?.let { onClickService(it.id) } },
+                    variant = ButtonVariant.OUTLINED
+                )
             }
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewVowRecordScreen() {
-    VowRecordScreen()
+    VowRecordScreen({}, {})
 }

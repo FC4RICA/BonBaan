@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -116,7 +115,7 @@ fun OrderSummaryScreen(
                 }
             }
         },
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
     ) { innerPadding ->
 
         Column(
@@ -125,7 +124,6 @@ fun OrderSummaryScreen(
                 .background(MaterialTheme.colorScheme.surfaceContainer)
                 .verticalScroll(rememberScrollState())
                 .padding(innerPadding)
-                .imePadding()
         ) {
             // Service
             Row(
@@ -136,7 +134,7 @@ fun OrderSummaryScreen(
                     .padding(vertical = 12.dp, horizontal = 24.dp)
             ) {
                 AsyncImage(
-                    model = state.service?.attachments?.first(),
+                    model = state.service?.attachments?.first()?.url,
                     contentDescription = "Service Image",
                     modifier = Modifier
                         .size(82.dp)

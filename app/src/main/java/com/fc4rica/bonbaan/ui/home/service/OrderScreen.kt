@@ -45,6 +45,7 @@ fun OrderScreen(
     LaunchedEffect(state.isSubmitSuccess) {
         if (state.isSubmitSuccess) {
             onSubmitOrder()
+            viewModel.clearSubmitSuccess()
         }
     }
 

@@ -146,6 +146,7 @@ class OrderViewModel(
     fun updateSelectedPackage(packageItem: Package) {
         _state.update { it.copy(selectedPackage = packageItem) }
         updateVowField { copy(packageId = packageItem.id) }
+        updateFulfillField { copy(packageId = packageItem.id) }
     }
 
     fun updateVow(vow: String) {
@@ -189,11 +190,17 @@ class OrderViewModel(
         _orderRequest.update { wrapped }
     }
 
+    fun clearSubmitSuccess() {
+        _state.update { it.copy(isSubmitSuccess = false) }
+    }
+
     fun submitVowOrder() {
         if (_state.value.selectedPackage == null) return _state.update { it.copy(packageError = "กรุณาเลือกแพ็กเกจ") }
         if (_state.value.selectedPackage!!.id.isEmpty() && _state.value.customItem.isEmpty()) return _state.update { it.copy(packageError = "กรุณากรอกรายการสินค้า") }
         if (_state.value.vow.isBlank()) return _state.update { it.copy(vowError = "กรุณากรอกคำบนบาน") }
         if (_state.value.deadline.isBlank()) return _state.update { it.copy(deadlineError = "กรุณาเลือกวันที่") }
+
+        updateVowField { copy(price = _state.value.selectedPackage?.price) }
 
         val current = (_orderRequest.value as? OrderRequest.Vow)?.request ?: return
         val wrapped = OrderRequest.Vow(current)
@@ -206,6 +213,8 @@ class OrderViewModel(
         if (_state.value.selectedPackage == null) return _state.update { it.copy(packageError = "กรุณาเลือกแพ็กเกจ") }
         if (_state.value.selectedPackage!!.id.isEmpty() && _state.value.customItem.isEmpty()) return _state.update { it.copy(packageError = "กรุณากรอกรายการสินค้า") }
         if (_state.value.fulfilledVowRecord == null) return _state.update { it.copy(vowRecordError = "กรุณาเลือกคำบนบานที่ต้องการแก้") }
+
+        updateFulfillField { copy(price = _state.value.selectedPackage?.price) }
 
         val current = (_orderRequest.value as? OrderRequest.Fulfill)?.request ?: return
         val wrapped = OrderRequest.Fulfill(current)

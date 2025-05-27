@@ -1,10 +1,7 @@
-package com.fc4rica.bonbaan.ui.home.service
+package com.fc4rica.bonbaan.ui.home.vow_record
 
 
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,13 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.fc4rica.bonbaan.R
+import coil3.compose.AsyncImage
+import com.fc4rica.bonbaan.domain.model.Attachment
 import com.fc4rica.bonbaan.domain.model.Order
 import com.fc4rica.bonbaan.domain.model.OrderType
 import com.fc4rica.bonbaan.domain.model.Package
@@ -31,83 +27,93 @@ import com.fc4rica.bonbaan.domain.model.Status
 import com.fc4rica.bonbaan.domain.model.VowRecord
 import com.fc4rica.bonbaan.ui.components.BackNavBar
 import com.fc4rica.bonbaan.ui.components.BonBaanButton
-import com.fc4rica.bonbaan.ui.components.ButtonVariant
 import java.time.LocalDateTime
 
-@Composable
-fun VowRecordDetailScreen() {
-    val record = VowRecord(
-        id = "",
-        service = Service(
-            id = "123ไอดีservice",
-            name = "พระตรีมูรติ",
-            description = "อิอิอิอิ",
-            rate = 0.0,
-            address = "หน้าเซนทรัลเวิลด์",
-        ),
-        createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
-        vow = "ผมขอให้คนไทยยิ้มได้",
-        deadline = LocalDateTime.of(2025, 4, 10, 0, 0),
-        note = "แฟนคนที่ 24",
-        vowOrder = Order(
-            id = "12345678",
-            price = 899.0,
-            createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
-            status = Status(id = "1", name = "ยังไม่ได้แก้บน"),
-            packageItem = Package(
-                id = "123ไอดีแพ้คเก็จ",
-                name = "ชุดไหว้พระตรีมูรติ",
-                description = "แพ็คเกจประกอบด้วยดอกไม้ ธูป เทียน",
-                price = 899.0,
-                items = listOf("ธูป 9 ดอก", "เทียนสีแดง", "ดอกกุหลาบแดง 9 ดอก"),
-                orderType = OrderType(id = "1", name = "บนบาน"),
-                service = Service(
-                    id = "srv-001",
-                    name = "พระตรีมูรติ",
-                    description = "อิอิอิอิ",
-                    rate = 0.0,
-                    address = "หน้าเซนทรัลเวิลด์"
-                )
-            ),
-            transaction = null,
-            cancellationReason = null,
-            service = null
-        ),
-        fulfillOrder = Order(
-            id = "87654321",
-            price = 899.0,
-            createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
-            status = Status(id = "2", name = "สำเร็จแล้ว"),
-            packageItem = Package(
-                id = "pkg-001",
-                name = "ชุดไหว้พระตรีมูรติ",
-                description = "แพ็คเกจประกอบด้วยดอกไม้ ธูป เทียน",
-                price = 899.0,
-                items = listOf("ธูป 9 ดอก", "เทียนสีแดง", "ดอกกุหลาบแดง 9 ดอก"),
-                orderType = OrderType(id = "2", name = "แก้บน"),
-                service = Service(
-                    id = "123ไอดีแพ้คเก็จ",
-                    name = "พระตรีมูรติ",
-                    description = "อิอิอิอิ",
-                    rate = 0.0,
-                    address = "หน้าเซนทรัลเวิลด์"
-                )
-            ),
-            transaction = null,
-            cancellationReason = null,
-            service = null
+val record = VowRecord(
+    id = "",
+    service = Service(
+        id = "8590d2a2-fc88-47f0-98f0-25fff89a8e31",
+        name = "พระตรีมูรติ",
+        description = "พระตรีมูรติ เป็นเทพเจ้าสามองค์ในศาสนาฮินดู ได้แก่ พระพรหมม พระวิษณุ และพระชิวามหาเทพ ซึ่งเป็นที่เคารพบูชาในการขอพรเรื่องความรักและโชคลาภ โดยเฉพาะในเรื่อง ความรักที่สมหวัง การงาน  และความสัมพันธ์ที่ยั่งยืน",
+        rate = 4.0,
+        address = "เซ็นทรัลเวิลด์ กรุงเทพฯ",
+        attachments = listOf(
+            Attachment(
+                "",
+                "https://firebasestorage.googleapis.com/v0/b/webpro-421315.firebasestorage.app/o/images%2F1748189066412131587_unnamed.jpg?alt=media&token=8b575a4e-40b2-43a8-9f09-56f0b8e1f8c3"
+            )
         )
-    )
+    ),
+    createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
+    vow = "ขอให้ได้คบกับคนคุย",
+    deadline = LocalDateTime.of(2025, 4, 10, 0, 0),
+    note = "",
+    vowOrder = Order(
+        id = "da6e2823-cf98-4151-a0ea-54007a63ba3d",
+        price = 499.0,
+        createdAt = LocalDateTime.of(2025, 4, 10, 0, 0),
+        status = Status(id = "1", name = "ยังไม่ได้แก้บน"),
+        packageItem = Package(
+            id = "7da5f1c7-790b-47f5-bc4b-5ff02af2f607",
+            name = "แพ็คเกจเริ่มต้น",
+            description = "แพ็คเกจเริ่มต้น สำหรับการบนบาน",
+            price = 499.0,
+            items = listOf(
+                "เทียนแดง 1 คู่",
+                " ธูปแดง 9 ดอก",
+                " ดอกกุหลาบแดง 9 ดอก",
+                " ผลไม้สีแดง"
+            ),
+            orderType = OrderType(id = "1", name = "บนบาน"),
+            service = null
+        ),
+        items = listOf(
+            "เทียนแดง 1 คู่",
+            " ธูปแดง 9 ดอก",
+            " ดอกกุหลาบแดง 9 ดอก",
+            " ผลไม้สีแดง"
+        ),
+        transaction = null,
+        cancellationReason = null,
+        service = null
+    ),
+    fulfillOrder = null
+)
+
+@Composable
+fun VowRecordDetailScreen(
+    onClickService: (String) -> Unit,
+    onBackClick: () -> Unit
+) {
+    val status = if (record.fulfillOrder != null) {
+        "แก้บนแล้ว"
+    } else if (record.deadline <= LocalDateTime.now()) {
+        "เกินเวลาที่ขอแล้ว"
+    } else {
+        "ยังไม่แก้บน"
+    }
 
     Scaffold(
         topBar = {
             BackNavBar(
-                onBackClick = {},
+                onBackClick = onBackClick,
                 content = {
-                    Text(
-                        text = "บันทึกการบน",
-                        style = MaterialTheme.typography.titleLarge,
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "บันทึกการบน",
+                            style = MaterialTheme.typography.titleLarge,
+                        )
+                        Text(
+                            text = status,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             )
         },
@@ -115,181 +121,157 @@ fun VowRecordDetailScreen() {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(horizontal = 30.dp, vertical = 16.dp)
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .padding(top = 1.dp)
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(vertical = 12.dp, horizontal = 24.dp),
             ) {
                 BonBaanButton(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .align(Alignment.Center),
-                    text = "แก้บนเลย",
-                    onClick = { },
-                    variant = ButtonVariant.SECONDARY
+                    text = if (record.fulfillOrder != null) "ซื้ออีกครั้ง" else "แก้บนเลย",
+                    onClick = { record.service?.id?.let { onClickService(it) } },
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
-        }
-    ) { paddingValues ->
+        },
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
+    ) { innerPadding ->
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surfaceContainer)
                 .verticalScroll(rememberScrollState())
-                .padding(
-                    start = 18.dp,
-                    top = 80.dp,
-                    end = 18.dp,
-                    bottom = paddingValues.calculateBottomPadding()
-                )
+                .padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
-                    .fillMaxWidth()
-                    .shadow(4.dp, RoundedCornerShape(12.dp), clip = true)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(16.dp)
-            ) {
-                Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                    Image(
-                        painter = painterResource(id = R.drawable.logo1),
-                        contentDescription = "Logo",
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(7.dp))
-                            .height(100.dp)
-                            .width(100.dp)
-                            .padding(12.dp, end = 8.dp)
-                    )
+            VowRecordDetail(record)
 
-                    Column(modifier = Modifier.padding(horizontal = 12.dp)) {
-                        Text(
-                            text = record.service?.name ?: "ไม่ทราบสถานะ",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Row {
-                            Icon(
-                                imageVector = Icons.Filled.LocationOn,
-                                contentDescription = "Location",
-                                modifier = Modifier.size(14.dp),
-                            )
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(
-                                text = record.service?.address ?: "ไม่ทราบสถานที่",
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    color = MaterialTheme.colorScheme.surface,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    shape = RoundedCornerShape(7.dp)
-                                )
-                                .padding(horizontal = 12.dp, vertical = 12.dp)
-                        ) {
-                            Text(
-                                text = record.vowOrder?.status?.name ?: "ไม่ทราบสถานะ",
-                                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "\"${record.vow}\"",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "วันที่บน : ${record.vowOrder?.createdAt?.toLocalDate() ?: "ไม่ระบุ"}",
-                    style = MaterialTheme.typography.titleSmall
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "ขอบเขต : ${record.deadline.toLocalDate()}",
-                    style = MaterialTheme.typography.titleSmall
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = "โน้ตของคุณ",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Medium
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
-                    value = "${record.note}",
-                    onValueChange = {},
-                    readOnly = true,
-                    enabled = false,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color(0xFFEAEAEA)),
-                    textStyle = MaterialTheme.typography.bodySmall.copy(color = Color.Black),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        disabledTextColor = Color.Black,
-                        disabledBorderColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent
-                    )
-                )
+            if (record.vowOrder != null) {
+                OrderDetail(record.vowOrder, "รายละเอียดคำสั่งซื้อการบนบาน")
             }
 
-            val order = record.vowOrder
-            if (order != null) {
-                PackageDetail(
-                    orderid = order.id,
-                    name = order.packageItem?.name ?: "ไม่มีชื่อแพ็คเกจ",
-                    price = order.price.toInt(),
-                    items = order.packageItem?.items ?: listOf("ไม่มีข้อมูล")
-                )
+            if (record.fulfillOrder != null) {
+                OrderDetail(record.fulfillOrder, "รายละเอียดคำสั่งซื้อการแก้บน")
             }
         }
     }
 }
 
 @Composable
-fun PackageDetail(orderid: String, name: String, price: Int, items: List<String>) {
-    Box(
+fun VowRecordDetail(record: VowRecord) {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .shadow(4.dp, RoundedCornerShape(12.dp), clip = true)
-            .background(
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(12.dp)
-            )
-            .padding(16.dp)
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(top = 12.dp, start = 24.dp, end = 24.dp, bottom = 16.dp)
     ) {
-        Column {
-            Text(
-                text = "รายละเอียดคำสั่งซื้อ",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            AsyncImage(
+                model = record.service?.attachments?.firstOrNull()?.url,
+                contentDescription = "Service Image",
+                modifier = Modifier
+                    .size(82.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainer),
+                contentScale = ContentScale.Crop
             )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(text = "หมายเลขคำสั่งซื้อ : $orderid", style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "ราคา : ${price}฿", fontWeight = FontWeight.Medium)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "แพ็คเกจ : $name", style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = "รายละเอียดแพ็คเกจ",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            items.forEach { item ->
-                Text(text = "- $item", style = MaterialTheme.typography.bodyMedium)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 12.dp)
+            ) {
+                Text(
+                    text = record.service?.name ?: "",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row {
+                    Icon(
+                        imageVector = Icons.Filled.LocationOn,
+                        contentDescription = "Location",
+                        modifier = Modifier.size(14.dp),
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = record.service?.address ?: "",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "\"${record.vow}\"",
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "วันที่บน : ${record.vowOrder?.createdAt?.toLocalDate() ?: "ไม่ระบุ"}",
+            style = MaterialTheme.typography.titleSmall
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "ขอบเขต : ${record.deadline.toLocalDate()}",
+            style = MaterialTheme.typography.titleSmall
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (!record.note.isNullOrEmpty()) {
+            Text(
+                text = "โน้ตของคุณ",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "${record.note}",
+            )
+        }
+    }
+}
+
+@Composable
+fun OrderDetail(
+    order: Order,
+    title: String
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(top = 12.dp, start = 24.dp, end = 24.dp, bottom = 16.dp)
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(text = "หมายเลขคำสั่งซื้อ : ${order.id}", style = MaterialTheme.typography.bodyMedium)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = "ราคา : ${order.price}฿", fontWeight = FontWeight.Medium)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "แพ็คเกจ : ${order.packageItem?.name ?: "แพ็กเกจแบบกำหนดเอง"}",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            text = "รายละเอียดแพ็คเกจ",
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        order.items.forEach { item ->
+            Text(text = "- $item", style = MaterialTheme.typography.bodyMedium)
         }
     }
 }
@@ -297,5 +279,5 @@ fun PackageDetail(orderid: String, name: String, price: Int, items: List<String>
 @Preview(showBackground = true)
 @Composable
 fun PreviewRecordScreen() {
-    VowRecordDetailScreen()
+    VowRecordDetailScreen({}, {})
 }

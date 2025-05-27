@@ -47,8 +47,8 @@ import com.fc4rica.bonbaan.ui.home.service.OrderSummaryScreen
 import com.fc4rica.bonbaan.ui.home.service.PaymentScreen
 import com.fc4rica.bonbaan.ui.home.service.ServiceDetailScreen
 import com.fc4rica.bonbaan.ui.home.service.ServiceReviewsScreen
-import com.fc4rica.bonbaan.ui.home.service.VowRecordDetailScreen
-import com.fc4rica.bonbaan.ui.home.service.VowRecordScreen
+import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordDetailScreen
+import com.fc4rica.bonbaan.ui.home.vow_record.VowRecordScreen
 import com.fc4rica.bonbaan.ui.navigation.Screen
 
 @Composable
@@ -96,7 +96,10 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         )
     }
     composable(Screen.VowRecord.route) {
-        VowRecordScreen()
+        VowRecordScreen(
+            onClickVowRecord = { navController.navigate(Screen.VowRecordDetail.createRoute(it)) },
+            onClickService = { navController.navigate(Screen.ServiceDetail.createRoute(it)) }
+        )
     }
     composable(Screen.Notification.route) {
         NotificationScreen(
@@ -190,7 +193,10 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
         route = Screen.VowRecordDetail.route,
         arguments = listOf(navArgument("vowRecordId") { type = NavType.StringType })
     ) {
-        VowRecordDetailScreen()
+        VowRecordDetailScreen(
+            onBackClick = { navController.popBackStack() },
+            onClickService = { navController.navigate(Screen.ServiceDetail.createRoute(it)) }
+        )
     }
 
     // Nested Profile Screens

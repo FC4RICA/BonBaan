@@ -109,7 +109,6 @@ fun PaymentScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(400.dp)
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
             )
             Spacer(Modifier.height(16.dp))
             BonBaanButton(

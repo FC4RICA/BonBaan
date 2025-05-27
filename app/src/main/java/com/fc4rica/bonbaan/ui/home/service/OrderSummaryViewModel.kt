@@ -87,7 +87,6 @@ class OrderSummaryViewModel(
             is OrderRequest.Fulfill -> OrderSummaryUiState(fulfillOrderRequest = orderRequest.request)
             else -> OrderSummaryUiState(errorMessage = "Invalid order request", isLoading = false)
         }
-
         if (_state.value.fulfillOrderRequest != null) {
             viewModelScope.launch {
                 val result =
