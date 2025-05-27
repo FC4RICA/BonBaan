@@ -1,6 +1,5 @@
 package com.fc4rica.bonbaan.ui.home.profile
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -52,7 +51,6 @@ class OrdersStatusViewModel(
         _isOrderLoading.value = true
         viewModelScope.launch {
             val result = orderRepository.getOrders()
-            Log.d("OrdersStatusViewModel", "getOrders: $result")
             result.fold(
                 onSuccess = { orders ->
                     _orders.value = orders.sortedByDescending { it.createdAt }
@@ -70,7 +68,6 @@ class OrdersStatusViewModel(
         _isStatusLoading.value = true
         viewModelScope.launch {
             val result = orderRepository.getOrderStatuses()
-            Log.d("OrdersStatusViewModel", "getStatuses: $result")
             result.fold(
                 onSuccess = { statuses ->
                     _state.update { it.copy(
@@ -94,7 +91,6 @@ class OrdersStatusViewModel(
         } else {
             _orders.value.filter { it.status.id == statusId }
         }
-        Log.d("OrdersStatusViewModel", "filterOrdersByStatus: $filteredList")
         _state.update { it.copy(orders = filteredList, isLoading = false) }
     }
 }

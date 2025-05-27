@@ -23,6 +23,7 @@ data class ServicesResponse(
 fun ServiceResponse.toService(
     mapCategoryId: Boolean = true,
     mapPackage: Boolean = true,
+    mapCategories: Boolean = true,
 ): Service {
     return Service(
         id = id,
@@ -30,7 +31,7 @@ fun ServiceResponse.toService(
         description = description,
         rate = rate,
         address = address,
-        categories = categories.map { it.toCategory(mapCategoryId) },
+        categories = if (mapCategories) categories.map { it.toCategory(mapCategoryId) } else emptyList(),
         packages = if (mapPackage) packages.map { it.toPackage() } else emptyList(),
         attachments = attachments.map { it.toAttachment() },
     )

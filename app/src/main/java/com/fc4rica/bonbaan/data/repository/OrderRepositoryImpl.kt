@@ -89,7 +89,7 @@ class OrderRepositoryImpl(
             }
             Log.d("OrderRepositoryImpl", "getOrders: ${response.data.orders}")
 
-            val orders = response.data.orders.map { it.toOrder(mapTransaction = false, mapAttachments = false) }
+            val orders = response.data.orders.map { it.toOrder(mapTransaction = false, mapAttachments = false, mapPackage = false) }
             Log.d("OrderRepositoryImpl", "getOrders: $orders")
             Result.success(orders)
         } catch (e: Exception) {

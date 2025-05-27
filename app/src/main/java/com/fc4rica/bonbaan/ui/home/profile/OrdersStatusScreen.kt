@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -95,7 +96,7 @@ fun OrdersStatusScreen(
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            item { Spacer(Modifier.height(0.dp)) }
+            item { }
             items(state.orders) { order ->
                 OrderCard(
                     order = order,
@@ -105,7 +106,7 @@ fun OrdersStatusScreen(
                     onClickReview = onClickReview,
                 )
             }
-            item { Spacer(Modifier.height(0.dp)) }
+            item { }
         }
     }
 }
@@ -189,12 +190,12 @@ fun OrderCard(
             modifier = Modifier.fillMaxWidth()
         ) {
             AsyncImage(
-                model = order.attachments.firstOrNull(),
+                model = order.service?.attachments?.firstOrNull()?.url,
                 contentDescription = "service image",
                 modifier = Modifier
                     .size(82.dp)
-                    .clip(RoundedCornerShape(8.dp))
-
+                    .clip(RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop
             )
 
             Spacer(modifier = Modifier.width(8.dp))

@@ -18,7 +18,7 @@ data class OrderResponse(
     @SerializedName("CancellationReason")
     val cancellationReason: String?,
     val status: StatusResponse,
-    val attachments: List<AttachmentResponse> = emptyList(),
+    val attachments: List<AttachmentResponse>? = emptyList(),
     val service: ServiceResponse?,
 )
 
@@ -42,7 +42,7 @@ fun OrderResponse.toOrder(
         transaction = if (mapTransaction) transaction?.toTransaction() else null,
         cancellationReason = cancellationReason,
         status = status.toStatus(),
-        attachments = if (mapAttachments) attachments.map { it.toAttachment() } else emptyList(),
-        service = if (mapService) service?.toService() else null
+        attachments = if (mapAttachments && attachments != null) attachments.map { it.toAttachment() } else emptyList(),
+        service = if (mapService) service?.toService(mapCategoryId = false, mapPackage = false, mapCategories = false) else null
     )
 }
